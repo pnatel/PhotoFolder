@@ -38,13 +38,8 @@ Criteria = 1
 
 ## RECOMMENDATIONS:
 
-Use pipreqs to generate the requirements.txt 
-run in console or redirect output to a log file
-e.g:
-```bash
-python3 photofolder.py
-python3 photofolder.py >> log.txt
-```
+run pipreqs in the folder of the project to generate the requirements.txt 
+Use --force to overwrite it
 
 ## Pending:
 - add sftp feature so the code does NOT need to be ran from the host
