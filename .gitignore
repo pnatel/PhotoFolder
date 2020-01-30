@@ -127,3 +127,6 @@ dmypy.json
 # output data folders from the PhotoFolder App
 logs/
 pics/
+
+# Local config file (edit the online version manually if required)
+config.ini

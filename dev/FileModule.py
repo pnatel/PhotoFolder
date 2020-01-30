@@ -18,10 +18,13 @@ import shutil, random, os
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import configparser
+import logging
+
 
 config = configparser.ConfigParser()
 _sourceFolder = ''
 _destinationFolder = ''
+_logPath = ''
 _fileType = []
 _numberOfPics = 0
 _MaxNumberOfPics = 0
@@ -33,23 +36,27 @@ _criteria = 0
 # Main function copy photos based on the parameters selected
 # --------------------------------
 def main(): 
-    print('--------START--------')
+    logging.basicConfig(filename= _logPath, 
+                        format='%(asctime)s - %(levelname)s - %(message)s', 
+                        level=logging.INFO) # TODO: change config.ini loglevel here
+    logging.info('--------START--------')
     start = datetime.now()
     print(start)
-    print('Loading list of available photos from: ' + _sourceFolder)
+    logging.info('Loading list of available photos from: ' + _sourceFolder)
     filenames = getListOfFiles(_sourceFolder)
-    print('choosing and Sorting the sample')
+    logging.info('Found: ' + str(len(filenames)) + ' available files')
+    logging.info('choosing and Sorting the sample')
     sample = sorting(filenames, _criteria, _numberOfPics)
-    print('-------PRUNNING--------')
+    logging.info('-------PRUNNING--------')
     folderPrunning(_destinationFolder, 2)
-    print('Number of selected files on the sample: ' + str(len(sample)))
+    logging.info('Number of selected files on the sample: ' + str(len(sample)))
     copyFiles(sample)
-    print('New folder Size ' + str(getSizeMB(_destinationFolder)) + 'Mb')      
-    print('---------------------')
+    logging.info('New folder Size ' + str(getSizeMB(_destinationFolder)) + 'Mb')      
+    logging.info('---------------------')
     end = datetime.now()
     print(end)
-    print('Time elapsed:', end-start, 'secs')
-    print('--------END----------')
+    logging.info('Time elapsed:' + str(end-start) + 'secs')
+    logging.info('--------END----------')
 
 # Loading Conguration file (config.ini)
 # Code from https://wiki.python.org/moin/ConfigParserExamples
@@ -70,22 +77,22 @@ def ConfigSectionMap(section):
 def copyFiles(fileList):
     for fname in fileList:
         if fname.endswith(_fileType):
-            print('Copying file ' + fname)
+            logging.info('Copying file ' + fname)
             shutil.copy(fname, _destinationFolder)    
    
 # checking size of the destination folder to trigger a cleanup
 def folderPrunning(folder = _destinationFolder, multiplier = 1):
     folderSize = getSizeMB(folder)
-    # print (folder, folderSize)
-    print('Destination folder Size ' + str(folderSize) + 'Mb')
+    # logging.info (folder, folderSize)
+    logging.info('Destination folder Size ' + str(folderSize) + 'Mb')
     if folderSize > _foldersizeUpperLimit:
         filenames = getListOfFiles(folder)
         prune = sorting(filenames, 1, _numberOfPics * multiplier)
         for fname in prune:
-            print('Removing file ' + fname)
+            logging.info('Removing file ' + fname)
             os.remove(fname)
-        print('Folder Size after prunning ' + str(getSizeMB(folder)) + 'Mb')
-    else: print(folderSize, 'smaller than', _foldersizeUpperLimit)
+        logging.info('Folder Size after prunning ' + str(getSizeMB(folder)) + 'Mb')
+    else: logging.info(folderSize, 'smaller than', _foldersizeUpperLimit)
 
 def logPrunning(file='log.txt'):
     pass
@@ -150,7 +157,7 @@ def readFolderContent(path= '.'):
 def sorting(filenames, criteria=1, sampleSize=10):
     # print(len(filenames), criteria, sampleSize)
     if criteria == 1: # Random pics from source
-        print('Getting a random set of ' + str(sampleSize) + ' Photos')
+        logging.info('Getting a random set of ' + str(sampleSize) + ' Photos')
         return random.sample(filenames, sampleSize)
 
     # NO OTHER SORTING METHOD IS WORKING    
@@ -174,12 +181,14 @@ def sorting(filenames, criteria=1, sampleSize=10):
 config.read('config.ini')
 _sourceFolder = ConfigSectionMap('folder')['sourcefolder']
 _destinationFolder = ConfigSectionMap('folder')['destinationfolder']
+_logPath = ConfigSectionMap('folder')['logpath']
 _fileType = tuple(dict(config.items('ext')).values())
 _numberOfPics = int(ConfigSectionMap('parameter')['numberofpics'])
 # _MaxNumberOfPics = int(ConfigSectionMap('parameter')['MaxNumberOfPics'])
 _foldersizeUpperLimit = int(ConfigSectionMap('parameter')['foldersizeupperlimit'])
 _newerPhotos = ConfigSectionMap('parameter')['newerphotos']
 _criteria = int(ConfigSectionMap('sort')['criteria'])
+_logLevel = ConfigSectionMap('loglevel')['level']
 
 #self test
 def _test():
@@ -208,6 +217,6 @@ def _test():
 
 if __name__ == '__main__':
     
-    main()
-    # _test()
+    # main()
+    _test()
 
