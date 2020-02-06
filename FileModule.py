@@ -41,7 +41,7 @@ def main():
                         level=logging.INFO) # TODO: change config.ini loglevel here
     logging.info('--------START--------')
     start = datetime.now()
-    print(start)
+    print('Job Start time:',start)
     logging.info('Loading list of available photos from: ' + _sourceFolder)
     filenames = getListOfFiles(_sourceFolder)
     logging.info('Found: ' + str(len(filenames)) + ' available files')
@@ -54,7 +54,7 @@ def main():
     logging.info('New folder Size ' + str(getSizeMB(_destinationFolder)) + 'Mb')      
     logging.info('---------------------')
     end = datetime.now()
-    print(end)
+    print('Job finish time:',end)
     logging.info('Time elapsed:' + str(end-start) + 'secs')
     logging.info('--------END----------')
 
@@ -92,7 +92,7 @@ def folderPrunning(folder = _destinationFolder, multiplier = 1):
             logging.info('Removing file ' + fname)
             os.remove(fname)
         logging.info('Folder Size after prunning ' + str(getSizeMB(folder)) + 'Mb')
-    else: logging.info(folderSize, 'smaller than', _foldersizeUpperLimit)
+    else: logging.info(str(folderSize) + ' smaller than ' + str(_foldersizeUpperLimit))
 
 def logPrunning(file='log.txt'):
     pass
@@ -217,6 +217,6 @@ def _test():
 
 if __name__ == '__main__':
     
-    # main()
-    _test()
+    main()
+    # _test()
 
