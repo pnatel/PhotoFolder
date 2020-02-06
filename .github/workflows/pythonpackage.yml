@@ -23,5 +23,6 @@ jobs:
    
     - name: Test if the application handle the copy management
       run: |
+        mkdir test/destination
         python photofolder.py
 
