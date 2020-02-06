@@ -31,4 +31,5 @@ jobs:
         python photofolder.py
         python photofolder.py
         cat test/logs/PhotoFolder.log
+        ls -al test/destination
 
