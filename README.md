@@ -1,3 +1,5 @@
+![Python package](https://github.com/pnatel/PhotoFolder/workflows/Python%20package/badge.svg)
+
 # PHOTO FOLDER
 
 Working version 1.1 tested in 07/Dec/2019
