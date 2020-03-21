@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
+        python-version: [3.5, 3.6, 3.7, 3.8]
 
     steps:
     - uses: actions/checkout@v2
@@ -23,5 +23,13 @@ jobs:
    
     - name: Test if the application handle the copy management
       run: |
+        mkdir test/logs
+        mkdir test/destination
         python photofolder.py
+        python photofolder.py
+        python photofolder.py
+        python photofolder.py
+        python photofolder.py
+        cat test/logs/PhotoFolder.log
+        ls -al test/destination
 
