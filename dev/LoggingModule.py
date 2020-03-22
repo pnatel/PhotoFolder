@@ -21,8 +21,8 @@ def create_rotating_log(path, level=logging.INFO):
         time.sleep(1.5)
  
 #----------------------------------------------------------------------
-def create_log_file(): 
-    logging.basicConfig(filename='logfile.log', level=logging.INFO)
+def create_log_file(file_name, level): 
+    logging.basicConfig(filename=file_name, level=level)
 
 #----------------------------------------------------------------------
 
@@ -31,6 +31,15 @@ def info(message):
 
 #----------------------------------------------------------------------
 if __name__ == "__main__":
+    from os import path
     log_file = "logs/test.log"
+    
     level = logging.INFO
-    create_rotating_log(log_file)
+    if path.isfile(log_file):
+        create_rotating_log(log_file)
+    else:
+        create_log_file(log_file, level)
+        create_rotating_log(log_file)
+        
+
+
