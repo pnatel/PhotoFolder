@@ -25,11 +25,11 @@ jobs:
       run: |
         mkdir test/logs
         mkdir test/destination
-        python photofolder.py
-        python photofolder.py
-        python photofolder.py
-        python photofolder.py
-        python photofolder.py
+        python photofolder.py 1st_test
+        python photofolder.py 2nd_test
+        python photofolder.py 3rd_test
+        python photofolder.py 4th_test
+        python photofolder.py last_test
         cat test/logs/PhotoFolder.log
         ls -al test/destination
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 # By Paulo Natel 
-# Dec/2019
-# pnatel@gmail.com
+# Mar/2020
+# pnatel@live.com
 
-# Check README.md for information
+# Check README.md for more information
 # Change configuration in config.ini
 # --------ATTENTION!----------
 # RUN FROM THE FOLDER OR CONFIG WILL NOT BE FOUND
@@ -15,12 +15,13 @@
 from pathlib import Path
 import base64
 import shutil, random, os
+from sys import argv
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import configparser
 import logging
 
-
+# Global Variables
 config = configparser.ConfigParser()
 _sourceFolder = ''
 _destinationFolder = ''
@@ -67,9 +68,9 @@ def ConfigSectionMap(section):
         try:
             dict1[option] = config.get(section, option)
             if dict1[option] == -1:
-                DebugPrint("skip: %s" % option)
+                logging.warning("skip: %s" % option)
         except:
-            print("exception on %s!" % option)
+            logging.error("exception on %s!" % option)
             dict1[option] = None
     return dict1
 
@@ -178,14 +179,25 @@ def sorting(filenames, criteria=1, sampleSize=10):
         print ('Criteria not met!')
 
 
+# Loading configuration
+# ---------------------
 config.read('config.ini')
-_sourceFolder = ConfigSectionMap('folder')['sourcefolder']
-_destinationFolder = ConfigSectionMap('folder')['destinationfolder']
-_logPath = ConfigSectionMap('folder')['logpath']
+if len(argv) > 1:
+    print ('Arguments: ', argv[1:])
+    _sourceFolder = ConfigSectionMap('test')['sourcefolder']
+    _destinationFolder = ConfigSectionMap('test')['destinationfolder']
+    _logPath = ConfigSectionMap('test')['logpath']
+    _numberOfPics = int(ConfigSectionMap('parameter')['numberofpics_test'])
+    _foldersizeUpperLimit = int(ConfigSectionMap('parameter')['foldersizeupperlimit_test'])
+else:
+    _sourceFolder = ConfigSectionMap('folder')['sourcefolder']
+    _destinationFolder = ConfigSectionMap('folder')['destinationfolder']
+    _logPath = ConfigSectionMap('folder')['logpath']
+    _numberOfPics = int(ConfigSectionMap('parameter')['numberofpics']) 
+    _foldersizeUpperLimit = int(ConfigSectionMap('parameter')['foldersizeupperlimit'])
+
 _fileType = tuple(dict(config.items('ext')).values())
-_numberOfPics = int(ConfigSectionMap('parameter')['numberofpics'])
 # _MaxNumberOfPics = int(ConfigSectionMap('parameter')['MaxNumberOfPics'])
-_foldersizeUpperLimit = int(ConfigSectionMap('parameter')['foldersizeupperlimit'])
 _newerPhotos = ConfigSectionMap('parameter')['newerphotos']
 _criteria = int(ConfigSectionMap('sort')['criteria'])
 _logLevel = ConfigSectionMap('loglevel')['level']
