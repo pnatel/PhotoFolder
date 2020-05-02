@@ -30,6 +30,6 @@ jobs:
         python photofolder.py 3rd_test
         python photofolder.py 4th_test
         python photofolder.py last_test
-        cat test/logs/PhotoFolder.log
-        ls -al test/destination
+        cat static/test/logs/PhotoFolder.log
+        ls -al static/test/destination
 
