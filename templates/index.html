@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <form action="{{ url_for('index') }}" enctype="multipart/form-data" method="POST"> 
+        
+        <fieldset>
+        <ul>
+            {% for i in range(len_list) %}
+                <li><input type="checkbox" id="cb{{ i }}" name="cb{{ i }}" value="{{ images[i-1] }}"/>
+                <label for="cb{{ i }}"><img src="{{ images[i-1] }}"></label>
+                </li>
+            {% endfor %}
+        </ul>
+        </fieldset>
+        <fieldset>
+            <legend>What do you want to do with the selected pictures:</legend>
+            <input type="radio" name="rotate" value="rotate"> Rotate the picture
+            <input type="radio" name="favorite" value="favorite"> Favorite the Picture
+            <input type="radio" name="delete" value="delete"> Delete picture from set
+            <input type="radio" name="manual_copy" value="manual_copy"> Manual Copy Job
+            <button id="submit" type="submit">Submit</button>
+        </fieldset>
+    </form>   
+
+{% endblock %}

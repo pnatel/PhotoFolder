@@ -13,8 +13,9 @@
 
 # Importing required libraries
 from pathlib import Path
-import base64
-import shutil, random, os
+import base64, shutil, random
+import PIL, os
+from PIL import Image
 from sys import argv
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -32,14 +33,18 @@ _MaxNumberOfPics = 0
 _foldersizeUpperLimit = 0
 _newerPhotos = 0
 _criteria = 0
+_test = True
+
+def open_log():
+    logging.basicConfig(filename= _logPath, 
+                        format='%(asctime)s - %(levelname)s - %(message)s', 
+                        level=logging.INFO) # TODO: change config.ini loglevel here
 
 # --------------------------------
 # Main function copy photos based on the parameters selected
 # --------------------------------
 def main(): 
-    logging.basicConfig(filename= _logPath, 
-                        format='%(asctime)s - %(levelname)s - %(message)s', 
-                        level=logging.INFO) # TODO: change config.ini loglevel here
+    open_log()
     logging.info('--------START--------')
     start = datetime.now()
     print('Job Start time:',start)
@@ -95,8 +100,37 @@ def folderPrunning(folder = _destinationFolder, multiplier = 1):
         logging.info('Folder Size after prunning ' + str(getSizeMB(folder)) + 'Mb')
     else: logging.info(str(folderSize) + ' smaller than ' + str(_foldersizeUpperLimit))
 
-def logPrunning(file='log.txt'):
-    pass
+def filePrunning(filePath):
+    # open_log()
+    try:
+        os.remove(filePath)
+    except OSError as e:
+        logging.error(e.errno)
+        logging.error('FILE NOT FOUND', filePath)
+        return 'File Not Found: '+ filePath
+    else:
+        logging.info('file removed', filePath)
+        return 'File removed: '+ filePath
+    
+
+def fileRotate(filePath):
+    try:
+        picture= Image.open(filePath)
+        path = filePath.split('.')
+        ext = path.pop()
+        new_path = '_'.join(path) + '_R.' + ext
+        picture.rotate(90, expand=True).save(new_path)
+        picture.close()
+        filePrunning(filePath)
+        print (new_path)
+    except OSError as e:
+        logging.error(e.errno)
+        logging.info('Failed to rotate', filePath)
+        return 'Failed to rotate: '+ filePath
+    else:
+        logging.info('file rotated 90o', filePath)
+        return 'file rotated 90o: '+ filePath
+    
 
 # -----------------
 def getListOfFiles(dirName):
@@ -182,7 +216,7 @@ def sorting(filenames, criteria=1, sampleSize=10):
 # Loading configuration
 # ---------------------
 config.read('config.ini')
-if len(argv) > 1:
+if len(argv) > 1 or _test:
     print ('Arguments: ', argv[1:])
     _sourceFolder = ConfigSectionMap('test')['sourcefolder']
     _destinationFolder = ConfigSectionMap('test')['destinationfolder']

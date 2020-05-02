@@ -1,6 +1,6 @@
 import os
 
-index=os.listdir('../../pics/')
+index=os.listdir('test/destination')
 # index = os.listdir('C:/Users/pnate/Pictures')
 
 x=len(index)
@@ -41,9 +41,9 @@ file.write('</html>')
 
 file.close()
 
-next = os.listdir('../../pics/')
-image = os.listdir('../../pics/')
-page = os.listdir('../../pics/')
+next = index # os.listdir('../../pics/')
+image = index # os.listdir('../../pics/')
+page = index # os.listdir('../../pics/')
 
 next.append('gallery.html')
 
