@@ -23,8 +23,8 @@ jobs:
    
     - name: Test if the application handle the copy management
       run: |
-        mkdir test/logs
-        mkdir test/destination
+        mkdir static/test/logs
+        mkdir static/test/destination
         python photofolder.py 1st_test
         python photofolder.py 2nd_test
         python photofolder.py 3rd_test
