@@ -116,10 +116,10 @@ def filePrunning(filePath):
         os.remove(filePath)
     except OSError as e:
         logging.error(e.errno)
-        logging.error('FILE NOT FOUND', filePath)
+        logging.error('FILE NOT FOUND ' + filePath)
         return 'File Not Found: '+ filePath
     else:
-        logging.info('file removed', filePath)
+        logging.info('file removed ' + filePath)
         return 'File removed: '+ filePath
     
 
@@ -135,10 +135,10 @@ def fileRotate(filePath):
         print (new_path)
     except OSError as e:
         logging.error(e.errno)
-        logging.info('Failed to rotate', filePath)
+        logging.info('Failed to rotate ' + filePath)
         return 'Failed to rotate: '+ filePath
     else:
-        logging.info('file rotated 90o', filePath)
+        logging.info('file rotated 90o ' + filePath)
         return 'file rotated 90o: '+ filePath
     
 
@@ -172,6 +172,7 @@ def getListOfFilesWalk(dirName, returnList=True):
     walk = os.walk(dirName)
     for (dirpath, dirnames, filenames) in walk:
         listOfFiles += [os.path.join(dirpath, file) for file in filenames]
+        print(dirpath, dirnames, filenames)
     if returnList:
         return listOfFiles
     else:
