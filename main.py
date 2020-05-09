@@ -4,6 +4,8 @@ from flask import Flask, flash, render_template, request
 import os
 import FileModule as fm
 
+# os.environ.get("ENV_VAR_NAME")
+
 pic_folder = fm.ConfigSectionMap('folder')['destinationfolder']
 # pic_folder = fm.ConfigSectionMap('test')['destinationfolder']
 

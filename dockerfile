@@ -4,7 +4,9 @@ LABEL maintainer=pnatel@gmail.com
 
 ENV hostname=photomanager
 ENV name=photomanager
-ENV source=/source
+
+RUN mkdir /SOURCE
+VOLUME /SOURCE
 
 WORKDIR /app
 
@@ -16,3 +18,6 @@ COPY . .
 EXPOSE 88
 
 CMD ["python3", "./main.py"]
+
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:88/ || exit 1

@@ -17,10 +17,12 @@ PS.: If you run the application with any argument (e.g. "python photofolder.py M
 
 ## Running on Docker
 
-> docker build https://github.com/pnatel/PhotoFolder.git#Development
+> docker.exe build --tag=photo_folder_manager \
+    https://github.com/pnatel/PhotoFolder.git#docker 
 > docker run  -d --name photo_folder_manager\
               -p 88:88 photo_folder_manager \
-              -v 
+              --mount source=PHOTO_POOL_FOLDER, target=/SOURCE \
+              photo_folder_manager
 
 ## Features
 
