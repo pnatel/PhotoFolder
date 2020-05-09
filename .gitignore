@@ -126,4 +126,4 @@ dmypy.json
 
 # output data folders from the PhotoFolder App
 
-test/destination
+static/test/destination

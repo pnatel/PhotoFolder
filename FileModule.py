@@ -162,7 +162,7 @@ def getListOfFiles(dirName):
             if fileTypeTest(entry, _fileType):
                 allFiles.append(fullPath)
             else:
-                logging.debug(entry + ' INVALID FILE TYPE ' + _fileType)               
+                logging.debug(entry + ' INVALID FILE TYPE ' + str(_fileType))               
     return allFiles        
 
 # This alternative code could be useful on a different moment
