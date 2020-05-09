@@ -85,6 +85,10 @@ body {
   font-family: 'Courier New', Courier, monospace;
 }
 
+footer {
+  background-color: rgb(33, 38, 43);
+}
+
 h1 {
   text-align: center;
 }

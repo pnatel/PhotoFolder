@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # By Paulo Natel 
-# Mar/2020
+# May/2020
 # pnatel@live.com
 
 # Check README.md for more information
@@ -14,7 +14,7 @@
 # Importing required libraries
 from pathlib import Path
 import base64, shutil, random
-import PIL, os
+import os
 from PIL import Image
 from sys import argv
 from datetime import datetime
@@ -33,6 +33,8 @@ _MaxNumberOfPics = 0
 _foldersizeUpperLimit = 0
 _newerPhotos = 0
 _criteria = 0
+
+# Force testing environment
 _test = True
 
 def open_log():
@@ -79,10 +81,18 @@ def ConfigSectionMap(section):
             dict1[option] = None
     return dict1
 
+def fileTypeTest(file, typeList=_fileType):
+    if file.endswith(typeList):
+        logging.debug('extension accepted ' + file)
+        return True
+    else:
+        logging.warning('extension invalid ' + file)
+        return False
+
 # Copy a list of files to the folder
 def copyFiles(fileList):
     for fname in fileList:
-        if fname.endswith(_fileType):
+        if fileTypeTest(fname, _fileType):
             logging.info('Copying file ' + fname)
             shutil.copy(fname, _destinationFolder)    
    
@@ -143,13 +153,14 @@ def getListOfFiles(dirName):
     allFiles = list()
     # Iterate over all the entries
     for entry in listOfFile:
-        # Create full path
-        fullPath = os.path.join(dirName, entry)
-        # If entry is a directory then get the list of files in this directory 
-        if os.path.isdir(fullPath):
-            allFiles = allFiles + getListOfFiles(fullPath)
-        else:
-            allFiles.append(fullPath)
+        if fileTypeTest(entry, _fileType):
+            # Create full path
+            fullPath = os.path.join(dirName, entry)
+            # If entry is a directory then get the list of files in this directory 
+            if os.path.isdir(fullPath):
+                allFiles = allFiles + getListOfFiles(fullPath)
+            else:
+                allFiles.append(fullPath)
                 
     return allFiles        
 

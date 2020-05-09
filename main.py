@@ -4,8 +4,8 @@ from flask import Flask, flash, render_template, request
 import os
 import FileModule as fm
 
-# pic_folder = ConfigSectionMap('folder')['destinationfolder']
-pic_folder = fm.ConfigSectionMap('test')['destinationfolder']
+pic_folder = fm.ConfigSectionMap('folder')['destinationfolder']
+# pic_folder = fm.ConfigSectionMap('test')['destinationfolder']
 
 app = Flask(__name__)
 app.secret_key = "Zcg,ddh}k^Q(uh/~qM*PT!cJ5?/Q$3QQ"
@@ -67,4 +67,4 @@ def delete(payload, list):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=0)
+    app.run(host='0.0.0.0', port=88, debug=0)

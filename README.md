@@ -15,6 +15,13 @@ The application aim to get a list of photos from a folder and to copy a random s
 
 PS.: If you run the application with any argument (e.g. "python photofolder.py MY_ARGUMENT"), it will use its local test folders
 
+## Running on Docker
+
+> docker build https://github.com/pnatel/PhotoFolder.git#Development
+> docker run  -d --name photo_folder_manager\
+              -p 88:88 photo_folder_manager \
+              -v 
+
 ## Features
 
 - The application creates a log file with steps performed for late analysis
