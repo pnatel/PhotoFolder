@@ -19,5 +19,8 @@ EXPOSE 88
 
 CMD ["python3", "./main.py"]
 
+# Health check steps
+RUN apt-get update
+RUN apr-get install curl -y
 HEALTHCHECK --interval=5m --timeout=3s \
   CMD curl -f http://localhost:88/ || exit 1

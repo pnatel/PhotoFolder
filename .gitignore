@@ -125,6 +125,5 @@ dmypy.json
 .pyre/
 
 # output data folders from the PhotoFolder App
-logs/
-test/logs
+
 test/destination

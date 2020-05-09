@@ -35,7 +35,7 @@ _newerPhotos = 0
 _criteria = 0
 
 # Force testing environment
-_test = True
+_test = False
 
 def open_log():
     logging.basicConfig(filename= _logPath, 
@@ -153,15 +153,16 @@ def getListOfFiles(dirName):
     allFiles = list()
     # Iterate over all the entries
     for entry in listOfFile:
-        if fileTypeTest(entry, _fileType):
-            # Create full path
-            fullPath = os.path.join(dirName, entry)
-            # If entry is a directory then get the list of files in this directory 
-            if os.path.isdir(fullPath):
-                allFiles = allFiles + getListOfFiles(fullPath)
-            else:
+        # Create full path
+        fullPath = os.path.join(dirName, entry)
+        # If entry is a directory then get the list of files in this directory 
+        if os.path.isdir(fullPath):
+            allFiles = allFiles + getListOfFiles(fullPath)
+        else:
+            if fileTypeTest(entry, _fileType):
                 allFiles.append(fullPath)
-                
+            else:
+                logging.debug(entry + ' INVALID FILE TYPE ' + _fileType)               
     return allFiles        
 
 # This alternative code could be useful on a different moment
