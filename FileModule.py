@@ -58,7 +58,13 @@ def main():
     logging.info('-------PRUNNING--------')
     folderPrunning(_destinationFolder, 2)
     logging.info('Number of selected files on the sample: ' + str(len(sample)))
-    copyFiles(sample)
+    try:
+        sample != False
+    except:
+        logging.error('Sample size returned FALSE')
+    else:
+        copyFiles(sample)
+        
     logging.info('New folder Size ' + str(getSizeMB(_destinationFolder)) + 'Mb')      
     logging.info('---------------------')
     end = datetime.now()
@@ -134,8 +140,8 @@ def fileRotate(filePath):
         filePrunning(filePath)
         print (new_path)
     except OSError as e:
-        logging.error(e.errno)
-        logging.info('Failed to rotate ' + filePath)
+        logging.error(e.errno + e)
+        logging.error('Failed to rotate ' + filePath)
         return 'Failed to rotate: '+ filePath
     else:
         logging.info('file rotated 90o ' + filePath)
@@ -206,7 +212,11 @@ def sorting(filenames, criteria=1, sampleSize=10):
     # print(len(filenames), criteria, sampleSize)
     if criteria == 1: # Random pics from source
         logging.info('Getting a random set of ' + str(sampleSize) + ' Photos')
-        return random.sample(filenames, sampleSize)
+        try:
+            return random.sample(filenames, sampleSize)
+        except ValueError as error:
+            logging.error(error)
+            return False
 
     # NO OTHER SORTING METHOD IS WORKING    
     elif criteria == 2:
