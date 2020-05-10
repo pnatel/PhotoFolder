@@ -11,9 +11,11 @@
   color: red;
 }
 
+/*
 ul {
-    /* background-color: darkgray; */
+     background-color: darkgray; 
   }
+*/
   
 li {
   display: inline-block;

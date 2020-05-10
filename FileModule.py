@@ -35,7 +35,7 @@ _newerPhotos = 0
 _criteria = 0
 
 # Force testing environment
-_test = True
+_test = False
 
 def open_log():
     logging.basicConfig(filename= _logPath, 
@@ -58,7 +58,13 @@ def main():
     logging.info('-------PRUNNING--------')
     folderPrunning(_destinationFolder, 2)
     logging.info('Number of selected files on the sample: ' + str(len(sample)))
-    copyFiles(sample)
+    try:
+        sample != False
+    except:
+        logging.error('Sample size returned FALSE')
+    else:
+        copyFiles(sample)
+        
     logging.info('New folder Size ' + str(getSizeMB(_destinationFolder)) + 'Mb')      
     logging.info('---------------------')
     end = datetime.now()
@@ -116,10 +122,10 @@ def filePrunning(filePath):
         os.remove(filePath)
     except OSError as e:
         logging.error(e.errno)
-        logging.error('FILE NOT FOUND', filePath)
+        logging.error('FILE NOT FOUND ' + filePath)
         return 'File Not Found: '+ filePath
     else:
-        logging.info('file removed', filePath)
+        logging.info('file removed ' + filePath)
         return 'File removed: '+ filePath
     
 
@@ -134,11 +140,11 @@ def fileRotate(filePath):
         filePrunning(filePath)
         print (new_path)
     except OSError as e:
-        logging.error(e.errno)
-        logging.info('Failed to rotate', filePath)
+        logging.error(e.errno + e)
+        logging.error('Failed to rotate ' + filePath)
         return 'Failed to rotate: '+ filePath
     else:
-        logging.info('file rotated 90o', filePath)
+        logging.info('file rotated 90o ' + filePath)
         return 'file rotated 90o: '+ filePath
     
 
@@ -153,15 +159,16 @@ def getListOfFiles(dirName):
     allFiles = list()
     # Iterate over all the entries
     for entry in listOfFile:
-        if fileTypeTest(entry, _fileType):
-            # Create full path
-            fullPath = os.path.join(dirName, entry)
-            # If entry is a directory then get the list of files in this directory 
-            if os.path.isdir(fullPath):
-                allFiles = allFiles + getListOfFiles(fullPath)
-            else:
+        # Create full path
+        fullPath = os.path.join(dirName, entry)
+        # If entry is a directory then get the list of files in this directory 
+        if os.path.isdir(fullPath):
+            allFiles = allFiles + getListOfFiles(fullPath)
+        else:
+            if fileTypeTest(entry, _fileType):
                 allFiles.append(fullPath)
-                
+            else:
+                logging.debug(entry + ' INVALID FILE TYPE ' + str(_fileType))               
     return allFiles        
 
 # This alternative code could be useful on a different moment
@@ -171,6 +178,7 @@ def getListOfFilesWalk(dirName, returnList=True):
     walk = os.walk(dirName)
     for (dirpath, dirnames, filenames) in walk:
         listOfFiles += [os.path.join(dirpath, file) for file in filenames]
+        print(dirpath, dirnames, filenames)
     if returnList:
         return listOfFiles
     else:
@@ -204,7 +212,11 @@ def sorting(filenames, criteria=1, sampleSize=10):
     # print(len(filenames), criteria, sampleSize)
     if criteria == 1: # Random pics from source
         logging.info('Getting a random set of ' + str(sampleSize) + ' Photos')
-        return random.sample(filenames, sampleSize)
+        try:
+            return random.sample(filenames, sampleSize)
+        except ValueError as error:
+            logging.error(error)
+            return False
 
     # NO OTHER SORTING METHOD IS WORKING    
     elif criteria == 2:
