@@ -11,6 +11,26 @@
   color: red;
 }
 
+.button {
+  padding: 5px 20px;
+  font-size: 20px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: darkgoldenrod;
+  background-color: rgb(33, 38, 43);
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 10px #999;
+}
+
+.button:hover {background-color: rgb(87, 73, 9)}
+
+.button:active {
+  background-color: rgb(128, 111, 15);
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
 /*
 ul {
      background-color: darkgray; 
@@ -95,7 +115,21 @@ h1 {
   text-align: center;
 }
 
+h2 {
+  text-align: left;
+  color: red;
+}
+
 button {
   align-self: auto;
   margin-left: 5em;
+}
+
+tr {
+  border: 1px solid lightgrey;
+}
+
+a {
+  text-decoration: none;
+  font-family: 'Courier New', Courier, monospace;
 }

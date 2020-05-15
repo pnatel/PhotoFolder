@@ -13,11 +13,11 @@ The application aim to get a list of photos from a folder and to copy a random s
 - run "python photofolder.py"
 - Web version runs on main.py (BETA) hard codded to the test folders
 
-PS.: If you run the application with any argument (e.g. "python photofolder.py MY_ARGUMENT"), it will use its local test folders
 
 ## Running on Docker
 
 > docker build --tag=photo_folder_manager <https://github.com/pnatel/PhotoFolder.git#docker>
+
 > docker run  -d --name photo_folder_manager\
               -p 88:88 \
               --mount source=PHOTO_POOL_FOLDER,\

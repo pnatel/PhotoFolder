@@ -3,7 +3,14 @@
 {% block content %}
 
     <form action="{{ url_for('index') }}" enctype="multipart/form-data" method="POST"> 
-        
+        <a href="/" class="button">Home</a>
+        <a href="config" class="button">Configuration</a> 
+        <input type="submit" class="button" name="left" value="Rotate Left">
+        <input type="submit" class="button" name="right" value="Rotate Right">
+        <input type="submit" class="button" name="delete" value="Delete">
+        <input type="submit" class="button" name="favorite" value="Add to Favorite">
+        <input type="submit" class="button" name="manual_copy" value="Manual Copy">
+            
         <fieldset>
         <ul>
             {% for i in range(len_list) %}
@@ -13,14 +20,14 @@
             {% endfor %}
         </ul>
         </fieldset>
-        <fieldset>
-            <legend>What do you want to do with the selected pictures:</legend>
-            <input type="radio" name="rotate" value="rotate"> Rotate the picture
-            <input type="radio" name="favorite" value="favorite"> Favorite the Picture
-            <input type="radio" name="delete" value="delete"> Delete picture from set
-            <input type="radio" name="manual_copy" value="manual_copy"> Manual Copy Job
-            <button id="submit" type="submit">Submit</button>
-        </fieldset>
+        
+        <a href="/" class="button">Home</a>
+        <a href="config" class="button">Configuration</a> 
+        <input type="submit" class="button" name="left" value="Rotate Left">
+        <input type="submit" class="button" name="right" value="Rotate Right">
+        <input type="submit" class="button" name="delete" value="Delete">
+        <input type="submit" class="button" name="favorite" value="Add to Favorite">
+        <input type="submit" class="button" name="manual_copy" value="Manual Copy">
     </form>   
 
 {% endblock %}
