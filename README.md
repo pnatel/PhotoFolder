@@ -1,8 +1,8 @@
 # PHOTO FOLDER
 
 - ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg) master (stable)
-- ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Python%20package/badge.svg?branch=Development) development (unstable)
-- ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Python%20package/badge.svg?branch=docker) docker (unstable)
+- ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg?branch=Development) development (unstable)
+- ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg?branch=docker) docker (unstable)
 
 The application aim to get a list of photos from a folder and to copy a random sample to a destination folder, the destina
 
@@ -10,25 +10,28 @@ The application aim to get a list of photos from a folder and to copy a random s
 
 - Clone the Repository: <https://github.com/pnatel/PhotoFolder.git>
 - navigate to the folder and run: "pip install -r requirements.txt"
-- run "python photofolder.py"
-- Web version runs on main.py (BETA) hard codded to the test folders
+- run "python FileModule.py"
 
+### Web Version
+
+- Web version runs on main.py (BETA) pre-set with test folders, run:
+
+> python main.py
+
+- And visit <http://localhost:23276>
+- there is a page for configuration changes
 
 ## Running on Docker
 
 > docker build --tag=photo_folder_manager <https://github.com/pnatel/PhotoFolder.git#docker>
-
-> docker run  -d --name photo_folder_manager\
-              -p 23276:23276 \
-              --mount source=PHOTO_POOL_FOLDER,\
-              target=/SOURCE \
-              photo_folder_manager
+>
+> docker run  -d --name photo_folder_manager -p 23276:23276 --mount source=PHOTO_POOL_FOLDER, target=/source photo_folder_manager
 
 ## Features
 
 - The application creates a log file with steps performed for late analysis
 - The file extensions accepted cn be changed of any kind, so the application can have other purposes.
-- Running the application multiple times will not overload its destination. The application prunes the destination folder based on the '''config.ini''' parameters
+- Running the application multiple times will not overload its destination. The application prunes the destination folder based on the """config.ini""" parameters
 
 ## The Following parameters can be changed in config.ini
 
@@ -42,7 +45,6 @@ Use --force to overwrite it
 ## Pending
 
 - add sftp feature so the code does NOT need to be ran from the host
-- Make it run on Docker
 - Send email notification and logs
 - Different sorting criterias
 - House keeping and new files should perform tests:
@@ -54,3 +56,4 @@ Use --force to overwrite it
 - <https://thispointer.com/python-how-to-get-list-of-files-in-directory-and-sub-directories/>
 - <https://wiki.python.org/moin/ConfigParserExamples>
 - <https://stackabuse.com/command-line-arguments-in-python/>
+- more references in the files itself
