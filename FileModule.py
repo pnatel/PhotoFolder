@@ -21,17 +21,19 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import app_config as cfg
 import logging
-
-def open_log():
-    logging.basicConfig(filename= cfg._logPath,
-                        format='%(asctime)s - %(levelname)s - %(message)s',
-                        level=logging.INFO) # TODO: change config.ini loglevel here
+from loggerinitializer import *
+ 
+# def open_log():
+#     logging.basicConfig(filename= cfg._logPath,
+#                         format='%(asctime)s - %(levelname)s - %(message)s',
+#                         level=logging.INFO) # TODO: change config.ini loglevel here
 
 # --------------------------------
 # Main function copy photos based on the parameters selected
 # --------------------------------
 def main():
-    open_log()
+    initialize_logger(cfg._logPath)
+
     logging.info('--------START--------')
     start = datetime.now()
     print('Job Start time:',start)
@@ -92,7 +94,6 @@ def folderPrunning(folder = cfg._destinationFolder, multiplier = 1):
         logging.info(str(folderSize) + ' smaller than ' + str(cfg._foldersizeUpperLimit))
 
 def filePrunning(filePath):
-    # open_log()
     try:
         os.remove(filePath)
     except OSError as e:

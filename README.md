@@ -1,10 +1,10 @@
 # PHOTO FOLDER
 
-![Python package](https://github.com/pnatel/PhotoFolder/workflows/Python%20package/badge.svg)
+- ![Python package](https://github.com/pnatel/PhotoFolder/workflows/Python%20package/badge.svg) master (stable)
+- ![Python package](https://github.com/pnatel/PhotoFolder/workflows/Python%20package/badge.svg?branch=Development) development (unstable)
+- ![Python package](https://github.com/pnatel/PhotoFolder/workflows/Python%20package/badge.svg?branch=docker) docker (unstable)
 
-Working version 1.2.1 tested in April/2020 using Python 3.5 and above
-
-The application aim to get a list of photos from a folder and to copy a random sample to a destination folder
+The application aim to get a list of photos from a folder and to copy a random sample to a destination folder, the destina
 
 ## How to use
 
@@ -19,7 +19,7 @@ The application aim to get a list of photos from a folder and to copy a random s
 > docker build --tag=photo_folder_manager <https://github.com/pnatel/PhotoFolder.git#docker>
 
 > docker run  -d --name photo_folder_manager\
-              -p 88:88 \
+              -p 23276:23276 \
               --mount source=PHOTO_POOL_FOLDER,\
               target=/SOURCE \
               photo_folder_manager

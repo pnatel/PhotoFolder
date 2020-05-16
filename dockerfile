@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 88
+EXPOSE 23276
 
 CMD ["python3", "./main.py"]
 
@@ -23,4 +23,4 @@ CMD ["python3", "./main.py"]
 RUN apt-get update
 RUN apt-get install -y curl
 HEALTHCHECK --interval=5m --timeout=3s \
-  CMD curl -f http://localhost:88/ || exit 1
+  CMD curl -f http://localhost:23276/ || exit 1

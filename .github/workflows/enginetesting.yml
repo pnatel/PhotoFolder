@@ -1,4 +1,4 @@
-name: Python package
+name: Engine Testing
 
 on: [push]
 
@@ -25,11 +25,14 @@ jobs:
       run: |
         mkdir static/test/logs
         mkdir static/test/destination
-        python photofolder.py 1st_test
-        python photofolder.py 2nd_test
-        python photofolder.py 3rd_test
-        python photofolder.py 4th_test
-        python photofolder.py last_test
-        cat static/test/logs/PhotoFolder.log
+        python FileModule.py 
+        python FileModule.py 
+        python FileModule.py 
+        python FileModule.py 
+        python FileModule.py 
+    
+    - name: show results
+      run: |
+        cat static/test/logs/debug.log
         ls -al static/test/destination
 
