@@ -1,8 +1,8 @@
 # PHOTO FOLDER
 
-- ![Python package](https://github.com/pnatel/PhotoFolder/workflows/Python%20package/badge.svg) master (stable)
-- ![Python package](https://github.com/pnatel/PhotoFolder/workflows/Python%20package/badge.svg?branch=Development) development (unstable)
-- ![Python package](https://github.com/pnatel/PhotoFolder/workflows/Python%20package/badge.svg?branch=docker) docker (unstable)
+- ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg) master (stable)
+- ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Python%20package/badge.svg?branch=Development) development (unstable)
+- ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Python%20package/badge.svg?branch=docker) docker (unstable)
 
 The application aim to get a list of photos from a folder and to copy a random sample to a destination folder, the destina
 

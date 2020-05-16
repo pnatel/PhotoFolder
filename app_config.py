@@ -58,5 +58,5 @@ _fileType = tuple(dict(config.items('ext')).values())
 # _MaxNumberOfPics = int(ConfigSectionMap('parameter')['MaxNumberOfPics'])
 _newerPhotos = ConfigSectionMap('parameter')['newerphotos']
 _criteria = int(ConfigSectionMap('sort')['criteria'])
-_logLevel = ConfigSectionMap('loglevel')['level']
+# _logLevel = ConfigSectionMap('loglevel')['level']
 
