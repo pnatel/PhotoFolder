@@ -1,4 +1,4 @@
-FROM python:slim
+FROM --platform=linux/arm/v7 python:slim
 
 LABEL maintainer=pnatel@gmail.com
 
