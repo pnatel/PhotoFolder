@@ -23,7 +23,7 @@ jobs:
    
     - name: Load Webserver
       run: |
-        python main.py
+        python main.py &
     
     - name: Test Webserver
       run: |
