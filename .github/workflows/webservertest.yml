@@ -1,4 +1,4 @@
-name: Engine Testing
+name: Webserver Testing
 
 on: [push]
 
@@ -21,17 +21,15 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
    
-    - name: Test if the application handle the copy management
+    - name: Load Webserver
       run: |
-        python FileModule.py 
-        python FileModule.py 
-        python FileModule.py 
-        python FileModule.py 
-        python FileModule.py 
+        python main.py
     
-    - name: show results
+    - name: Test Webserver
       run: |
-        cat static/test/logs/debug.log
+        curl -f http://localhost:23276/ || exit 1
+        curl -f http://localhost:23276/config || exit 1
+
     
 
 
