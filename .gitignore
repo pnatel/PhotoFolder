@@ -124,6 +124,3 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# output data folders from the PhotoFolder App
-
-static/test/destination
