@@ -16,14 +16,13 @@ from pathlib import Path
 import base64, shutil, random
 import os
 from PIL import Image
-# from pymaging import Image
-# from wand.image import Image
 from sys import argv
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import app_config as cfg
 import logging
 from loggerinitializer import *
+import app_config as cfg
 
 # def open_log():
 #     logging.basicConfig(filename= cfg._logPath,
@@ -35,7 +34,7 @@ from loggerinitializer import *
 # --------------------------------
 def main():
     initialize_logger(cfg._logPath)
-
+    cfg.load_config()
     logging.info('--------START--------')
     start = datetime.now()
     print('Job Start time:',start)
