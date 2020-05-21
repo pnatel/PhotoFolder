@@ -1,8 +1,10 @@
 # PHOTO FOLDER
 
-- ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg) master (stable)
-- ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg?branch=Development) development (unstable)
-- ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg?branch=docker) docker (unstable)
+| MASTER  | DEVELOPMENT  | DOCKER  |   |   |
+|:-------:|:------------:|:-------:|---|---|
+| ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg?branch=master)  | ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg?branch=Development)  | ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg?branch=docker)  |   |   |
+| ![Webserver Testing](https://github.com/pnatel/PhotoFolder/workflows/Webserver%20Testing/badge.svg?branch=master)  | ![Webserver Testing](https://github.com/pnatel/PhotoFolder/workflows/Webserver%20Testing/badge.svg?branch=Development)  | ![Webserver Testing](https://github.com/pnatel/PhotoFolder/workflows/Webserver%20Testing/badge.svg?branch=docker)  |   |   |
+|   |   |   |   |   |
 
 The application aim to get a list of photos from a folder and to copy a random sample to a destination folder, the destina
 
@@ -14,12 +16,16 @@ The application aim to get a list of photos from a folder and to copy a random s
 
 ### Web Version
 
-- Web version runs on main.py (BETA) pre-set with test folders, run:
+- Web version runs on main.py pre-set to test folders, run:
 
 > python main.py
 
 - And visit <http://localhost:23276>
 - there is a page for configuration changes
+  - Recommended Changes:
+    > test_mode = False
+    >
+    > SourceFolder = /Path/to/your/photos
 
 ## Running on Docker
 
@@ -27,15 +33,17 @@ The application aim to get a list of photos from a folder and to copy a random s
 >
 > docker run  -d --name photo_folder_manager -p 23276:23276 --mount source=PHOTO_POOL_FOLDER, target=/source photo_folder_manager
 
+Only change required in the config is `test_mode = False`
+
 ## Features
 
 - The application creates a log file with steps performed for late analysis
 - The file extensions accepted cn be changed of any kind, so the application can have other purposes.
-- Running the application multiple times will not overload its destination. The application prunes the destination folder based on the """config.ini""" parameters
+- Running the application multiple times will not overload its destination. The application prunes the destination folder based on the `config.ini` parameters
 
-## The Following parameters can be changed in config.ini
+## Parameters can be changed in config.ini
 
-Several parameters must be changed in the file to allow the app to run smoothly.
+Several parameters must be changed in the file to allow the app to customise its usage to your liking.
 
 ## RECOMMENDATIONS
 
@@ -56,4 +64,5 @@ Use --force to overwrite it
 - <https://thispointer.com/python-how-to-get-list-of-files-in-directory-and-sub-directories/>
 - <https://wiki.python.org/moin/ConfigParserExamples>
 - <https://stackabuse.com/command-line-arguments-in-python/>
-- more references in the files itself
+- There are references in the files itself
+- Google, Bing and whatever finds me an answer to move forward

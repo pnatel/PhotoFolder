@@ -24,7 +24,7 @@ from dateutil.relativedelta import relativedelta
 import app_config as cfg
 import logging
 from loggerinitializer import *
- 
+
 # def open_log():
 #     logging.basicConfig(filename= cfg._logPath,
 #                         format='%(asctime)s - %(levelname)s - %(message)s',
@@ -192,6 +192,10 @@ def readFolderContent(path= '.'):
 # choosing and Sorting the sample
 def sorting(filenames, criteria=1, sampleSize=10):
     # print(len(filenames), criteria, sampleSize)
+    if len(filenames) < sampleSize:
+        logging.warning('The Sample (' + str(sampleSize) + ') is bigger than the source size (' + str(len(filenames)) + ')')
+        sampleSize = int(len(filenames) / 2)
+        logging.info('New Sample Size: ' + str(sampleSize))
     if criteria == 1: # Random pics from source
         logging.info('Getting a random set of ' + str(sampleSize) + ' Photos')
         try:

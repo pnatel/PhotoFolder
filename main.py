@@ -15,6 +15,7 @@ def get_app():
     print("create app now")
     app = Flask(__name__)
     app.secret_key = "Zcg,ddh}k^Q(uh/~qM*PT!cJ5?/Q$3QQ"
+    cfg.load_config()
 
     @app.route('/')
     @app.route('/', methods = ['GET', 'POST'])
@@ -87,11 +88,14 @@ def get_app():
             try:
                 if os.path.exists('config.old'):
                     os.remove('config.old')
+                    flash('removing backup file config.old', 'info')
                 os.rename('config.ini', 'config.old')
-                flash('Backup original config', 'info')
+                flash('Backup original configuration to config.old', 'info')
                 with open('config.ini', 'w') as f:
                     f.write(request.form.get('config'))
-                    flash('Config saved', 'info')
+                    flash('New Config saved', 'info')
+                    cfg.load_config()
+                    # flash('RESTART THE APPLICATION FOR THE NEW SETTINGS TO GET EFFECT', 'warning')
                 f.close()
                 reload()
                 return redirect('/') 
@@ -130,5 +134,5 @@ class AppReloader(object):
 application = AppReloader(get_app)
 
 if __name__ == '__main__':
-    run_simple('localhost', 23276, application,
+    run_simple('0.0.0.0', 23276, application,
                use_reloader=True, use_debugger=True, use_evalex=True)

@@ -7,7 +7,7 @@ LABEL maintainer=pnatel@gmail.com
 ENV hostname=photomanager
 ENV name=photomanager
 
-RUN mkdir /source
+# RUN mkdir /source
 VOLUME /source
 
 WORKDIR /app
@@ -24,5 +24,6 @@ CMD ["python3", "./main.py"]
 # Health check steps
 RUN apt-get update
 RUN apt-get install -y curl
-HEALTHCHECK --interval=1m --timeout=3s \
-  CMD curl -f http://localhost:23276/ || exit 1
+HEALTHCHECK --interval=90s --timeout=3s \
+  CMD curl -ILfSs http://localhost:23276/ > /dev/null || \
+      curl -ILfkSs http://localhost:23276/config > /dev/null || exit 1

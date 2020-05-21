@@ -1,5 +1,7 @@
 import configparser
 import logging
+import loggerinitializer as logger
+
 
 # Global Variables
 
@@ -35,28 +37,70 @@ def print_config():
     config.read('config.ini')
     return {s:dict(config.items(s)) for s in config.sections()}
 
+def load_config():
+    logging.info('Loading config')
+    config.read('config.ini')
+
+    global _sourceFolder
+    global _destinationFolder 
+    global _logPath 
+    global _fileType
+    global _numberOfPics 
+    global _MaxNumberOfPics
+    global _foldersizeUpperLimit
+    global _newerPhotos 
+    global _criteria
+
     # Force testing environment with 'True' in config.ini
-_test = ConfigSectionMap('test')['test_mode']
+    _test = ConfigSectionMap('test')['test_mode']
+    logging.debug('_test = '+ _test + ' ')
+    
+    if _test.lower() == 'true':
+    # if len(argv) > 1 or _test:  
+    #    print ('Arguments: ', argv[1:])
+        _logPath = ConfigSectionMap('test')['logpath']
+        logger.initialize_logger(_logPath)
+        logging.info('Test mode loading config')
+        _sourceFolder = ConfigSectionMap('test')['sourcefolder']
+        _destinationFolder = ConfigSectionMap('test')['destinationfolder']
+        _numberOfPics = int(ConfigSectionMap('parameter')['numberofpics_test'])
+        _foldersizeUpperLimit = int(ConfigSectionMap('parameter')['foldersizeupperlimit_test'])
+    else:
+        _logPath = ConfigSectionMap('folder')['logpath']
+        logger.initialize_logger(_logPath)
+        logging.info('Loading PRODUCTION config')
+        _sourceFolder = ConfigSectionMap('folder')['sourcefolder']
+        _destinationFolder = ConfigSectionMap('folder')['destinationfolder']
+        _numberOfPics = int(ConfigSectionMap('parameter')['numberofpics']) 
+        _foldersizeUpperLimit = int(ConfigSectionMap('parameter')['foldersizeupperlimit'])
 
-if _test:
-# if len(argv) > 1 or _test:  
-#    print ('Arguments: ', argv[1:])
-    logging.debug('Test mode loading config')
-    _sourceFolder = ConfigSectionMap('test')['sourcefolder']
-    _destinationFolder = ConfigSectionMap('test')['destinationfolder']
-    _logPath = ConfigSectionMap('test')['logpath']
-    _numberOfPics = int(ConfigSectionMap('parameter')['numberofpics_test'])
-    _foldersizeUpperLimit = int(ConfigSectionMap('parameter')['foldersizeupperlimit_test'])
-else:
-    _sourceFolder = ConfigSectionMap('folder')['sourcefolder']
-    _destinationFolder = ConfigSectionMap('folder')['destinationfolder']
-    _logPath = ConfigSectionMap('folder')['logpath']
-    _numberOfPics = int(ConfigSectionMap('parameter')['numberofpics']) 
-    _foldersizeUpperLimit = int(ConfigSectionMap('parameter')['foldersizeupperlimit'])
+    _fileType = tuple(dict(config.items('ext')).values())
+    # _MaxNumberOfPics = int(ConfigSectionMap('parameter')['MaxNumberOfPics'])
+    _newerPhotos = ConfigSectionMap('parameter')['newerphotos']
+    _criteria = int(ConfigSectionMap('sort')['criteria'])
+    # _logLevel = ConfigSectionMap('loglevel')['level']
 
-_fileType = tuple(dict(config.items('ext')).values())
-# _MaxNumberOfPics = int(ConfigSectionMap('parameter')['MaxNumberOfPics'])
-_newerPhotos = ConfigSectionMap('parameter')['newerphotos']
-_criteria = int(ConfigSectionMap('sort')['criteria'])
-# _logLevel = ConfigSectionMap('loglevel')['level']
+# load_config()
 
+def test():
+
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)  
+    # create console handler and set level to debug
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    load_config()
+
+    logging.info('Print config')
+
+    print (_sourceFolder, _destinationFolder, _logPath, _fileType, \
+        _numberOfPics, _MaxNumberOfPics, _foldersizeUpperLimit, \
+        _newerPhotos, _criteria)
+    print(print_config())
+
+if __name__ == '__main__':
+    test()

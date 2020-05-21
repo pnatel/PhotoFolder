@@ -1,5 +1,5 @@
 
-.alert-info {
+.alert-success {
   color: green;
 }
  
@@ -7,7 +7,7 @@
   color: yellow
 }
 
-.alert-error {
+.alert-danger {
   color: red;
 }
 
