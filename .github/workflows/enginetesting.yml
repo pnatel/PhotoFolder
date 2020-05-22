@@ -1,4 +1,4 @@
-name: Python package
+name: Engine Testing
 
 on: [push]
 
@@ -23,13 +23,15 @@ jobs:
    
     - name: Test if the application handle the copy management
       run: |
-        mkdir test/logs
-        mkdir test/destination
-        python photofolder.py 1st_test
-        python photofolder.py 2nd_test
-        python photofolder.py 3rd_test
-        python photofolder.py 4th_test
-        python photofolder.py last_test
-        cat test/logs/PhotoFolder.log
-        ls -al test/destination
+        python FileModule.py 
+        python FileModule.py 
+        python FileModule.py 
+        python FileModule.py 
+        python FileModule.py 
+    
+    - name: show results
+      run: |
+        cat static/test/logs/debug.log
+    
+
 

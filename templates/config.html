@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="/" class="button">Home</a>
+<a href="config" class="button">Configuration</a>
+<fieldset>
+    <h2>WARNING: SAVING CHANGES HERE MAY RENDER THE APP UNUSABLE</h2>
+    <form action="{{ url_for('config') }}" enctype="multipart/form-data" method="POST"> 
+
+        
+            <textarea rows="50" cols="100" name="config">               
+{{ config_file }}        
+            </textarea>
+            <h2>Are you sure?</h2>
+            <input type="submit" class="button" value='Yes, Save the changes'>
+    
+    </form>   
+</fieldset>
+{% endblock %}

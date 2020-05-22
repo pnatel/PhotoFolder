@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <form action="{{ url_for('config') }}" enctype="multipart/form-data" method="POST"> 
+
+        <fieldset>
+            <textarea rows="30" cols="100" name="config" form="usrform">               
+               {{ config_file }}        
+            </textarea>
+            <input type="submit" value='Save changes'>
+        </fieldset>
+    </form>   
+
+{% endblock %}
+
+<!-- 
+<fieldset>
+<textarea rows="30" cols="100" name="comment" form="usrform">               
+{% for key,val in dict.items()|sort %}
+[{{ key }}]
+{% for subkey,subval in val.items()|sort %}
+{{ subkey }} = {{ subval }}
+{% endfor %}
+{% endfor %}
+</textarea>
+
+<fieldset>
+{% for key,val in dict.items()|sort %}
+<h4>[{{ key }}]</h4>
+{% for subkey,subval in val.items()|sort %}
+{{ subkey }}: 
+<input type="text" name="{{ subval }}" value="{{ subval }}">
+{% endfor %}
+<input type="submit">
+{% endfor %}
+</fieldset>
+
+<table>
+{% for key,val in dict.items()|sort %}
+<th>
+{{ key }} <input type="submit">
+</th>
+<tr>
+{% for subkey,subval in val.items()|sort %}
+<td>
+{{ subkey }}: 
+<input type="text" name="{{ subval }}" value="{{ subval }}">
+</td>
+{% endfor %}
+
+</tr>
+{% endfor %}
+
+
+{% for i in range(len_list) %}
+<li>
+    
+</li>
+{% endfor %}
+
+</table>
+
+</fieldset> -->
+    <!--
+        <fieldset>
+            <legend>What do you want to do with the selected pictures:</legend>
+             <select>
+                <option selected="selected" value="empty"></option>
+                <option name="rotate" value="rotate"> Rotate the picture</option>
+                <option name="delete" value="delete"> Delete picture from set</option>
+                <option name="favorite" value="favorite"> Favorite the Picture</option>
+            </select>
+            <button id="submit" type="submit">Submit</button> 
+            <input type="submit" name="rotate" value="rotate">
+            <input type="submit" name="favorite" value="favorite">
+            <input type="submit" name="delete" value="delete">
+            <input type="submit" name="manual_copy" value="manual_copy">
+        </fieldset>
+
+        <fieldset>    
+            <input type="radio" name="rotate" value="rotate"> Rotate the picture
+            <input type="radio" name="favorite" value="favorite"> Favorite the Picture
+            <input type="radio" name="delete" value="delete"> Delete picture from set
+            <input type="radio" name="manual_copy" value="manual_copy"> Manual Copy Job
+            <button id="submit" type="submit">Submit</button>
+        </fieldset> 
+    -->

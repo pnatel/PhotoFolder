@@ -1,0 +1,135 @@
+
+.alert-success {
+  color: green;
+}
+ 
+.alert-warning {
+  color: yellow
+}
+
+.alert-danger {
+  color: red;
+}
+
+.button {
+  padding: 5px 20px;
+  font-size: 20px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: darkgoldenrod;
+  background-color: rgb(33, 38, 43);
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 10px #999;
+}
+
+.button:hover {background-color: rgb(87, 73, 9)}
+
+.button:active {
+  background-color: rgb(128, 111, 15);
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+/*
+ul {
+     background-color: darkgray; 
+  }
+*/
+  
+li {
+  display: inline-block;
+  list-style-type: square;
+  height: 1.6x;
+}
+
+input[type="checkbox"][id^="cb"] {
+  display: none;
+}
+
+label {
+  border: 1px solid #fff;
+  padding: 10px;
+  display: block;
+  position: relative;
+  margin: 10px;
+  cursor: pointer;
+}
+
+label:before {
+  background-color: white;
+  color: white;
+  content: " ";
+  display: block;
+  border-radius: 50%;
+  border: 1px solid grey;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  line-height: 28px;
+  transition-duration: 0.4s;
+  transform: scale(0);
+}
+
+label img {
+  height: 100px;
+  width: 100px;
+  transition-duration: 0.2s;
+  transform-origin: 50% 50%;
+}
+
+:checked + label {
+  border-color: #ddd;
+}
+
+:checked + label:before {
+  content: "✓";
+  background-color: green;
+  transform: scale(1);
+}
+
+:checked + label img {
+  transform: scale(0.9);
+  box-shadow: 0 0 5px #333;
+  z-index: -1;
+}
+
+em {
+  text-align: right;
+}
+
+body {
+  background-color: #333;
+  color: darkgoldenrod;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+footer {
+  background-color: rgb(33, 38, 43);
+}
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+  text-align: left;
+  color: red;
+}
+
+button {
+  align-self: auto;
+  margin-left: 5em;
+}
+
+tr {
+  border: 1px solid lightgrey;
+}
+
+a {
+  text-decoration: none;
+  font-family: 'Courier New', Courier, monospace;
+}
