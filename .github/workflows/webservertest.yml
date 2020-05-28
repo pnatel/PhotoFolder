@@ -27,4 +27,6 @@ jobs:
     
     - name: Test Webserver
       run: |
-        curl -ILfkSs http://localhost:23276/ || exit 1
+        # curl -ILfkSs http://localhost:23276/ || exit 1
+        curl -ILfSs http://localhost:23276/ > /dev/null || \
+        curl -ILfkSs http://localhost:23276/config > /dev/null || exit 1

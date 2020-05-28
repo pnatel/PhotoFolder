@@ -1,6 +1,11 @@
 import configparser
 import logging
-import loggerinitializer as logger
+
+# Running as standalone or part of the application
+if __name__ == '__main__' or __name__ == 'app_config':
+    from loggerinitializer import initialize_logger
+else: 
+    from engine.loggerinitializer import initialize_logger
 
 
 # Global Variables
@@ -16,7 +21,7 @@ _newerPhotos = 0
 _criteria = 0
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read('../config.ini')
 
 # Loading Conguration file (config.ini)
 # Code from https://wiki.python.org/moin/ConfigParserExamples
@@ -50,6 +55,7 @@ def load_config():
     global _foldersizeUpperLimit
     global _newerPhotos 
     global _criteria
+    global _port
 
     # Force testing environment with 'True' in config.ini
     _test = ConfigSectionMap('test')['test_mode']
@@ -59,7 +65,7 @@ def load_config():
     # if len(argv) > 1 or _test:  
     #    print ('Arguments: ', argv[1:])
         _logPath = ConfigSectionMap('test')['logpath']
-        logger.initialize_logger(_logPath)
+        # initialize_logger(_logPath)
         logging.info('Test mode loading config')
         _sourceFolder = ConfigSectionMap('test')['sourcefolder']
         _destinationFolder = ConfigSectionMap('test')['destinationfolder']
@@ -67,7 +73,7 @@ def load_config():
         _foldersizeUpperLimit = int(ConfigSectionMap('parameter')['foldersizeupperlimit_test'])
     else:
         _logPath = ConfigSectionMap('folder')['logpath']
-        logger.initialize_logger(_logPath)
+        # initialize_logger(_logPath)
         logging.info('Loading PRODUCTION config')
         _sourceFolder = ConfigSectionMap('folder')['sourcefolder']
         _destinationFolder = ConfigSectionMap('folder')['destinationfolder']
@@ -79,6 +85,8 @@ def load_config():
     _newerPhotos = ConfigSectionMap('parameter')['newerphotos']
     _criteria = int(ConfigSectionMap('sort')['criteria'])
     # _logLevel = ConfigSectionMap('loglevel')['level']
+    _port = ConfigSectionMap('parameter')['port']
+    
 
 # load_config()
 

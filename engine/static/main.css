@@ -1,14 +1,17 @@
 
 .alert-success {
   color: green;
+  background-color: rgba(51, 51, 51, 0.6);
 }
  
 .alert-warning {
-  color: yellow
+  color: yellow;
+  background-color: rgba(51, 51, 51, 0.6);  
 }
 
 .alert-danger {
   color: red;
+  background-color: rgba(51, 51, 51, 0.6);
 }
 
 .button {
@@ -31,11 +34,17 @@
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }
-/*
-ul {
-     background-color: darkgray; 
-  }
-*/
+
+.menu {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  width: auto;
+  z-index: 999;
+  padding: 10px;
+  padding-bottom: 20px;
+  background-image: linear-gradient(to right, rgba(184, 134, 11,0.1), rgba(184, 134, 11,0.7));
+}
   
 li {
   display: inline-block;
@@ -75,8 +84,8 @@ label:before {
 }
 
 label img {
-  height: 100px;
-  width: 100px;
+  height: 200px;
+  /* width: 100px; */
   transition-duration: 0.2s;
   transform-origin: 50% 50%;
 }
@@ -96,6 +105,14 @@ label img {
   box-shadow: 0 0 5px #333;
   z-index: -1;
 }
+/* 
+label img:hover {
+  position: relative;
+  width: 400px;
+  height: auto;
+  display: block;
+  z-index: 990;
+} */
 
 em {
   text-align: right;
@@ -103,12 +120,24 @@ em {
 
 body {
   background-color: #333;
-  color: darkgoldenrod;
+  color: rgb(184, 134, 11);
   font-family: 'Courier New', Courier, monospace;
 }
 
+fieldset {
+  width: auto;
+  border: 0px;
+}
+
 footer {
-  background-color: rgb(33, 38, 43);
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  width: auto;
+  z-index: 999;
+  padding: 10px;
+  padding-bottom: 20px;
+  background-image: linear-gradient(to right, rgba(184, 134, 11,0.1), rgba(184, 134, 11,0.7));
 }
 
 h1 {
@@ -117,7 +146,7 @@ h1 {
 
 h2 {
   text-align: left;
-  color: red;
+  color: rgb(196, 51, 51);
 }
 
 button {
@@ -132,4 +161,9 @@ tr {
 a {
   text-decoration: none;
   font-family: 'Courier New', Courier, monospace;
+  color: #999;
+}
+
+p {
+  text-align: center;
 }

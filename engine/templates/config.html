@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<a href="/" class="button">Home</a>
-<a href="config" class="button">Configuration</a>
+<fieldset class="menu"> 
+    <a href="/" class="button">Home</a>
+    <a href="config" class="button">Configuration</a>
+</fieldset>
 <fieldset>
     <h2>WARNING: SAVING CHANGES HERE MAY RENDER THE APP UNUSABLE</h2>
     <form action="{{ url_for('config') }}" enctype="multipart/form-data" method="POST"> 

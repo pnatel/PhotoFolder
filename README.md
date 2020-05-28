@@ -1,12 +1,17 @@
 # PHOTO FOLDER
 
-| MASTER  | DEVELOPMENT  | DOCKER  |   |   |
-|:-------:|:------------:|:-------:|---|---|
-| ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg?branch=master)  | ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg?branch=Development)  | ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg?branch=docker)  |   |   |
-| ![Webserver Testing](https://github.com/pnatel/PhotoFolder/workflows/Webserver%20Testing/badge.svg?branch=master)  | ![Webserver Testing](https://github.com/pnatel/PhotoFolder/workflows/Webserver%20Testing/badge.svg?branch=Development)  | ![Webserver Testing](https://github.com/pnatel/PhotoFolder/workflows/Webserver%20Testing/badge.svg?branch=docker)  |   |   |
-|   |   |   |   |   |
+| MASTER  | DEVELOPMENT  | DOCKER  |
+|:-------:|:------------:|:-------:|
+| ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg?branch=master)  | ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg?branch=Development)  | ![Engine Testing](https://github.com/pnatel/PhotoFolder/workflows/Engine%20Testing/badge.svg?branch=docker)  |
+| ![Webserver Testing](https://github.com/pnatel/PhotoFolder/workflows/Webserver%20Testing/badge.svg?branch=master)  | ![Webserver Testing](https://github.com/pnatel/PhotoFolder/workflows/Webserver%20Testing/badge.svg?branch=Development)  | ![Webserver Testing](https://github.com/pnatel/PhotoFolder/workflows/Webserver%20Testing/badge.svg?branch=docker)  |
 
-The application aim to get a list of photos from a folder and to copy a random sample to a destination folder, the destina
+The application aim to get a list of photos from a folder and to copy a random sample to a destination folder.
+
+## A bit of history
+
+I am a bit of a IT hoarder, and I like to use or to give use to the things I have. One day, I was in the garage trying to make sense of the mess, when I found my old Android tablet, an Acer A500, that is collecting dust with the rest of my collection of IT stuff that is old enough for me to NOT want to use it, but still works,  so I can't throw in a bin...
+Anyway, I charged the tablet and downloaded a Photo Frame app, after setup, I put the tablet to work in my living room and it kept changing the pictures happily over the day reminding us of the cool moments of our life.
+(To Be Continue...)
 
 ## How to use
 
@@ -29,11 +34,21 @@ The application aim to get a list of photos from a folder and to copy a random s
 
 ## Running on Docker
 
-> docker build --tag=photo_folder_manager <https://github.com/pnatel/PhotoFolder.git#docker>
+> $ docker build --tag=photo_folder_manager <https://github.com/pnatel/PhotoFolder.git#docker>
 >
-> docker run  -d --name photo_folder_manager -p 23276:23276 --mount source=PHOTO_POOL_FOLDER, target=/source photo_folder_manager
+> $ docker run  -d --name photo_folder_manager -p 23276:23276 --mount source=PHOTO_POOL_FOLDER, target=/source photo_folder_manager
+
+I also have the image saved in Docker Hub (<https://hub.docker.com/r/pnatel/photo_folder_manager>):
+> $ docker pull pnatel/photo_folder_manager
 
 Only change required in the config is `test_mode = False`
+
+### Docker on Raspberry Pi
+
+- There is a Dockerfile for the Pi in the arm folder, you don't need to clone the Repo if you want to use this file
+- Docker Hub also has a prebuilt image look for the ARM tag
+
+> $ docker pull pnatel/photo_folder_manager:armv7
 
 ## Features
 

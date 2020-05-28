@@ -1,7 +1,6 @@
 # FROM --platform=linux/arm/v7 python:slim
 FROM python:slim
 
-
 LABEL maintainer=pnatel@gmail.com
 
 ENV hostname=photomanager
@@ -19,7 +18,7 @@ COPY . .
 
 EXPOSE 23276
 
-CMD ["python3", "./main.py"]
+CMD ["python3", "./photofolder.py"]
 
 # Health check steps
 RUN apt-get update

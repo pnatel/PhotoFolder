@@ -1,26 +1,34 @@
 #!/usr/bin/env python3
 
 from flask import Flask, flash, render_template, request, redirect
-import os
-import FileModule as fm
-import app_config as cfg
+import os, time
 from werkzeug.serving import run_simple
+# Running as standalone or part of the application
+if __name__ == '__main__' or __name__ == 'web_module':
+    from FileModule import getListOfFiles, copy_job, fileRotate, filePrunning
+    import app_config as cfg
+    from timeloop_module import tl
+else: 
+    from engine.FileModule import getListOfFiles, copy_job, fileRotate, filePrunning
+    import engine.app_config as cfg
+    from engine.timeloop_module import tl
+
 
 # set to True to inform that the app needs to be re-created
 to_reload = False
 
 # os.environ.get("ENV_VAR_NAME")
+cfg.load_config()
 
 def get_app():
     print("create app now")
     app = Flask(__name__)
     app.secret_key = "Zcg,ddh}k^Q(uh/~qM*PT!cJ5?/Q$3QQ"
-    cfg.load_config()
 
     @app.route('/')
     @app.route('/', methods = ['GET', 'POST'])
     def index():
-        list = fm.getListOfFiles(cfg._destinationFolder)
+        list = getListOfFiles(cfg._destinationFolder)
         if request.method == 'GET':
             return load_pics(list, title='List of Pictures')
 
@@ -29,12 +37,12 @@ def get_app():
             flash(payload, 'debug')
             if request.form.get('left'):
                 rotate(payload, list, 'left')
-                list = fm.getListOfFiles(cfg._destinationFolder)
+                list = getListOfFiles(cfg._destinationFolder)
                 return load_pics(list, title='ROTATED Pictures')
 
             elif request.form.get('right'):
                 rotate(payload, list, 'right')
-                list = fm.getListOfFiles(cfg._destinationFolder)
+                list = getListOfFiles(cfg._destinationFolder)
                 return load_pics(list, title='ROTATED Pictures')
 
             elif request.form.get('favorite'):
@@ -43,15 +51,19 @@ def get_app():
 
             elif request.form.get('delete'):
                 delete(payload, list)
-                list = fm.getListOfFiles(cfg._destinationFolder)
+                list = getListOfFiles(cfg._destinationFolder)
                 return load_pics(list, title='Remaining Pictures')
 
-            elif request.form.get('manual_copy'):
-                fm.main()
-                list = fm.getListOfFiles(cfg._destinationFolder)
+            elif request.form.get('copy_job'):
+                copy_job()
+                # message, level = tl.timed_copy()
+                # flash(message, level)
+                flash('Copy Job completed.', 'warning')
+                list = getListOfFiles(cfg._destinationFolder)
                 return load_pics(list, title='New Set of Pictures')
 
             else:
+                # This should never be triggered
                 flash('No option selected, try again.', 'error')
                 return load_pics(list, title='List of Pictures')
 
@@ -64,7 +76,7 @@ def get_app():
         for i  in range(len(list)):
             if list[i] in payload:
                 # flash(list[i], 'warning')
-                message = fm.fileRotate(list[i], side)
+                message = fileRotate(list[i], side)
                 flash(message, 'warning')
             # flash('.', 'info')
 
@@ -73,7 +85,7 @@ def get_app():
         for i  in range(len(list)):
             if list[i] in payload:
                 # flash(list[i], 'warning')
-                message = fm.filePrunning(list[i])
+                message = filePrunning(list[i])
                 flash(message, 'warning')
             # flash('.', 'info')
 
@@ -128,11 +140,13 @@ class AppReloader(object):
         app = self.get_application()
         return app(environ, start_response)
 
+def website():
+    run_simple('0.0.0.0', int(cfg._port), application,
+               use_reloader=True, use_debugger=True, use_evalex=True)
 
 # This application object can be used in any WSGI server
 # for example in gunicorn, you can run "gunicorn app"
 application = AppReloader(get_app)
 
 if __name__ == '__main__':
-    run_simple('0.0.0.0', 23276, application,
-               use_reloader=True, use_debugger=True, use_evalex=True)
+    website()

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <form action="{{ url_for('index') }}" enctype="multipart/form-data" method="POST"> 
+        <fieldset class="menu"> 
+            <a href="/" class="button">Home</a>
+            <a href="config" class="button">Configuration</a> 
+            <input type="submit" class="button" name="left" value="Rotate Left">
+            <input type="submit" class="button" name="right" value="Rotate Right">
+            <input type="submit" class="button" name="delete" value="Delete">
+            <input type="submit" class="button" name="favorite" value="Add to Favorite">
+            <input type="submit" class="button" name="copy_job" value="Copy Job">
+        </fieldset>    
+        <fieldset>
+        <ul>
+            {% for i in range(len_list) %}
+                <li><input type="checkbox" id="cb{{ i }}" name="cb{{ i }}" value="{{ images[i-1] }}"/>
+                <label for="cb{{ i }}"><img src="{{ images[i-1][7:] }}" alt="{{ images[i-1][4:] }}"></label>
+                </li>
+            {% endfor %}
+        </ul>
+        </fieldset>
+    </form>   
+
+{% endblock %}

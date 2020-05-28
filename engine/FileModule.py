@@ -19,10 +19,16 @@ from PIL import Image
 from sys import argv
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-import app_config as cfg
 import logging
-from loggerinitializer import *
-import app_config as cfg
+# Running as standalone or part of the application
+# print(__name__)
+if __name__ == '__main__' or __name__ == 'FileModule':
+    import app_config as cfg
+    from loggerinitializer import initialize_logger
+    initialize_logger(cfg._logPath)
+else: 
+    import engine.app_config as cfg
+    from engine.loggerinitializer import initialize_logger
 
 # def open_log():
 #     logging.basicConfig(filename= cfg._logPath,
@@ -32,8 +38,7 @@ import app_config as cfg
 # --------------------------------
 # Main function copy photos based on the parameters selected
 # --------------------------------
-def main():
-    initialize_logger(cfg._logPath)
+def copy_job():
     cfg.load_config()
     logging.info('--------START--------')
     start = datetime.now()
@@ -60,6 +65,9 @@ def main():
     logging.info('Time elapsed:' + str(end-start) + 'secs')
     logging.info('--------END----------')
 
+# A legacy function calling function
+def main():
+    copy_job()
 
 def fileTypeTest(file, typeList=cfg._fileType):
     if file.endswith(typeList):
