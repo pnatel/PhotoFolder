@@ -23,7 +23,7 @@ jobs:
    
     - name: Load Webserver
       run: |
-        python main.py &
+        python photofolder.py &
     
     - name: Test Webserver
       run: |

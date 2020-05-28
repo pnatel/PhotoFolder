@@ -34,7 +34,7 @@ Anyway, I charged the tablet and downloaded a Photo Frame app, after setup, I pu
 
 ## Running on Docker
 
-> $ docker build --tag=photo_folder_manager <https://github.com/pnatel/PhotoFolder.git#docker>
+> $ docker build --tag=photo_folder_manager -f .\docker\main\Dockerfile <https://github.com/pnatel/PhotoFolder.git#docker>
 >
 > $ docker run  -d --name photo_folder_manager -p 23276:23276 --mount source=PHOTO_POOL_FOLDER, target=/source photo_folder_manager
 

@@ -23,15 +23,15 @@ jobs:
    
     - name: Test if the application handle the copy management
       run: |
-        python FileModule.py 
-        python FileModule.py 
-        python FileModule.py 
-        python FileModule.py 
-        python FileModule.py 
+        python ./engine/FileModule.py 
+        python ./engine/FileModule.py 
+        python ./engine/FileModule.py 
+        python ./engine/FileModule.py 
+        python ./engine/FileModule.py 
     
     - name: show results
       run: |
-        cat static/test/logs/debug.log
+        cat ./engine/static/test/logs/debug.log
     
 
 

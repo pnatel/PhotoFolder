@@ -1,17 +1,22 @@
-# FROM --platform=linux/arm/v7 python:slim
+# Dockerfile (DEVELOPMENT) ARM & x86/x64
 FROM python:slim
 
-LABEL maintainer=pnatel@gmail.com
+LABEL maintainer=pnatel@gmail.com \
+      focus=local-file \
+      platform=MULTI_PLATFORM
 
-ENV hostname=photomanager
-ENV name=photomanager
+ENV hostname=photomanager \
+    name=photomanager
 
-# RUN mkdir /source
+# Update aptitude and install software 
+RUN apt-get update && apt-get install -y curl
+
 VOLUME /source
 
 WORKDIR /app
 
 COPY requirements.txt ./
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
@@ -21,8 +26,6 @@ EXPOSE 23276
 CMD ["python3", "./photofolder.py"]
 
 # Health check steps
-RUN apt-get update
-RUN apt-get install -y curl
-HEALTHCHECK --interval=90s --timeout=3s \
+HEALTHCHECK --interval=5m --timeout=3s \
   CMD curl -ILfSs http://localhost:23276/ > /dev/null || \
       curl -ILfkSs http://localhost:23276/config > /dev/null || exit 1
