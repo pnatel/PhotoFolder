@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     zlib1g-dev
 
-RUN git clone https://github.com/pnatel/PhotoFolder.git --branch main --single-branch &&  mv /PhotoFolder /app
+RUN git clone https://github.com/pnatel/PhotoFolder.git --branch master --single-branch &&  mv /PhotoFolder /app
 
 VOLUME /source
 
