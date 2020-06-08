@@ -15,8 +15,11 @@
         <fieldset>
         <ul>
             {% for i in range(len_list) %}
-                <li><input type="checkbox" id="cb{{ i }}" name="cb{{ i }}" value="{{ images[i-1] }}"/>
-                <label for="cb{{ i }}"><img src="{{ images[i-1][7:] }}" alt="{{ images[i-1][4:] }}"></label>
+                <li><input type="checkbox" id="cb{{ i }}" name="cb{{ i }}" value="{{ images[i-1] }}">
+                <label for="cb{{ i }}"><img src="{{ images[i-1][7:] }}" alt="{{ images[i-1].split('/')[-1] }}">
+                    <br>
+                    <small>{{ images[i-1].split('/')[-1] }}</small>
+                </label>
                 </li>
             {% endfor %}
         </ul>

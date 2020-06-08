@@ -7,12 +7,9 @@ from werkzeug.serving import run_simple
 if __name__ == '__main__' or __name__ == 'web_module':
     from FileModule import getListOfFiles, copy_job, fileRotate, filePrunning
     import app_config as cfg
-    from timeloop_module import tl
 else: 
     from engine.FileModule import getListOfFiles, copy_job, fileRotate, filePrunning
     import engine.app_config as cfg
-    from engine.timeloop_module import tl
-
 
 # set to True to inform that the app needs to be re-created
 to_reload = False
@@ -37,35 +34,34 @@ def get_app():
             flash(payload, 'debug')
             if request.form.get('left'):
                 rotate(payload, list, 'left')
-                list = getListOfFiles(cfg._destinationFolder)
-                return load_pics(list, title='ROTATED Pictures')
+                title='ROTATED Pictures'
 
             elif request.form.get('right'):
                 rotate(payload, list, 'right')
-                list = getListOfFiles(cfg._destinationFolder)
-                return load_pics(list, title='ROTATED Pictures')
+                title='ROTATED Pictures'
 
             elif request.form.get('favorite'):
                 flash('FAVORITE.', 'warning')
-                return load_pics(list, title='FAVORITE Pictures')
+                title='FAVORITE Pictures'
 
             elif request.form.get('delete'):
                 delete(payload, list)
-                list = getListOfFiles(cfg._destinationFolder)
-                return load_pics(list, title='Remaining Pictures')
+                title='Remaining Pictures'
 
             elif request.form.get('copy_job'):
                 copy_job()
-                # message, level = tl.timed_copy()
+                # message, level = timed_copy()
                 # flash(message, level)
                 flash('Copy Job completed.', 'warning')
-                list = getListOfFiles(cfg._destinationFolder)
-                return load_pics(list, title='New Set of Pictures')
+                title='New Set of Pictures'
 
             else:
                 # This should never be triggered
                 flash('No option selected, try again.', 'error')
-                return load_pics(list, title='List of Pictures')
+                title='List of Pictures'
+
+            list = getListOfFiles(cfg._destinationFolder)    
+            return load_pics(list, title=title)
 
     def load_pics(list, page='index.html', title=''):
         flash('Files loaded: ' + str(len(list)), 'info')
@@ -76,8 +72,8 @@ def get_app():
         for i  in range(len(list)):
             if list[i] in payload:
                 # flash(list[i], 'warning')
-                message = fileRotate(list[i], side)
-                flash(message, 'warning')
+                fileRotate(list[i], side)
+                # flash(message, 'warning')
             # flash('.', 'info')
 
     def delete(payload, list):
@@ -85,8 +81,8 @@ def get_app():
         for i  in range(len(list)):
             if list[i] in payload:
                 # flash(list[i], 'warning')
-                message = filePrunning(list[i])
-                flash(message, 'warning')
+                filePrunning(list[i])
+                # flash(message, 'warning')
             # flash('.', 'info')
 
     @app.route('/config', methods = ['GET', 'POST'])
@@ -142,7 +138,7 @@ class AppReloader(object):
 
 def website():
     run_simple('0.0.0.0', int(cfg._port), application,
-               use_reloader=True, use_debugger=True, use_evalex=True)
+               use_reloader=True, use_debugger=False, use_evalex=True, threaded=True)
 
 # This application object can be used in any WSGI server
 # for example in gunicorn, you can run "gunicorn app"

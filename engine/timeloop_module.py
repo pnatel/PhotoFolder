@@ -1,4 +1,5 @@
 # built from example in:
+# https://pypi.org/project/timeloop/
 # https://medium.com/greedygame-engineering/an-elegant-way-to-run-periodic-tasks-in-python-61b7c477b679
 
 
@@ -13,17 +14,18 @@ if __name__ == '__main__' or __name__ == 'timeloop_module':
     initialize_logger(cfg._logPath)
 else: 
     import engine.app_config as cfg
-    # from engine.loggerinitializer import initialize_logger 
+    from engine.loggerinitializer import initialize_logger 
     from engine.FileModule import main
 
+cfg.load_config()
 tl = Timeloop()
 
-@tl.job(interval=timedelta(seconds=10))
+@tl.job(interval=timedelta(seconds=cfg._jobInterval))
 def copy_job():
+    logging.info("Auto job running every {} seconds".format(cfg._jobInterval))
     logging.info("Auto job current time : {}".format(time.ctime()))
     main()
-    time.sleep(15)
-    return "Auto job running every 10 seconds"
+    # time.sleep(15)
     
 # @tl.job(interval=timedelta(seconds=5))
 # def sample_job_every_5s():
@@ -33,27 +35,5 @@ def copy_job():
 # def sample_job_every_10s():
 #     print ("10s job current time : {}".format(time.ctime()))
 
-
-def timed_copy():
-    try:
-        tl.stop()
-        time.sleep(5)
-        return 'Stopping running job... in 5s', 'warning'
-    except RuntimeError as e:
-        return e, 'error'
-    finally:
-        try:
-            # tl.start()
-            tl.start(block=True)
-            return 'Auto copy job successfully enabled'
-        except RuntimeError as e:
-            return e, 'critical'
-        else:
-            return 'Auto Copy failed. Reverting to manual', 'error'
-            copy_job()
-        finally:
-            return 'Copy Job triggers on-demand and resets timed copy.', 'warning'
-
 if __name__ == "__main__":
-    # tl.start(block=True)
-    print(timed_copy())
+    tl.start(block=True)

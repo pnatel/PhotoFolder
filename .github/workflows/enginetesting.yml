@@ -29,9 +29,14 @@ jobs:
         python ./engine/FileModule.py 
         python ./engine/FileModule.py 
     
-    - name: show results
-      run: |
-        cat ./engine/static/test/logs/debug.log
+    # - name: Test if the application handle the auto copy management
+    #   run: |
+    #       python ./engine/timeloop_Module.py &
+    #       sleep 60s
+
+    # - name: show results
+    #   run: |
+    #     cat ./engine/static/test/logs/debug.log
     
 
 

@@ -23,7 +23,8 @@ COPY . .
 
 EXPOSE 23276
 
-CMD ["python3", "./photofolder.py"]
+# CMD ["python3", "./photofolder.py"]
+CMD ["sh", "./start.sh"]
 
 # Health check steps
 HEALTHCHECK --interval=5m --timeout=3s \

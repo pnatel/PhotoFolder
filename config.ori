@@ -20,6 +20,9 @@ MaxNumberOfPics = 1000
 # How much the folder can grow size in Megabytes
 FoldersizeUpperLimit = 1000
 FoldersizeUpperLimit_test = 10
+# Waiting time between auto copy job (in seconds)
+JobInterval = 86400
+JobInterval_test = 10
 
 NewerPhotos = datetime.now() - relativedelta(years=3)
 
