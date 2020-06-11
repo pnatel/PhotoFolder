@@ -1,17 +1,38 @@
 
 .alert-success {
   color: green;
-  background-color: rgba(51, 51, 51, 0.6);
+  font-weight: bold;
+  background-color: rgba(51, 51, 51, 0.8);
 }
  
 .alert-warning {
   color: yellow;
-  background-color: rgba(51, 51, 51, 0.6);  
+  font-weight: bolder;
+  background-color: rgba(51, 51, 51, 0.8);  
 }
 
 .alert-danger {
   color: red;
-  background-color: rgba(51, 51, 51, 0.6);
+  font-weight: bolder;
+  background-color: rgba(51, 51, 51, 0.8);
+}
+
+.pulsate {
+  -webkit-animation: pulsate 3s ease-out;
+  -webkit-animation-iteration-count: 10;
+  opacity: 0.5;
+}
+
+@-webkit-keyframes pulsate {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1.0;
+  }
+  100% {
+    opacity: 0.5;
+  }
 }
 
 .button {
@@ -25,9 +46,12 @@
   border: none;
   border-radius: 10px;
   box-shadow: 0 10px #999;
+  font-family: 'Courier New', Courier, monospace;
 }
 
-.button:hover {background-color: rgb(87, 73, 9)}
+.button:hover {
+  background-color: rgb(87, 73, 9)
+}
 
 .button:active {
   background-color: rgb(128, 111, 15);
@@ -43,7 +67,7 @@
   z-index: 999;
   padding: 10px;
   padding-bottom: 20px;
-  background-image: linear-gradient(to right, rgba(184, 134, 11,0.1), rgba(184, 134, 11,0.7));
+  background-image: linear-gradient(to top, rgba(184, 134, 11,0), rgba(184, 134, 11,0.7));
 }
   
 li {
@@ -136,9 +160,8 @@ footer {
   bottom: 0;
   width: auto;
   z-index: 999;
-  padding: 10px;
-  padding-bottom: 20px;
-  background-image: linear-gradient(to right, rgba(184, 134, 11,0.1), rgba(184, 134, 11,0.7));
+  padding: 5px 10px;
+  background-image: linear-gradient(to bottom, rgba(184, 134, 11,0), rgba(184, 134, 11,0.8));
 }
 
 h1 {
@@ -161,10 +184,14 @@ tr {
 
 a {
   text-decoration: none;
-  font-family: 'Courier New', Courier, monospace;
+  /* font-family: 'Courier New', Courier, monospace; */
   color: #999;
 }
 
 p {
   text-align: center;
+}
+
+small {
+  font-size: x-small;
 }

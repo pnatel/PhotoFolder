@@ -1,9 +1,10 @@
-# Dockerfile (DEVELOPMENT) ARM & x86/x64
+# Build from Dockerfile for ARM
+# For x86/64 you can use the prebuilt image on hub.docker.com:
+# $ docker pull pnatel/photo_folder_manager
 FROM python:slim
 
 LABEL maintainer=pnatel@gmail.com \
-      focus=local-file \
-      platform=MULTI_PLATFORM
+      focus=local-file
 
 ENV hostname=photomanager \
     name=photomanager
@@ -12,18 +13,20 @@ ENV hostname=photomanager \
 RUN apt-get update && apt-get install -y curl
 
 VOLUME /source
+VOLUME /destination
 
 WORKDIR /app
 
 COPY requirements.txt ./
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt 
 
 COPY . .
 
+RUN ln -s /destination /app/engine/static/pics
+
 EXPOSE 23276
 
-# CMD ["python3", "./photofolder.py"]
 CMD ["sh", "./start.sh"]
 
 # Health check steps
