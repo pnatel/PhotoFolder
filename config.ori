@@ -1,7 +1,7 @@
 [folder]
 SourceFolder = /source
-DestinationFolder = static/pics
-LogPath = static/logs/PhotoFolder.log
+DestinationFolder = /destination
+LogPath = engine/static/logs/
 
 [ext]
 FileType1 = jpg
@@ -12,19 +12,25 @@ FileType5 = JPEG
 FileType6 = PNG
 
 [parameter]
+port = 23276
 # Size of your sample of pictures from the source folder
 NumberOfPics = 100
-NumberOfPics_test = 3
 # not implemented
 MaxNumberOfPics = 1000
 # How much the folder can grow size in Megabytes
 FoldersizeUpperLimit = 1000
-FoldersizeUpperLimit_test = 10
+NewerPhotos = datetime.now() - relativedelta(years=3)
 # Waiting time between auto copy job (in seconds)
 JobInterval = 86400
-JobInterval_test = 10
 
-NewerPhotos = datetime.now() - relativedelta(years=3)
+
+[notification]
+# Run this command after the auto copy job is completed
+# The command can do whatever you want. I use it to send 
+# notifications to https://healthchecks.io/
+# e.g: "curl -fsS --retry 3 https://hc-ping.com/your-uuid-here"
+command = 
+
 
 [sort]
 # 1 = Random, 
@@ -34,18 +40,13 @@ NewerPhotos = datetime.now() - relativedelta(years=3)
 # 5 = By Location (Need to read it from pic or Google)
 Criteria = 1
 
-[loglevel]
-; Level               When it’s used
-; logging.DEBUG       Detailed information, typically of interest only when diagnosing problems.
-; logging.INFO        Confirmation that things are working as expected.
-; logging.WARNING     An indication that something unexpected happened, or indicative of some problem in the near future (e.g. ‘disk space low’). The software is still working as expected.
-; logging.ERROR       Due to a more serious problem, the software has not been able to perform some function.
-; logging.CRITICAL    A serious error, indicating that the program itself may be unable to continue running.
-level = logging.INFO
-
-; settings for application testing and CI/CD on Github
+# settings for application testing and CI/CD on Github
 [test]
 test_mode = True
-SourceFolder = static/test/source/
-DestinationFolder = static/test/destination/
-LogPath = static/test/logs/PhotoFolder.log
+SourceFolder = engine/static/test/source/
+DestinationFolder = engine/static/test/destination/
+LogPath = engine/static/test/logs/
+NumberOfPics = 3
+FoldersizeUpperLimit = 10
+JobInterval = 10
+command = ping google.com

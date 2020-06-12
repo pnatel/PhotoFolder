@@ -109,7 +109,7 @@ label:before {
 }
 
 label img {
-  height: 200px;
+  height: 150px;
   /* width: 100px; */
   transition-duration: 0.2s;
   transform-origin: 50% 50%;
@@ -193,5 +193,5 @@ p {
 }
 
 small {
-  font-size: x-small;
+  font-size: xx-small;
 }

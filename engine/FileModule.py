@@ -25,10 +25,12 @@ import logging
 if __name__ == '__main__' or __name__ == 'FileModule':
     import app_config as cfg
     from loggerinitializer import initialize_logger
-    initialize_logger(cfg._logPath)
 else: 
     import engine.app_config as cfg
     from engine.loggerinitializer import initialize_logger
+
+cfg.load_config()
+initialize_logger(cfg._logPath)
 
 # def open_log():
 #     logging.basicConfig(filename= cfg._logPath,
@@ -39,7 +41,6 @@ else:
 # Main function copy photos based on the parameters selected
 # --------------------------------
 def copy_job():
-    cfg.load_config()
     logging.info('--------START--------')
     start = datetime.now()
     print('Job Start time:',start)

@@ -50,8 +50,6 @@ def get_app():
 
             elif request.form.get('copy_job'):
                 copy_job()
-                # message, level = timed_copy()
-                # flash(message, level)
                 flash('Copy Job completed.', 'warning')
                 title='New Set of Pictures'
 
@@ -71,18 +69,16 @@ def get_app():
     def rotate(payload, list, side):
         for i  in range(len(list)):
             if list[i] in payload:
-                # flash(list[i], 'warning')
+                flash(list[i], 'warning')
                 fileRotate(list[i], side)
-                # flash(message, 'warning')
             # flash('.', 'info')
 
     def delete(payload, list):
         # flash(request.get_data(), 'message')
         for i  in range(len(list)):
             if list[i] in payload:
-                # flash(list[i], 'warning')
+                flash(list[i], 'warning')
                 filePrunning(list[i])
-                # flash(message, 'warning')
             # flash('.', 'info')
 
     @app.route('/config', methods = ['GET', 'POST'])
@@ -102,8 +98,7 @@ def get_app():
                 with open('config.ini', 'w') as f:
                     f.write(request.form.get('config'))
                     flash('New Config saved', 'info')
-                    cfg.load_config()
-                    # flash('RESTART THE APPLICATION FOR THE NEW SETTINGS TO GET EFFECT', 'warning')
+                    flash('RESTART THE APPLICATION FOR THE NEW SETTINGS TO GET EFFECT', 'critical')
                 f.close()
                 reload()
                 return redirect('/') 
@@ -114,7 +109,8 @@ def get_app():
     def reload():
         global to_reload
         to_reload = True
-        return "reloaded"
+        flash('Reloading completed', 'info')
+        return 'reloaded'
 
     return app
 
@@ -129,7 +125,7 @@ class AppReloader(object):
         if to_reload:
             self.app = self.create_app()
             to_reload = False
-
+        cfg.load_config()
         return self.app
 
     def __call__(self, environ, start_response):
@@ -138,7 +134,7 @@ class AppReloader(object):
 
 def website():
     run_simple('0.0.0.0', int(cfg._port), application,
-               use_reloader=True, use_debugger=False, use_evalex=True, threaded=True)
+               use_reloader=True, use_debugger=False, use_evalex=True)
 
 # This application object can be used in any WSGI server
 # for example in gunicorn, you can run "gunicorn app"

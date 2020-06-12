@@ -20,6 +20,7 @@ _foldersizeUpperLimit = 0
 _newerPhotos = 0
 _criteria = 0
 _jobInterval = 0
+_command = ''
 
 config = configparser.ConfigParser()
 config.read('../config.ini')
@@ -58,6 +59,7 @@ def load_config():
     global _criteria
     global _port
     global _jobInterval
+    global _command
 
     # Force testing environment with 'True' in config.ini
     _test = ConfigSectionMap('test')['test_mode']
@@ -71,9 +73,10 @@ def load_config():
         logging.info('Test mode loading config')
         _sourceFolder = ConfigSectionMap('test')['sourcefolder']
         _destinationFolder = ConfigSectionMap('test')['destinationfolder']
-        _numberOfPics = int(ConfigSectionMap('parameter')['numberofpics_test'])
-        _foldersizeUpperLimit = int(ConfigSectionMap('parameter')['foldersizeupperlimit_test'])
-        _jobInterval = int(ConfigSectionMap('parameter')['jobinterval_test'])
+        _numberOfPics = int(ConfigSectionMap('test')['numberofpics'])
+        _foldersizeUpperLimit = int(ConfigSectionMap('test')['foldersizeupperlimit'])
+        _jobInterval = int(ConfigSectionMap('test')['jobinterval'])
+        _command = ConfigSectionMap('test')['command']
     else:
         _logPath = ConfigSectionMap('folder')['logpath']
         # initialize_logger(_logPath)
@@ -83,6 +86,7 @@ def load_config():
         _numberOfPics = int(ConfigSectionMap('parameter')['numberofpics']) 
         _foldersizeUpperLimit = int(ConfigSectionMap('parameter')['foldersizeupperlimit'])
         _jobInterval = int(ConfigSectionMap('parameter')['jobinterval'])
+        _command = ConfigSectionMap('notification')['command']
 
     _fileType = tuple(dict(config.items('ext')).values())
     # _MaxNumberOfPics = int(ConfigSectionMap('parameter')['MaxNumberOfPics'])
