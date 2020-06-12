@@ -27,7 +27,7 @@ VOLUME /destination
 WORKDIR /app
 
 RUN pip install --no-cache-dir -r requirements.txt && \
-    ln -s /destination /app/engine/static/pics
+    ln -s /destination /app/engine/static
 
 EXPOSE 23276
 

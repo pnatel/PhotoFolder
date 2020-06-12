@@ -66,10 +66,7 @@ def load_config():
     logging.debug('_test = '+ _test + ' ')
     
     if _test.lower() == 'true':
-    # if len(argv) > 1 or _test:  
-    #    print ('Arguments: ', argv[1:])
         _logPath = ConfigSectionMap('test')['logpath']
-        # initialize_logger(_logPath)
         logging.info('Test mode loading config')
         _sourceFolder = ConfigSectionMap('test')['sourcefolder']
         _destinationFolder = ConfigSectionMap('test')['destinationfolder']
@@ -79,7 +76,6 @@ def load_config():
         _command = ConfigSectionMap('test')['command']
     else:
         _logPath = ConfigSectionMap('folder')['logpath']
-        # initialize_logger(_logPath)
         logging.info('Loading PRODUCTION config')
         _sourceFolder = ConfigSectionMap('folder')['sourcefolder']
         _destinationFolder = ConfigSectionMap('folder')['destinationfolder']
@@ -95,8 +91,6 @@ def load_config():
     # _logLevel = ConfigSectionMap('loglevel')['level']
     _port = ConfigSectionMap('parameter')['port']
     
-
-# load_config()
 
 def test():
 

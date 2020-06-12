@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN ln -s /destination /app/engine/static/pics
+RUN ln -s /destination /app/engine/static
 
 EXPOSE 23276
 
