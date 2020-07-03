@@ -19,7 +19,7 @@
 
 .pulsate {
   -webkit-animation: pulsate 3s ease-out;
-  -webkit-animation-iteration-count: 10;
+  -webkit-animation-iteration-count: 5;
   opacity: 0.5;
 }
 
@@ -63,7 +63,8 @@
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-  width: auto;
+  width: 100%;
+  margin: auto;
   z-index: 999;
   padding: 10px;
   padding-bottom: 20px;
@@ -81,11 +82,12 @@ input[type="checkbox"][id^="cb"] {
 }
 
 label {
-  border: 1px solid #fff;
+  border: 1px solid #999;
   padding: 10px;
   display: block;
   position: relative;
-  margin: 10px;
+  margin: auto;
+  margin-bottom: 10px;;
   cursor: pointer;
   text-align: center;
 }
@@ -110,7 +112,8 @@ label:before {
 
 label img {
   height: 150px;
-  /* width: 100px; */
+  /* width: 200px; */
+  margin: auto;
   transition-duration: 0.2s;
   transform-origin: 50% 50%;
 }
@@ -158,7 +161,7 @@ footer {
   position: -webkit-sticky;
   position: sticky;
   bottom: 0;
-  width: auto;
+  width: 100%;
   z-index: 999;
   padding: 5px 10px;
   background-image: linear-gradient(to bottom, rgba(184, 134, 11,0), rgba(184, 134, 11,0.8));

@@ -17,13 +17,15 @@ VOLUME /destination
 
 WORKDIR /app
 
-COPY requirements.txt ./
+# COPY requirements.txt ./
 
-RUN pip install --no-cache-dir -r requirements.txt 
+# RUN pip install --no-cache-dir -r requirements.txt 
 
 COPY . .
 
-RUN ln -s /destination /app/engine/static
+RUN pip install --no-cache-dir -r requirements.txt && \
+	rm -r /app/engine/static/destination && \
+    ln -s /destination /app/engine/static
 
 EXPOSE 23276
 

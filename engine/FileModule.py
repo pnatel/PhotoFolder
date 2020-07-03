@@ -25,9 +25,11 @@ import logging
 if __name__ == '__main__' or __name__ == 'FileModule':
     import app_config as cfg
     from loggerinitializer import initialize_logger
+    import list_module as ls
 else: 
     import engine.app_config as cfg
     from engine.loggerinitializer import initialize_logger
+    import engine.list_module as ls
 
 cfg.load_config()
 initialize_logger(cfg._logPath)
@@ -57,6 +59,8 @@ def copy_job():
         logging.info('-------PRUNNING--------')
         folderPrunning(cfg._destinationFolder, 2)
         logging.info('Number of selected files on the sample: ' + str(len(sample)))
+        # keeping source address of all files for backtrack 
+        ls.append_multiple_lines('engine/static/source.txt', sample)
         copyFiles(sample)
 
     logging.info('New folder Size ' + str(getSizeMB(cfg._destinationFolder)) + 'Mb')
@@ -204,10 +208,17 @@ def sorting(filenames, criteria=1, sampleSize=10):
         logging.warning('The Sample (' + str(sampleSize) + ') is bigger than the source size (' + str(len(filenames)) + ')')
         sampleSize = int(len(filenames) / 2)
         logging.info('New Sample Size: ' + str(sampleSize))
+
+    # sorting criterias
     if criteria == 1: # Random pics from source
         logging.info('Getting a random set of ' + str(sampleSize) + ' Photos')
         try:
-            return random.sample(filenames, sampleSize)
+            list_sample = random.sample(filenames, sampleSize)
+            non_black = remove_common_from_list ('engine/static/blacklist.txt', list_sample, 'engine/static/source.txt')
+            non_white = remove_common_from_list ('engine/static/whitelist.txt', list_sample)
+            logging.debug('non_black' + str(non_black))
+            logging.debug('non_white' + str(non_white))
+            return ls.common(non_black, non_white)
         except ValueError as error:
             logging.error(error)
             return False
@@ -229,6 +240,26 @@ def sorting(filenames, criteria=1, sampleSize=10):
     else:
         logging.error('Sorting criteria not met n. of files: ' + str(len(filenames)))
         print ('Sorting criteria not met')
+
+def remove_common_from_list (file, baselist, keep_path=''):
+    with open(file, "r") as f:
+        file_list = f.readlines()
+        # clear unwanted EOL from original file
+        file_list = [item.replace('\n', '') for item in file_list]
+    logging.debug(file + str(file_list) + str(baselist))
+    clean_baselist = []
+ 
+    logging.info('========Remove common items from list==========')               
+    for item in baselist:
+        logging.debug('item in baselist: ' + item)
+        # print(ls.common(str(item), file_list))
+        if ls.common(str(item), file_list):
+            logging.info('common btw lists: '+ item)
+        else: 
+            clean_baselist.append(item) 
+    
+    logging.info('=============end remove common==================')
+    return clean_baselist
 
 
 if __name__ == '__main__':

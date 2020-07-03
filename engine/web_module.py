@@ -7,9 +7,11 @@ from werkzeug.serving import run_simple
 if __name__ == '__main__' or __name__ == 'web_module':
     from FileModule import getListOfFiles, copy_job, fileRotate, filePrunning
     import app_config as cfg
+    import list_module as ls
 else: 
     from engine.FileModule import getListOfFiles, copy_job, fileRotate, filePrunning
     import engine.app_config as cfg
+    import engine.list_module as ls
 
 # set to True to inform that the app needs to be re-created
 to_reload = False
@@ -39,13 +41,18 @@ def get_app():
             elif request.form.get('right'):
                 rotate(payload, list, 'right')
                 title='ROTATED Pictures'
-
+                
             elif request.form.get('favorite'):
-                flash('FAVORITE.', 'warning')
-                title='FAVORITE Pictures'
+                faves = ls.common(payload, list)
+                flash('FAVORITED {}'.format(faves), 'info')
+                ls.append_multiple_lines('engine/static/whitelist.txt', faves)
+                title='FAVORITE Pictures'
 
             elif request.form.get('delete'):
                 delete(payload, list)
+                black = ls.common(payload, list)
+                flash('BLACKLISTED {}'.format(black), 'info')
+                ls.append_multiple_lines('engine/static/blacklist.txt', black)
                 title='Remaining Pictures'
 
             elif request.form.get('copy_job'):
@@ -81,6 +88,7 @@ def get_app():
                 filePrunning(list[i])
             # flash('.', 'info')
 
+
     @app.route('/config', methods = ['GET', 'POST'])
     def config():
         if request.method == 'GET':
@@ -99,11 +107,59 @@ def get_app():
                     f.write(request.form.get('config'))
                     flash('New Config saved', 'info')
                     flash('RESTART THE APPLICATION FOR THE NEW SETTINGS TO GET EFFECT', 'critical')
-                f.close()
                 reload()
                 return redirect('/') 
             except IOError as e:
                 flash(e, 'error')
+
+    @app.route('/blacklist', methods = ['GET', 'POST'])
+    def blacklist():
+        if request.method == 'GET':
+            try:
+                with open('engine/static/blacklist.txt', 'r') as f:
+                    return render_template('blacklist.html', \
+                        blacklist=f.read(), \
+                        title='Blacklisted files')
+            except IOError as e:
+                flash('Operation failed: {}'.format(e.strerror), 'error')
+        else:
+            try:
+                if os.path.exists('engine/static/blacklist.old'):
+                    os.remove('engine/static/blacklist.old')
+                    flash('removing backup file blacklist.old', 'info')
+                os.rename('engine/static/blacklist.txt', 'engine/static/blacklist.old')
+                flash('Backup original configuration to blacklist.old', 'info')
+                with open('engine/static/blacklist.txt', 'w') as f:
+                    f.write(request.form.get('blacklist'))
+                    flash('New blacklist file saved', 'info')
+                return redirect('/blacklist') 
+            except IOError as e:
+                flash(e, 'error')
+
+    @app.route('/whitelist', methods = ['GET', 'POST'])
+    def whitelist():
+        if request.method == 'GET':
+            try:
+                with open('engine/static/whitelist.txt', 'r') as f:
+                    return render_template('whitelist.html', \
+                        whitelist=f.read(), \
+                        title='whitelisted files')
+            except IOError as e:
+                flash('Operation failed: {}'.format(e.strerror), 'error')
+        else:
+            try:
+                if os.path.exists('engine/static/whitelist.old'):
+                    os.remove('engine/static/whitelist.old')
+                    flash('removing backup file whitelist.old', 'info')
+                os.rename('engine/static/whitelist.txt', 'engine/static/whitelist.old')
+                flash('Backup original configuration to whitelist.old', 'info')
+                with open('engine/static/whitelist.txt', 'w') as f:
+                    f.write(request.form.get('whitelist'))
+                    flash('New whitelist file saved', 'info')
+                return redirect('/whitelist') 
+            except IOError as e:
+                flash(e, 'error')
+
 
     @app.route('/reload')
     def reload():
@@ -134,7 +190,7 @@ class AppReloader(object):
 
 def website():
     run_simple('0.0.0.0', int(cfg._port), application,
-               use_reloader=True, use_debugger=False, use_evalex=True)
+               use_reloader=True, use_debugger=True, use_evalex=True)
 
 # This application object can be used in any WSGI server
 # for example in gunicorn, you can run "gunicorn app"
