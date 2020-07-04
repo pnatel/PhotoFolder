@@ -3,6 +3,7 @@
 from flask import Flask, flash, render_template, request, redirect
 import os, time
 from werkzeug.serving import run_simple
+from distutils.util import strtobool
 # Running as standalone or part of the application
 if __name__ == '__main__' or __name__ == 'web_module':
     from FileModule import getListOfFiles, copy_job, fileRotate, filePrunning
@@ -189,8 +190,11 @@ class AppReloader(object):
         return app(environ, start_response)
 
 def website():
+    # change reloader and debugger to false in production
+    test = bool(strtobool(cfg._test.capitalize()))
+    print('Loading DEMO mode? ', test)
     run_simple('0.0.0.0', int(cfg._port), application,
-               use_reloader=True, use_debugger=True, use_evalex=True)
+               use_reloader=test, use_debugger=test, use_evalex=True)
 
 # This application object can be used in any WSGI server
 # for example in gunicorn, you can run "gunicorn app"

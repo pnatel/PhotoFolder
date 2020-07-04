@@ -60,6 +60,7 @@ def load_config():
     global _port
     global _jobInterval
     global _command
+    global _test
 
     # Force testing environment with 'True' in config.ini
     _test = ConfigSectionMap('test')['test_mode']
