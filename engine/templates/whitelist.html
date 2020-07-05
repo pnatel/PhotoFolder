@@ -12,10 +12,10 @@
     <p>Items Favorited will be added to this list. During copy job, it crosscheck with this list before copying files</p>
     <form action="{{ url_for('whitelist') }}" enctype="multipart/form-data" method="POST"> 
         
-        <textarea rows="50" cols="100" name="whitelist">               
+        <textarea name="whitelist">               
 {{ whitelist }}        
         </textarea>
-        <input type="submit" class="button" value='Save the changes'>
+        <input type="submit" class="button save" value='Save the changes'>
     
     </form>   
 </fieldset>

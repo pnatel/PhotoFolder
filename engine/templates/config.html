@@ -11,11 +11,11 @@
     <h2>WARNING: SAVING CHANGES HERE MAY RENDER THE APP UNUSABLE</h2>
     <form action="{{ url_for('config') }}" enctype="multipart/form-data" method="POST"> 
         
-        <textarea rows="50" cols="100" name="config">               
+        <textarea name="config">               
 {{ config_file }}        
         </textarea>
         <h2>Are you sure?</h2>
-        <input type="submit" class="button" value='Yes, Save the changes'>
+        <input type="submit" class="button save" value='Yes, Save the changes'>
     
     </form>   
 </fieldset>

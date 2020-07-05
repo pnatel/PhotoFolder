@@ -11,12 +11,10 @@
     <h2>WARNING: Files in this list will NOT be available</h2>
     <p>Items deleted will be added to this list. During copy job, it crosscheck with this list before copying files</p>
     <form action="{{ url_for('blacklist') }}" enctype="multipart/form-data" method="POST"> 
-        
-        <textarea rows="50" cols="100" name="blacklist">               
+        <textarea name="blacklist">               
 {{ blacklist }}        
         </textarea>
-        <input type="submit" class="button" value='Save the changes'>
-    
+        <input type="submit" class="button save" value='Save the changes'>
     </form>   
 </fieldset>
 {% endblock %}

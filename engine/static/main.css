@@ -1,3 +1,8 @@
+* { box-sizing: border-box; }
+
+.alert {
+  text-align: center;
+}
 
 .alert-success {
   color: green;
@@ -17,8 +22,41 @@
   background-color: rgba(51, 51, 51, 0.8);
 }
 
+.autoclose {
+  -moz-animation: pulsate 3s ease-out, close 0s ease-in 15s forwards;
+  /* Firefox */
+  -webkit-animation: pulsate 3s ease-out, close 0s ease-in 15s forwards;
+  /* Safari and Chrome */
+  -o-animation: pulsate 3s ease-out, close 0s ease-in 15s forwards;
+  /* Opera */
+  animation: pulsate 3s ease-out, close 0s ease-in 15s forwards;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  -webkit-animation-iteration-count: 4;
+  opacity: 0.5;
+}
+@keyframes close {
+  to {
+      width:0;
+      height:0;
+      overflow:hidden;
+  }
+}
+@-webkit-keyframes close {
+  to {
+      width:0;
+      height:0;
+      visibility:hidden;
+  }
+}
+
 .pulsate {
+  -moz-animation: pulsate 3s ease-out;
+  /* Firefox */
   -webkit-animation: pulsate 3s ease-out;
+  /* Safari and Chrome */
+  -o-animation: pulsate 3s ease-out;
+  /* Opera */
   -webkit-animation-iteration-count: 5;
   opacity: 0.5;
 }
@@ -57,6 +95,12 @@
   background-color: rgb(128, 111, 15);
   box-shadow: 0 5px #666;
   transform: translateY(4px);
+}
+
+.save{
+  display: block;
+  width: auto;
+  margin: auto;
 }
 
 .menu {
@@ -142,9 +186,17 @@ label img:hover {
   z-index: 990;
 } */
 
-em {
-  text-align: right;
-}
+h1, h2, h3 { text-align: center; }
+
+h2 { color: rgb(196, 51, 51); }
+
+em { text-align: right; }
+
+tr { border: 1px solid lightgrey; }
+
+small { font-size: xx-small; }
+
+p { text-align: center; }
 
 body {
   background-color: #333;
@@ -167,22 +219,9 @@ footer {
   background-image: linear-gradient(to bottom, rgba(184, 134, 11,0), rgba(184, 134, 11,0.8));
 }
 
-h1 {
-  text-align: center;
-}
-
-h2 {
-  text-align: left;
-  color: rgb(196, 51, 51);
-}
-
 button {
   align-self: auto;
   margin-left: 5em;
-}
-
-tr {
-  border: 1px solid lightgrey;
 }
 
 a {
@@ -191,10 +230,9 @@ a {
   color: #999;
 }
 
-p {
-  text-align: center;
-}
-
-small {
-  font-size: xx-small;
+textarea{
+  display: block;
+  width: 800px;
+  min-height: 400px;
+  margin: auto;
 }
