@@ -1,0 +1,238 @@
+* { box-sizing: border-box; }
+
+.alert {
+  text-align: center;
+}
+
+.alert-success {
+  color: green;
+  font-weight: bold;
+  background-color: rgba(51, 51, 51, 0.8);
+}
+ 
+.alert-warning {
+  color: yellow;
+  font-weight: bolder;
+  background-color: rgba(51, 51, 51, 0.8);  
+}
+
+.alert-danger {
+  color: red;
+  font-weight: bolder;
+  background-color: rgba(51, 51, 51, 0.8);
+}
+
+.autoclose {
+  -moz-animation: pulsate 3s ease-out, close 0s ease-in 15s forwards;
+  /* Firefox */
+  -webkit-animation: pulsate 3s ease-out, close 0s ease-in 15s forwards;
+  /* Safari and Chrome */
+  -o-animation: pulsate 3s ease-out, close 0s ease-in 15s forwards;
+  /* Opera */
+  animation: pulsate 3s ease-out, close 0s ease-in 15s forwards;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  -webkit-animation-iteration-count: 4;
+  opacity: 0.5;
+}
+@keyframes close {
+  to {
+      width:0;
+      height:0;
+      overflow:hidden;
+  }
+}
+@-webkit-keyframes close {
+  to {
+      width:0;
+      height:0;
+      visibility:hidden;
+  }
+}
+
+.pulsate {
+  -moz-animation: pulsate 3s ease-out;
+  /* Firefox */
+  -webkit-animation: pulsate 3s ease-out;
+  /* Safari and Chrome */
+  -o-animation: pulsate 3s ease-out;
+  /* Opera */
+  -webkit-animation-iteration-count: 5;
+  opacity: 0.5;
+}
+
+@-webkit-keyframes pulsate {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1.0;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.button {
+  padding: 5px 20px;
+  font-size: 20px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: darkgoldenrod;
+  background-color: rgb(33, 38, 43);
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 10px #999;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.button:hover {
+  background-color: rgb(87, 73, 9)
+}
+
+.button:active {
+  background-color: rgb(128, 111, 15);
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+.save{
+  display: block;
+  width: auto;
+  margin: auto;
+}
+
+.menu {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  margin: auto;
+  z-index: 999;
+  padding: 10px;
+  padding-bottom: 20px;
+  background-image: linear-gradient(to top, rgba(184, 134, 11,0), rgba(184, 134, 11,0.7));
+}
+  
+li {
+  display: inline-block;
+  list-style-type: square;
+  height: 1.6x;
+}
+
+input[type="checkbox"][id^="cb"] {
+  display: none;
+}
+
+label {
+  border: 1px solid #999;
+  padding: 10px;
+  display: block;
+  position: relative;
+  margin: auto;
+  margin-bottom: 10px;;
+  cursor: pointer;
+  text-align: center;
+}
+
+label:before {
+  background-color: white;
+  color: white;
+  content: " ";
+  display: block;
+  border-radius: 50%;
+  border: 1px solid grey;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  line-height: 28px;
+  transition-duration: 0.4s;
+  transform: scale(0);
+}
+
+label img {
+  height: 150px;
+  /* width: 200px; */
+  margin: auto;
+  transition-duration: 0.2s;
+  transform-origin: 50% 50%;
+}
+
+:checked + label {
+  border-color: #ddd;
+}
+
+:checked + label:before {
+  content: "✓";
+  background-color: green;
+  transform: scale(1);
+}
+
+:checked + label img {
+  transform: scale(0.9);
+  box-shadow: 0 0 5px #333;
+  z-index: -1;
+}
+/* 
+label img:hover {
+  position: relative;
+  width: 400px;
+  height: auto;
+  display: block;
+  z-index: 990;
+} */
+
+h1, h2, h3 { text-align: center; }
+
+h2 { color: rgb(196, 51, 51); }
+
+em { text-align: right; }
+
+tr { border: 1px solid lightgrey; }
+
+small { font-size: xx-small; }
+
+p { text-align: center; }
+
+body {
+  background-color: #333;
+  color: rgb(184, 134, 11);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+fieldset {
+  width: auto;
+  border: 0px;
+}
+
+footer {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  z-index: 999;
+  padding: 5px 10px;
+  background-image: linear-gradient(to bottom, rgba(184, 134, 11,0), rgba(184, 134, 11,0.8));
+}
+
+button {
+  align-self: auto;
+  margin-left: 5em;
+}
+
+a {
+  text-decoration: none;
+  /* font-family: 'Courier New', Courier, monospace; */
+  color: #999;
+}
+
+textarea{
+  display: block;
+  width: 800px;
+  min-height: 400px;
+  margin: auto;
+}

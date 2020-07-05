@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+    <head> 
+        <title>Photo Folder Management - {{ title }}</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='main.css')}}">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='favicon.png')}}"/>
+        <!-- <meta http-equiv="refresh" content="15"> -->
+    </head>
+    <body>
+        <h1>Photo Folder Management - {{ title }}</h1>
+        <!-- <em>Page will reload pictures automaticaly every 15 seconds</em> -->
+
+        {% block content %}
+        {% endblock %}
+    </body>
+
+    <footer>
+        <h3>Status messages:</h3>   
+        <!-- test message -->
+        <div class="row">
+            <div class="col-sm-4">
+                {% with errors = get_flashed_messages(category_filter=["info"]) %}
+                    {% if errors %}
+                        {%- for message in errors %}
+                            <div class="alert alert-success autoclose" role="alert">
+                                <span>{{ message }}</span>
+                            </div>
+                        {% endfor -%}
+                    {% endif %}
+                {% endwith %}
+            </div>
+            <div class="col-sm-4">
+                {% with errors = get_flashed_messages(category_filter=["warning"]) %}
+                    {% if errors %}
+                        {%- for message in errors %}
+                            <div class="alert alert-warning autoclose" role="alert">
+                                <span>{{ message }}</span>
+                            </div>
+                        {% endfor -%}
+                    {% endif %}
+                {% endwith %}
+            </div>
+            <div class="col-sm-4">
+                {% with errors = get_flashed_messages(category_filter=["error"]) %}
+                    {% if errors %}
+                        {%- for message in errors %}
+                            <div class="alert alert-danger pulsate" role="alert">
+                                <span>{{ message }}</span>
+                            </div>
+                        {% endfor -%}
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+        <p><a href="https://github.com/pnatel/PhotoFolder/blob/master/LICENSE">MIT License</a> | 
+        <a href="https://github.com/pnatel/PhotoFolder/">PhotoFolder By pnatel - 2020</a></p>
+    </footer>
+
+</html>
