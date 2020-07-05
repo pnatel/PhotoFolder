@@ -12,8 +12,7 @@ ENV hostname=photomanager \
 # Update aptitude and install software 
 RUN apt-get update && apt-get install -y curl
 
-VOLUME /source
-VOLUME /destination
+VOLUME [ "/config", "/source", "/destination" ]
 
 WORKDIR /app
 
@@ -25,7 +24,9 @@ COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt && \
 	rm -r /app/engine/static/destination && \
-    ln -s /destination /app/engine/static
+    ln -s /destination /app/engine/static && \
+    mv /app/config /config && \
+    ln -s /config /app
 
 EXPOSE 23276
 
