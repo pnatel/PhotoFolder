@@ -46,14 +46,14 @@ def get_app():
             elif request.form.get('favorite'):
                 faves = ls.common(payload, list)
                 flash('FAVORITED {}'.format(faves), 'info')
-                ls.append_multiple_lines('engine/static/whitelist.txt', faves)
+                ls.append_multiple_lines('config/whitelist.txt', faves)
                 title='FAVORITE Pictures'
 
             elif request.form.get('delete'):
                 delete(payload, list)
                 black = ls.common(payload, list)
                 flash('BLACKLISTED {}'.format(black), 'info')
-                ls.append_multiple_lines('engine/static/blacklist.txt', black)
+                ls.append_multiple_lines('config/blacklist.txt', black)
                 title='Remaining Pictures'
 
             elif request.form.get('copy_job'):
@@ -93,18 +93,18 @@ def get_app():
     @app.route('/config', methods = ['GET', 'POST'])
     def config():
         if request.method == 'GET':
-            with open("config.ini", "r") as f:
+            with open("config/config.ini", "r") as f:
                 return render_template('config.html', \
                     config_file=f.read(), \
                     title='Active Config')
         else:
             try:
-                if os.path.exists('config.old'):
-                    os.remove('config.old')
+                if os.path.exists('config/config.old'):
+                    os.remove('config/config.old')
                     flash('removing backup file config.old', 'info')
-                os.rename('config.ini', 'config.old')
+                os.rename('config/config.ini', 'config/config.old')
                 flash('Backup original configuration to config.old', 'info')
-                with open('config.ini', 'w') as f:
+                with open('config/config.ini', 'w') as f:
                     f.write(request.form.get('config'))
                     flash('New Config saved', 'info')
                     flash('RESTART THE APPLICATION FOR THE NEW SETTINGS TO GET EFFECT', 'critical')
@@ -117,7 +117,7 @@ def get_app():
     def blacklist():
         if request.method == 'GET':
             try:
-                with open('engine/static/blacklist.txt', 'r') as f:
+                with open('config/blacklist.txt', 'r') as f:
                     return render_template('blacklist.html', \
                         blacklist=f.read(), \
                         title='Blacklisted files')
@@ -125,12 +125,12 @@ def get_app():
                 flash('Operation failed: {}'.format(e.strerror), 'error')
         else:
             try:
-                if os.path.exists('engine/static/blacklist.old'):
-                    os.remove('engine/static/blacklist.old')
+                if os.path.exists('config/blacklist.old'):
+                    os.remove('config/blacklist.old')
                     flash('removing backup file blacklist.old', 'info')
-                os.rename('engine/static/blacklist.txt', 'engine/static/blacklist.old')
+                os.rename('config/blacklist.txt', 'config/blacklist.old')
                 flash('Backup original configuration to blacklist.old', 'info')
-                with open('engine/static/blacklist.txt', 'w') as f:
+                with open('config/blacklist.txt', 'w') as f:
                     f.write(request.form.get('blacklist'))
                     flash('New blacklist file saved', 'info')
                 return redirect('/blacklist') 
@@ -141,7 +141,7 @@ def get_app():
     def whitelist():
         if request.method == 'GET':
             try:
-                with open('engine/static/whitelist.txt', 'r') as f:
+                with open('config/whitelist.txt', 'r') as f:
                     return render_template('whitelist.html', \
                         whitelist=f.read(), \
                         title='whitelisted files')
@@ -149,12 +149,12 @@ def get_app():
                 flash('Operation failed: {}'.format(e.strerror), 'error')
         else:
             try:
-                if os.path.exists('engine/static/whitelist.old'):
-                    os.remove('engine/static/whitelist.old')
+                if os.path.exists('config/whitelist.old'):
+                    os.remove('config/whitelist.old')
                     flash('removing backup file whitelist.old', 'info')
-                os.rename('engine/static/whitelist.txt', 'engine/static/whitelist.old')
+                os.rename('config/whitelist.txt', 'config/whitelist.old')
                 flash('Backup original configuration to whitelist.old', 'info')
-                with open('engine/static/whitelist.txt', 'w') as f:
+                with open('config/whitelist.txt', 'w') as f:
                     f.write(request.form.get('whitelist'))
                     flash('New whitelist file saved', 'info')
                 return redirect('/whitelist') 

@@ -60,7 +60,7 @@ def copy_job():
         folderPrunning(cfg._destinationFolder, 2)
         logging.info('Number of selected files on the sample: ' + str(len(sample)))
         # keeping source address of all files for backtrack 
-        ls.append_multiple_lines('engine/static/source.txt', sample)
+        ls.append_multiple_lines('config/source.txt', sample)
         copyFiles(sample)
 
     logging.info('New folder Size ' + str(getSizeMB(cfg._destinationFolder)) + 'Mb')
@@ -214,8 +214,8 @@ def sorting(filenames, criteria=1, sampleSize=10):
         logging.info('Getting a random set of ' + str(sampleSize) + ' Photos')
         try:
             list_sample = random.sample(filenames, sampleSize)
-            non_black = remove_common_from_list ('engine/static/blacklist.txt', list_sample, 'engine/static/source.txt')
-            non_white = remove_common_from_list ('engine/static/whitelist.txt', list_sample)
+            non_black = remove_common_from_list ('config/blacklist.txt', list_sample, 'config/source.txt')
+            non_white = remove_common_from_list ('config/whitelist.txt', list_sample)
             logging.debug('non_black' + str(non_black))
             logging.debug('non_white' + str(non_white))
             return ls.common(non_black, non_white)
