@@ -58,7 +58,7 @@
   -o-animation: pulsate 3s ease-out;
   /* Opera */
   -webkit-animation-iteration-count: 5;
-  opacity: 0.5;
+  opacity: 1.0;
 }
 
 @-webkit-keyframes pulsate {
@@ -83,7 +83,7 @@
   background-color: rgb(33, 38, 43);
   border: none;
   border-radius: 10px;
-  box-shadow: 0 10px #999;
+  box-shadow: 0 8px rgba(100, 100, 100, 0.4);
   font-family: 'Courier New', Courier, monospace;
 }
 
@@ -93,7 +93,7 @@
 
 .button:active {
   background-color: rgb(128, 111, 15);
-  box-shadow: 0 5px #666;
+  box-shadow: 0 4px rgba(100, 100, 100, 0.8);;
   transform: translateY(4px);
 }
 
@@ -114,7 +114,7 @@
   padding-bottom: 20px;
   background-image: linear-gradient(to top, rgba(184, 134, 11,0), rgba(184, 134, 11,0.7));
 }
-  
+
 li {
   display: inline-block;
   list-style-type: square;
@@ -177,14 +177,11 @@ label img {
   box-shadow: 0 0 5px #333;
   z-index: -1;
 }
-/* 
-label img:hover {
-  position: relative;
-  width: 400px;
-  height: auto;
-  display: block;
-  z-index: 990;
-} */
+
+label.favorite {
+  border: 3px dashed palegoldenrod;
+  box-shadow: 0 0 10px palegoldenrod;
+}
 
 h1, h2, h3 { text-align: center; }
 
@@ -227,7 +224,7 @@ button {
 a {
   text-decoration: none;
   /* font-family: 'Courier New', Courier, monospace; */
-  color: #999;
+  color: lightgrey;
 }
 
 textarea{
@@ -235,4 +232,9 @@ textarea{
   width: 800px;
   min-height: 400px;
   margin: auto;
+}
+
+footer > p > a {
+  font-weight: bold;
+  color: rgb(51, 51, 51);
 }

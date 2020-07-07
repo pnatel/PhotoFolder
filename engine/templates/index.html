@@ -16,7 +16,12 @@
         <ul>
             {% for i in range(len_list) %}
                 <li><input type="checkbox" id="cb{{ i }}" name="cb{{ i }}" value="{{ images[i-1] }}">
-                <label for="cb{{ i }}"><img src="{{ images[i-1][7:] }}" alt="{{ images[i-1].split('/')[-1] }}">
+                {% if images[i-1].split('/')[-1] in extra_list %}
+                <label for="cb{{ i }}" class="favorite">
+                {% else %}
+                <label for="cb{{ i }}">
+                {% endif %}
+                <img src="{{ images[i-1][7:] }}" alt="{{ images[i-1].split('/')[-1] }}">
                     <br> <a href="{{ images[i-1][7:] }}" target=”_blank”><small>{{ images[i-1].split('/')[-1] }}</small></a>
                 </label>
                 </li>

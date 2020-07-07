@@ -72,7 +72,8 @@ def get_app():
     def load_pics(list, page='index.html', title=''):
         flash('Files loaded: ' + str(len(list)), 'info')
         return render_template(page, title=title, \
-                images=list, len_list=len(list))
+                images=list, len_list=len(list), \
+                extra_list=(read_file('config/whitelist.txt')))
 
     def rotate(payload, list, side):
         for i  in range(len(list)):
@@ -89,77 +90,61 @@ def get_app():
                 filePrunning(list[i])
             # flash('.', 'info')
 
+    def read_file(file):
+        try:
+            with open(file, 'r') as f:
+                return f.read()
+        except IOError as e:
+            flash('Operation failed: {}'.format(e.strerror), 'error')
+    
+    def write_file(file, content):
+        try:
+            if os.path.exists(file+'_old'):
+                os.remove(file+'_old')
+                flash('removing backup file', 'info')
+            os.rename(file, file+'_old')
+            flash('Backup original configuration to {}_old'.format(file), 'info')
+            with open(file, 'w') as f:
+                f.write(content)
+                flash('File saved on {}'.format(file), 'info')
+        except IOError as e:
+            flash(e, 'error')
+
 
     @app.route('/config', methods = ['GET', 'POST'])
     def config():
         if request.method == 'GET':
-            with open("config/config.ini", "r") as f:
-                return render_template('config.html', \
-                    config_file=f.read(), \
-                    title='Active Config')
+            return render_template('config.html', \
+                config_file=read_file('config/config.ini'), \
+                title='Active Config')
         else:
-            try:
-                if os.path.exists('config/config.old'):
-                    os.remove('config/config.old')
-                    flash('removing backup file config.old', 'info')
-                os.rename('config/config.ini', 'config/config.old')
-                flash('Backup original configuration to config.old', 'info')
-                with open('config/config.ini', 'w') as f:
-                    f.write(request.form.get('config'))
-                    flash('New Config saved', 'info')
-                    flash('RESTART THE APPLICATION FOR THE NEW SETTINGS TO GET EFFECT', 'critical')
-                reload()
-                return redirect('/') 
-            except IOError as e:
-                flash(e, 'error')
+            write_file('config/config.ini', request.form.get('config'))
+            flash('RESTART THE APPLICATION FOR THE NEW SETTINGS TO GET EFFECT', 'critical')
+            reload()
+            return redirect('/config') 
+
 
     @app.route('/blacklist', methods = ['GET', 'POST'])
     def blacklist():
         if request.method == 'GET':
-            try:
-                with open('config/blacklist.txt', 'r') as f:
-                    return render_template('blacklist.html', \
-                        blacklist=f.read(), \
-                        title='Blacklisted files')
-            except IOError as e:
-                flash('Operation failed: {}'.format(e.strerror), 'error')
+            return render_template('blacklist.html', \
+                blacklist=read_file('config/blacklist.txt'), \
+                title='Blacklisted files')
         else:
-            try:
-                if os.path.exists('config/blacklist.old'):
-                    os.remove('config/blacklist.old')
-                    flash('removing backup file blacklist.old', 'info')
-                os.rename('config/blacklist.txt', 'config/blacklist.old')
-                flash('Backup original configuration to blacklist.old', 'info')
-                with open('config/blacklist.txt', 'w') as f:
-                    f.write(request.form.get('blacklist'))
-                    flash('New blacklist file saved', 'info')
-                return redirect('/blacklist') 
-            except IOError as e:
-                flash(e, 'error')
+            write_file('config/blacklist.txt', request.form.get('blacklist'))
+            return redirect('/blacklist') 
+
 
     @app.route('/whitelist', methods = ['GET', 'POST'])
     def whitelist():
         if request.method == 'GET':
-            try:
-                with open('config/whitelist.txt', 'r') as f:
-                    return render_template('whitelist.html', \
-                        whitelist=f.read(), \
-                        title='whitelisted files')
-            except IOError as e:
-                flash('Operation failed: {}'.format(e.strerror), 'error')
+            return render_template('whitelist.html', \
+                whitelist=read_file('config/whitelist.txt'), \
+                title='whitelisted files')
         else:
-            try:
-                if os.path.exists('config/whitelist.old'):
-                    os.remove('config/whitelist.old')
-                    flash('removing backup file whitelist.old', 'info')
-                os.rename('config/whitelist.txt', 'config/whitelist.old')
-                flash('Backup original configuration to whitelist.old', 'info')
-                with open('config/whitelist.txt', 'w') as f:
-                    f.write(request.form.get('whitelist'))
-                    flash('New whitelist file saved', 'info')
-                return redirect('/whitelist') 
-            except IOError as e:
-                flash(e, 'error')
+            write_file('config/whitelist.txt', request.form.get('whitelist'))
+            flash('New whitelist file saved', 'info')
+            return redirect('/whitelist') 
 
 
     @app.route('/reload')
