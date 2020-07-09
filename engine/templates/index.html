@@ -4,13 +4,33 @@
 
     <form action="{{ url_for('index') }}" enctype="multipart/form-data" method="POST"> 
         <fieldset class="menu"> 
-            <a href="/" class="button">Home</a>
-            <a href="config" class="button">Configuration</a> 
-            <input type="submit" class="button" name="left" value="Rotate Left">
-            <input type="submit" class="button" name="right" value="Rotate Right">
-            <input type="submit" class="button" name="delete" value="Delete">
-            <input type="submit" class="button" name="favorite" value="Add to Favorite">
-            <input type="submit" class="button" name="copy_job" value="Copy Job">
+            <div class="menu_items">
+                <a href="/" class="button">Home</a>
+                <a href="config" class="button">Configuration</a> 
+                <input type="submit" class="button" name="left" value="Rotate Left">
+                <input type="submit" class="button" name="right" value="Rotate Right">
+                <input type="submit" class="button" name="delete" value="Delete">
+                <input type="submit" class="button" name="favorite" value="Add to Favorite">
+                <input type="submit" class="button" name="copy_job" value="Copy Job">
+            </div>
+                
+            <!-- <div class="col-msg">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class=pulsate>
+                    {% for category, message in messages %}
+                        {% if category == "message" %}
+                            <li class="message">{{ message }}</li>
+                        {% else %}
+                            <li class="{{ category }} alert autoclose">{{ category }}: {{ message }}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <h3>Status messages</h3>   
+                {% endif %}
+                {% endwith %}
+            </div> -->
         </fieldset>    
         <fieldset>
         <ul>

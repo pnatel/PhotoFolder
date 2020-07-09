@@ -9,17 +9,37 @@
         <!-- <meta http-equiv="refresh" content="15"> -->
     </head>
     <body>
-        <h1>Photo Folder Management - {{ title }}</h1>
+        <header>
+            <h1>Photo Folder Management - {{ title }}</h1>
         <!-- <em>Page will reload pictures automaticaly every 15 seconds</em> -->
-
+        </header>
+        <div class="col-msg">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class=flashes>
+                {% for category, message in messages %}
+                    {% if category == "message" %}
+                        <li class="message info pulsate">
+                            {{ message }}
+                        </li>
+                    {% else %}
+                        <li class="{{ category }} alert autoclose">{{ category }}: {{ message }}</li>
+                    {% endif %}
+                {% endfor %}
+                </ul>
+            {% else %}
+                <h3>Status messages</h3>   
+            {% endif %}
+            {% endwith %}
+        </div>
         {% block content %}
         {% endblock %}
     </body>
 
     <footer>
-        <h3>Status messages:</h3>   
         <!-- test message -->
-        <div class="row">
+        
+        <!-- <div class="row">
             <div class="col-sm-4">
                 {% with errors = get_flashed_messages(category_filter=["info"]) %}
                     {% if errors %}
@@ -53,7 +73,7 @@
                     {% endif %}
                 {% endwith %}
             </div>
-        </div>
+        </div> -->
         <p><a href="https://github.com/pnatel/PhotoFolder/blob/master/LICENSE">MIT License</a> | 
         <a href="https://github.com/pnatel/PhotoFolder/">PhotoFolder By pnatel - 2020</a></p>
     </footer>

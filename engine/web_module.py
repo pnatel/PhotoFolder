@@ -70,7 +70,7 @@ def get_app():
             return load_pics(list, title=title)
 
     def load_pics(list, page='index.html', title=''):
-        flash('Files loaded: ' + str(len(list)), 'info')
+        flash('Files loaded: ' + str(len(list)), 'message')
         return render_template(page, title=title, \
                 images=list, len_list=len(list), \
                 extra_list=(read_file('config/whitelist.txt')))
