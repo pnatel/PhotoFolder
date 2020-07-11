@@ -34,7 +34,9 @@ def get_app():
 
         else:
             payload = request.get_data().decode("utf-8")
-            flash(payload, 'debug')
+            # only shows debug if in demo mode
+            if bool(strtobool(cfg._test.capitalize())):
+                flash(payload, 'debug')
             if request.form.get('left'):
                 rotate(payload, list, 'left')
                 title='ROTATED Pictures'
