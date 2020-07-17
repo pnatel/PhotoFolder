@@ -2,11 +2,17 @@ import configparser
 import logging
 
 # Running as standalone or part of the application
-if __name__ == '__main__' or __name__ == 'app_config':
-    from loggerinitializer import initialize_logger
-else: 
-    from engine.loggerinitializer import initialize_logger
+# if __name__ == '__main__' or __name__ == 'app_config':
+#     from loggerinitializer import initialize_logger
+# else: 
+#     from engine.loggerinitializer import initialize_logger
 
+# try:
+#     from loggerinitializer import initialize_logger
+# except AttributeError as identifier:
+#     print(identifier)
+# else:
+#     from engine.loggerinitializer import initialize_logger
 
 # Global Variables
 
