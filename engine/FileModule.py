@@ -26,6 +26,8 @@ if __name__ == '__main__' or __name__ == 'FileModule':
     import app_config as cfg
     from loggerinitializer import initialize_logger
     import list_module as ls
+    import setup as stp
+    stp.setup()
 else: 
     import engine.app_config as cfg
     from engine.loggerinitializer import initialize_logger

@@ -23,25 +23,39 @@ empty_files = [
 
 config = 'data/config.ini'
 
-# create empty folders and files
 def empty_structure(folders=folders, files=empty_files):
+    '''
+    Create empty folders and files
+    '''
     try:
         print('Creating folders:', folders)
         for folder in folders:
-            if os.path.exists(folder) and os.path.isdir(folder):
-                print(folder, 'already exists')
-            else: 
-                os.mkdir(folder)
-                print(folder, 'Created')
+            folder_check(folder)
         print('Creating empty files:', files)
         for file in files:
-            if os.path.exists(file) and os.path.isfile(file):
-                print(file, 'already exists')
-            else: 
-                with open(file, "x") as f:
-                    print(file, 'Created')
+            file_check(file)
     except OSError as identifier:
         print(identifier)
+
+def folder_check(folder):
+    '''
+    Check if folder exists otherwise create it
+    '''
+    if os.path.exists(folder) and os.path.isdir(folder):
+        print(folder, 'already exists')
+    else: 
+        os.mkdir(folder)
+        print(folder, 'Created')
+
+def file_check(file):
+    '''
+    Check if file exists otherwise create a blank version
+    '''
+    if os.path.exists(file) and os.path.isfile(file):
+        print(file, 'already exists')
+    else: 
+        with open(file, "x"):
+            print(file, 'Created')
 
 # ----------Create config template-----------
 def create_config(cfg=config):
