@@ -26,9 +26,9 @@ VOLUME [ "/data", "/source", "/destination" ]
 WORKDIR /app
 
 RUN pip install --no-cache-dir -r requirements.txt && \
-	rm -r /app/engine/static/destination && \
+#	rm -r /app/engine/static/destination && \
     ln -s /destination /app/engine/static && \
-    mv /app/data /data && \
+#   mv /app/data /data && \
     ln -s /data /app
 
 EXPOSE 23276

@@ -11,7 +11,13 @@
 import logging
 import os.path
 from distutils.util import strtobool
-import engine.app_config as cfg
+
+# Running as standalone or part of the application
+# print(__name__)
+if __name__ == '__main__' or __name__ == 'loggerinitializer':
+    import app_config as cfg
+else: 
+    import engine.app_config as cfg
 
 # cfg.load_config()
 
