@@ -86,7 +86,7 @@
 }
 
 .button {
-  padding: 5px 20px;
+  padding: 4px 20px;
   font-size: 20px;
   text-align: center;
   cursor: pointer;
@@ -95,7 +95,7 @@
   background-color: rgb(33, 38, 43);
   border: none;
   border-radius: 10px;
-  box-shadow: 0 8px rgba(100, 100, 100, 0.8);
+  box-shadow: 0 6px rgba(100, 100, 100, 0.8);
   font-family: 'Courier New', Courier, monospace;
 }
 
@@ -103,9 +103,13 @@
   background-color: rgb(87, 73, 9)
 }
 
+.sub-menu-parent:hover > ul{
+  display: inline-block;
+}
+
 .button:active {
   background-color: rgb(128, 111, 15);
-  box-shadow: 0 4px rgba(100, 100, 100, 0.8);;
+  box-shadow: 0 3px rgba(100, 100, 100, 0.8);;
   transform: translateY(4px);
 }
 
@@ -123,7 +127,7 @@
   height: 60px;
   margin: auto;
   z-index: 999;
-  padding: 10px;
+  padding: 6px;
   padding-bottom: 20px;
   background-image: linear-gradient(to top, rgba(184, 134, 11,0), rgba(184, 134, 11,0.7));
 }
@@ -131,11 +135,17 @@
 .menu_items {
   display: inline-block;
   position: absolute;
-  left: 10px;
-  width: 75%;
+  padding-left: 10px;
+  width: 100%;
   margin: auto;
   vertical-align: top;
   /* text-align: right; */
+}
+
+.sub-menu {
+  display: none;
+  padding-left: 4px;
+  /* border: 2px dotted rgb(33, 38, 43);; */
 }
 
 header {

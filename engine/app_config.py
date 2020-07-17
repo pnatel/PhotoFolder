@@ -23,7 +23,7 @@ _jobInterval = 0
 _command = ''
 
 config = configparser.ConfigParser()
-config.read('../config/config.ini')
+config.read('../data/config.ini')
 
 # Loading Conguration file (config.ini)
 # Code from https://wiki.python.org/moin/ConfigParserExamples
@@ -41,12 +41,12 @@ def ConfigSectionMap(section):
     return dict1
 
 def print_config():
-    config.read('config/config.ini')
+    config.read('data/config.ini')
     return {s:dict(config.items(s)) for s in config.sections()}
 
 def load_config():
     logging.info('Loading config')
-    config.read('config/config.ini')
+    config.read('data/config.ini')
 
     global _sourceFolder
     global _destinationFolder 

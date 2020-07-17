@@ -3,16 +3,21 @@
 {% block content %}
 
     <form action="{{ url_for('index') }}" enctype="multipart/form-data" method="POST"> 
-        <fieldset class="menu"> 
-            <div class="menu_items">
-                <a href="/" class="button">Home</a>
-                <a href="config" class="button">Configuration</a> 
-                <input type="submit" class="button" name="left" value="Rotate Left">
-                <input type="submit" class="button" name="right" value="Rotate Right">
-                <input type="submit" class="button" name="delete" value="Delete">
-                <input type="submit" class="button" name="favorite" value="Add to Favorite">
-                <input type="submit" class="button" name="copy_job" value="Copy Job">
-            </div>
+        <nav class="menu"> 
+            <ul class="menu_items">
+                <li><a href="/" class="button">Home</a></li>
+                <li><a href="config" class="button">Configuration</a> </li>
+                <li><input type="submit" class="button" name="delete" value="Delete"></li>
+                <li><input type="submit" class="button" name="favorite" value="Add to Favorite"></li>
+                <li><input type="submit" class="button" name="copy_job" value="Copy Job"></li>
+                <li class="sub-menu-parent">
+                    <a href="#" class="button">Rotate</a>
+                    <ul class="sub-menu">
+                        <li><input type="submit" class="button" name="left" value="Left"></li>
+                        <li><input type="submit" class="button" name="right" value="Right"></li>
+                    </ul>
+                </li>
+            </ul>
                 
             <!-- <div class="col-msg">
                 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -31,7 +36,7 @@
                 {% endif %}
                 {% endwith %}
             </div> -->
-        </fieldset>    
+        </nav>    
         <fieldset>
         <ul>
             {% for i in range(len_list) %}
