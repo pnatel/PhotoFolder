@@ -10,28 +10,39 @@
 
 import logging
 import os.path
- 
+from distutils.util import strtobool
+
+# Running as standalone or part of the application
+# print(__name__)
+if __name__ == '__main__' or __name__ == 'loggerinitializer':
+    import app_config as cfg
+else: 
+    import engine.app_config as cfg
+
+# cfg.load_config()
+
 def initialize_logger(output_dir):
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.WARNING)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-     
-    # create console handler and set level to info
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
-    # formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+
+    if bool(strtobool(cfg._test.capitalize())): 
+        # create console handler and set level to info
+        handler = logging.StreamHandler()
+        handler.setLevel(logging.DEBUG)
+        # formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
  
     # create error file handler and set level to error
-    handler = logging.FileHandler(os.path.join(output_dir, "error_{}.log".format(__name__)),"w", encoding=None, delay="true")
+    handler = logging.FileHandler(os.path.join(output_dir, "error.log"),"w", encoding=None, delay="true")
     handler.setLevel(logging.ERROR)
     # formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
  
     # create debug file handler and set level to debug
-    handler = logging.FileHandler(os.path.join(output_dir, "debug_{}.log".format(__name__)),"w")
+    handler = logging.FileHandler(os.path.join(output_dir, "debug.log"),"w")
     handler.setLevel(logging.DEBUG)
     # formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)

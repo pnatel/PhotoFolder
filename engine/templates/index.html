@@ -3,20 +3,50 @@
 {% block content %}
 
     <form action="{{ url_for('index') }}" enctype="multipart/form-data" method="POST"> 
-        <fieldset class="menu"> 
-            <a href="/" class="button">Home</a>
-            <a href="config" class="button">Configuration</a> 
-            <input type="submit" class="button" name="left" value="Rotate Left">
-            <input type="submit" class="button" name="right" value="Rotate Right">
-            <input type="submit" class="button" name="delete" value="Delete">
-            <input type="submit" class="button" name="favorite" value="Add to Favorite">
-            <input type="submit" class="button" name="copy_job" value="Copy Job">
-        </fieldset>    
+        <nav class="menu"> 
+            <ul class="menu_items">
+                <li><a href="/" class="button">Home</a></li>
+                <li><a href="config" class="button">Configuration</a> </li>
+                <li><input type="submit" class="button" name="delete" value="Delete"></li>
+                <li><input type="submit" class="button" name="favorite" value="Add to Favorite"></li>
+                <li><input type="submit" class="button" name="copy_job" value="Copy Job"></li>
+                <li class="sub-menu-parent">
+                    <a href="#" class="button">Rotate</a>
+                    <ul class="sub-menu">
+                        <li><input type="submit" class="button" name="left" value="Left"></li>
+                        <li><input type="submit" class="button" name="right" value="Right"></li>
+                    </ul>
+                </li>
+            </ul>
+                
+            <!-- <div class="col-msg">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class=pulsate>
+                    {% for category, message in messages %}
+                        {% if category == "message" %}
+                            <li class="message">{{ message }}</li>
+                        {% else %}
+                            <li class="{{ category }} alert autoclose">{{ category }}: {{ message }}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <h3>Status messages</h3>   
+                {% endif %}
+                {% endwith %}
+            </div> -->
+        </nav>    
         <fieldset>
         <ul>
             {% for i in range(len_list) %}
                 <li><input type="checkbox" id="cb{{ i }}" name="cb{{ i }}" value="{{ images[i-1] }}">
-                <label for="cb{{ i }}"><img src="{{ images[i-1][7:] }}" alt="{{ images[i-1].split('/')[-1] }}">
+                {% if images[i-1].split('/')[-1] in extra_list %}
+                <label for="cb{{ i }}" class="favorite">
+                {% else %}
+                <label for="cb{{ i }}">
+                {% endif %}
+                <img src="{{ images[i-1][7:] }}" alt="{{ images[i-1].split('/')[-1] }}">
                     <br> <a href="{{ images[i-1][7:] }}" target=”_blank”><small>{{ images[i-1].split('/')[-1] }}</small></a>
                 </label>
                 </li>

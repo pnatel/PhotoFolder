@@ -2,11 +2,17 @@ import configparser
 import logging
 
 # Running as standalone or part of the application
-if __name__ == '__main__' or __name__ == 'app_config':
-    from loggerinitializer import initialize_logger
-else: 
-    from engine.loggerinitializer import initialize_logger
+# if __name__ == '__main__' or __name__ == 'app_config':
+#     from loggerinitializer import initialize_logger
+# else: 
+#     from engine.loggerinitializer import initialize_logger
 
+# try:
+#     from loggerinitializer import initialize_logger
+# except AttributeError as identifier:
+#     print(identifier)
+# else:
+#     from engine.loggerinitializer import initialize_logger
 
 # Global Variables
 
@@ -23,7 +29,7 @@ _jobInterval = 0
 _command = ''
 
 config = configparser.ConfigParser()
-config.read('../config/config.ini')
+config.read('../data/config.ini')
 
 # Loading Conguration file (config.ini)
 # Code from https://wiki.python.org/moin/ConfigParserExamples
@@ -41,12 +47,12 @@ def ConfigSectionMap(section):
     return dict1
 
 def print_config():
-    config.read('config/config.ini')
+    config.read('data/config.ini')
     return {s:dict(config.items(s)) for s in config.sections()}
 
 def load_config():
     logging.info('Loading config')
-    config.read('config/config.ini')
+    config.read('data/config.ini')
 
     global _sourceFolder
     global _destinationFolder 
