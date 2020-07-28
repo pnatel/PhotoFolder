@@ -14,7 +14,7 @@
   background-color: rgba(51, 51, 51, 0.8);  
 }
 
-.error {
+.error, .critical {
   color: red;
   font-weight: bolder;
   background-color: rgba(51, 51, 51, 0.8);
@@ -148,6 +148,12 @@
   /* border: 2px dotted rgb(33, 38, 43);; */
 }
 
+.reset {
+  background-color: red;
+  color: black;
+  font-weight: bold;
+}
+
 header {
   display: inline-block;
   left: 0;
@@ -197,8 +203,8 @@ label:before {
 }
 
 label img {
-  height: 150px;
-  /* width: 200px; */
+  /*height: 150px;
+  width: 200px; */
   margin: auto;
   transition-duration: 0.2s;
   transform-origin: 50% 50%;

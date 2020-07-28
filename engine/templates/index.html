@@ -46,8 +46,9 @@
                 {% else %}
                 <label for="cb{{ i }}">
                 {% endif %}
-                <img src="{{ images[i-1][7:] }}" alt="{{ images[i-1].split('/')[-1] }}">
-                    <br> <a href="{{ images[i-1][7:] }}" target=”_blank”><small>{{ images[i-1].split('/')[-1] }}</small></a>
+                <!-- WARNING: Changes in thumbnail quality require adjustments in "filePrunning" function -->
+                <img src="{{ path }}{{ images[i-1]|thumbnail('200x200') }}" alt="{{ images[i-1] }}">
+                    <br> <a href="{{ path }}{{ images[i-1] }}" target=”_blank”><small>{{ images[i-1] }}</small></a>
                 </label>
                 </li>
             {% endfor %}

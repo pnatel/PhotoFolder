@@ -127,14 +127,15 @@ command = ping google.com'''
     except OSError as identifier:
         print(identifier)
 
-def clean_folders(folders=folders):
+def clean_folders(folders=folders, warning=1):
     print('''
     WARNING
     This function will reset the app to its defaults.
     All configuration, logs and other content will be 
     removed with NO warnings
     ''')
-    input('Press CTRL+C to exit or any key to continue.')
+    if warning:
+        input('Press CTRL+C to exit or any key to continue.')
     try:
         print('removing folders:', folders)
         for folder in folders:

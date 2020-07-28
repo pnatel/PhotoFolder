@@ -44,6 +44,7 @@ def notification():
     # else:
     #     command = "ls -l"
     os.system(command)
+    logging.info("Sending Notification : {}".format(command))
 
 if __name__ == "__main__":
     tl.start(block=True)

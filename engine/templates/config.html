@@ -1,12 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-<fieldset class="menu"> 
-    <a href="/" class="button">Home</a>
-    <a href="config" class="button">Configuration</a>
-    <a href="blacklist" class="button">Blacklist</a>
-    <a href="whitelist" class="button">Whitelist</a>
-</fieldset>
+<nav class="menu"> 
+    <ul class="menu_items">
+        <li><a href="/" class="button">Home</a></li>
+        <li><a href="config" class="button">Configuration</a> </li>
+        <li><a href="blacklist" class="button">Blacklist</a></li>
+        <li><a href="whitelist" class="button">Whitelist</a></li>
+        <li><a href="/reset" class="button reset">Restore Defaults DO NOT CLICK!</a></li>
+    </ul>
+</nav>
+
 <fieldset>
     <h2>WARNING: SAVING CHANGES HERE MAY RENDER THE APP UNUSABLE</h2>
     <form action="{{ url_for('config') }}" enctype="multipart/form-data" method="POST"> 

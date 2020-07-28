@@ -25,13 +25,11 @@ import logging
 if __name__ == '__main__' or __name__ == 'FileModule':
     import app_config as cfg
     from loggerinitializer import initialize_logger
-    import list_module as ls
     import setup as stp
     stp.setup()
 else: 
     import engine.app_config as cfg
     from engine.loggerinitializer import initialize_logger
-    import engine.list_module as ls
 
 cfg.load_config()
 initialize_logger(cfg._logPath)
@@ -62,7 +60,7 @@ def copy_job():
         folderPrunning(cfg._destinationFolder, 2)
         logging.info('Number of selected files on the sample: ' + str(len(sample)))
         # keeping source address of all files for backtrack 
-        ls.append_multiple_lines('data/source.txt', sample)
+        append_multiple_lines('data/source.txt', sample)
         copyFiles(sample)
 
     logging.info('New folder Size ' + str(getSizeMB(cfg._destinationFolder)) + 'Mb')
@@ -109,22 +107,25 @@ def folderPrunning(folder = cfg._destinationFolder, multiplier = 1):
     else:
         logging.info(str(folderSize) + ' smaller than ' + str(cfg._foldersizeUpperLimit))
 
-def filePrunning(filePath):
+def filePrunning(path, _file):
     try:
-        os.remove(filePath)
+        os.remove(path + _file)
+        filename, file_extension = os.path.splitext(_file)
+        # Thumbnail removal changes in index.html may require adjustments here
+        os.remove(path + '/thumbnail/' + filename + '_200x200_fit_90' + file_extension)
     except OSError as e:
         logging.error(e.errno)
-        logging.error('FILE NOT FOUND ' + filePath)
-        return 'File Not Found: '+ filePath
+        logging.error('FILE NOT FOUND ' + path + _file)
+        return 'File Not Found: ' + path + _file
     else:
-        logging.info('file removed ' + filePath)
-        return 'File removed: '+ filePath
+        logging.info('file removed '  + path + _file)
+        return 'File removed: ' + path + _file
 
 
-def fileRotate(filePath,side='left'):
+def fileRotate(path, _file, side='left'):
     try:
-        picture= Image.open(filePath)
-        path = filePath.split('.')
+        picture= Image.open(path + _file)
+        path = path + _file.split('.')
         ext = path.pop()
         if side=='left':
             new_path = '_'.join(path) + '_L.' + ext
@@ -133,19 +134,19 @@ def fileRotate(filePath,side='left'):
             new_path = '_'.join(path) + '_R.' + ext
             picture.rotate(270, expand=True).save(new_path)
         picture.close()
-        filePrunning(filePath)
+        filePrunning(path, _file)
         # print (new_path)
     except OSError as e:
         logging.error(e.errno + e)
-        logging.error('Failed to rotate ' + filePath)
-        return 'Failed to rotate: '+ filePath
+        logging.error('Failed to rotate ' + path + _file)
+        return 'Failed to rotate: ' + path + _file
     else:
         logging.info('file rotated '+ side + ': ' + new_path)
         return 'file rotated ' + side + ': ' + new_path
 
 
 # -----------------
-def getListOfFiles(dirName):
+def getListOfFiles(dirName, add_path=True):
     '''
     For the given path, get the List of all files in the directory tree
     '''
@@ -156,7 +157,10 @@ def getListOfFiles(dirName):
     # Iterate over all the entries
     for entry in listOfFile:
         # Create full path
-        fullPath = os.path.join(dirName, entry)
+        if add_path: 
+            fullPath = os.path.join(dirName, entry)
+        else: 
+            fullPath = fullPath = entry
         # If entry is a directory then get the list of files in this directory
         if os.path.isdir(fullPath):
             allFiles = allFiles + getListOfFiles(fullPath)
@@ -220,25 +224,25 @@ def sorting(filenames, criteria=1, sampleSize=10):
             non_white = remove_common_from_list ('data/whitelist.txt', list_sample)
             logging.debug('non_black' + str(non_black))
             logging.debug('non_white' + str(non_white))
-            return ls.common(non_black, non_white)
+            return common(non_black, non_white)
         except ValueError as error:
             logging.error(error)
             return False
 
     # NO OTHER SORTING METHOD IS WORKING  :-[
-    elif criteria == 2:
-        print('Getting a random set of ' + str(cfg._numberOfPics)) # + ' Photos with no less than ' + str(cfg._newerPhotos/365) + ' years')
-        files = sorted(os.listdir(cfg._sourceFolder), key=os.path.getctime)
-        # while files[i]. os.path.getctime > cfg._newerPhotos:
-        for i in range(cfg._numberOfPics):
-            newest = files[-i]
-            return random.sample(newest, cfg._numberOfPics)
-    elif criteria == 3:
-        files = sorted(os.listdir(cfg._sourceFolder),
-            key=os.path.getctime, reverse = True)
-        return random.sample(files, cfg._numberOfPics)
-    # elif:
-    #     oldest = files[0]
+    # elif criteria == 2:
+    #     print('Getting a random set of ' + str(cfg._numberOfPics)) # + ' Photos with no less than ' + str(cfg._newerPhotos/365) + ' years')
+    #     files = sorted(os.listdir(cfg._sourceFolder), key=os.path.getctime)
+    #     # while files[i]. os.path.getctime > cfg._newerPhotos:
+    #     for i in range(cfg._numberOfPics):
+    #         newest = files[-i]
+    #         return random.sample(newest, cfg._numberOfPics)
+    # elif criteria == 3:
+    #     files = sorted(os.listdir(cfg._sourceFolder),
+    #         key=os.path.getctime, reverse = True)
+    #     return random.sample(files, cfg._numberOfPics)
+    # # elif:
+    # #     oldest = files[0]
     else:
         logging.error('Sorting criteria not met n. of files: ' + str(len(filenames)))
         print ('Sorting criteria not met')
@@ -255,7 +259,7 @@ def remove_common_from_list (file, baselist, keep_path=''):
     for item in baselist:
         logging.debug('item in baselist: ' + item)
         # print(ls.common(str(item), file_list))
-        if ls.common(str(item), file_list):
+        if common(str(item), file_list):
             logging.info('common btw lists: '+ item)
         else: 
             clean_baselist.append(item) 
@@ -263,7 +267,119 @@ def remove_common_from_list (file, baselist, keep_path=''):
     logging.info('=============end remove common==================')
     return clean_baselist
 
+# ---------old list_module.py----------
+
+# https://www.codespeedy.com/find-the-common-elements-in-two-lists-in-python/
+# payload = request.get_data().decode("utf-8")
+# list = getListOfFiles(cfg._destinationFolder)
+
+def common(lst1, lst2):
+    if type(lst1) is str:
+        return common_string_in_list (lst1, lst2)
+    elif type(lst2) is str:
+        return common_string_in_list (lst2, lst1)
+    else:
+        return list(set(lst1).intersection(lst2))
+        # return list(set(lst1) & set(lst2))
+
+def uncommon(base_list, special_list):
+    # remove EOL special string
+    # base_list = [item.replace('\n', '') for item in base_list]
+    # special_list = [item.replace('\n', '') for item in special_list]
+    a = set(base_list)
+    b = set(special_list)
+    print(base_list, a)
+    print(special_list, b)
+    print(list(a - b))
+    return list(a - b)
+
+def common_string_in_list(string, list):
+    new_list = []
+    for item in list:
+        if str(item) in string and '/' in str(item):
+            item = item.split('/')[-1:]
+            new_list.append(item[0])
+        elif str(item) in string:
+            new_list.append(item)
+    return new_list
+
+def clear_duplicates(file):
+    with open(file, "r") as f:
+        file_list = f.readlines()
+
+        # Walk the list and remove empty lines
+        for item in file_list:
+            if item == '':
+                file_list.pop(item)
+
+    # remove duplicates before record
+        file_list.sort()
+        new_list = set(file_list)
+    with open(file, "w") as f:
+        f.writelines(new_list)
+
+# "borrowed" from https://thispointer.com/how-to-append-text-or-lines-to-a-file-in-python/
+def append_new_line(file_name, text_to_append):
+    """Append given text as a new line at the end of file"""
+    # Open the file in append & read mode ('a+')
+    with open(file_name, "a+") as file_object:
+        # Move read cursor to the start of file.
+        file_object.seek(0)
+        # If file is not empty then append '\n'
+        data = file_object.read(100)
+        if len(data) > 0:
+            file_object.write("\n")
+        # Append text at the end of file
+        file_object.write(text_to_append)
+
+def append_multiple_lines(file_name, lines_to_append):
+    # Open the file in append & read mode ('a+')
+    with open(file_name, "a+") as file_object:
+        appendEOL = False
+        # Move read cursor to the start of file.
+        file_object.seek(0)
+        # Check if file is not empty
+        data = file_object.read(100)
+        if len(data) > 0:
+            appendEOL = True
+            file_object.seek(0)
+            source = file_object.readlines()
+            # clear unwanted EOL from original file
+            source = [item.replace('\n', '') for item in source]
+            # remove possible duplicates
+            lines_to_append = uncommon(lines_to_append, source)
+        # Iterate over each string in the list
+        for line in lines_to_append:
+            # If file is not empty then append '\n' before first line for
+            # other lines always append '\n' before appending line
+            if appendEOL == True:
+                file_object.write("\n")
+            else:
+                appendEOL = True
+            # Append element at the end of file
+            file_object.write(line)
+
+def remove_multiple_lines(file_name, lines_to_remove):
+    with open(file_name, "w+") as f:
+        file_list = f.readlines()
+        toBeRemoved = common (file_list, lines_to_remove)
+        # Walk the list and remove empty lines
+        for item in file_list:
+            if item in toBeRemoved:
+                file_list.pop(item)
+        f.writelines(file_list)
+        return toBeRemoved
+
+def common_test():
+    a=[2,9,4,5]
+    b=[3,5,7,9]
+    c='2,9,4,5'
+    print('[9, 5] ==', common(a,b))
+    print('[5, 9] ==', common(b,c))
+    print('[2, 4] ==', uncommon(a, b))
+    print(uncommon(b,c))
+
 
 if __name__ == '__main__':
     main()
-
+   
