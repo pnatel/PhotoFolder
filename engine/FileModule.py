@@ -26,11 +26,13 @@ if __name__ == '__main__' or __name__ == 'FileModule':
     import app_config as cfg
     from loggerinitializer import initialize_logger
     import setup as stp
-    stp.setup()
+    
 else: 
+    import engine.setup as stp
     import engine.app_config as cfg
     from engine.loggerinitializer import initialize_logger
 
+stp.setup()
 cfg.load_config()
 initialize_logger(cfg._logPath)
 
@@ -369,6 +371,10 @@ def remove_multiple_lines(file_name, lines_to_remove):
                 file_list.pop(item)
         f.writelines(file_list)
         return toBeRemoved
+
+def reset_config():
+    stp.clean_folders(warning=0)
+    stp.setup()
 
 def common_test():
     a=[2,9,4,5]

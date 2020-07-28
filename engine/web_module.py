@@ -9,14 +9,14 @@ from flask_thumbnails import Thumbnail
 if __name__ == '__main__' or __name__ == 'web_module':
     import app_config as cfg
     import FileModule as fl
-    import setup as stp
+#    import setup as stp
 else: 
     import engine.app_config as cfg
     import engine.FileModule as fl
-    import engine.setup as stp
+#    import engine.setup as stp
 
 # Check configuration files and create any missing file 
-stp.setup()
+# stp.setup()
 
 # set to True to inform that the app needs to be re-created
 to_reload = False
@@ -180,8 +180,7 @@ def get_app():
 
     @app.route('/reset')
     def reset():
-        stp.clean_folders(warning=0)
-        stp.setup()
+        fl.reset_config()
         reload()
         flash('Restore completed', 'info')
         flash('RESTART THE APPLICATION IF SETTINGS FAIL TO BE APPLIED', 'critical')
