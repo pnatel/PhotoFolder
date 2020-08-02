@@ -153,5 +153,7 @@ def setup():
 
 if __name__ == '__main__':
     # setup()
+
+    # remove all non-essential files/folders
     clean_folders()
 

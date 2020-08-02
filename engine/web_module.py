@@ -57,6 +57,10 @@ def get_app():
             elif request.form.get('right'):
                 rotate(payload, list, 'right')
                 title='ROTATED Pictures'
+
+            elif request.form.get('180'):
+                rotate(payload, list, '180')
+                title='UPSIDE-DOWN Pictures'
                 
             elif request.form.get('favorite'):
                 faves = fl.common(payload, list)
@@ -114,6 +118,7 @@ def get_app():
                 fl.filePrunning(cfg._destinationFolder, list[i])
         flash('Deleting {} pics'.format(pic), 'warning')
 
+
     def read_file(file):
         try:
             with open(file, 'r') as f:
@@ -134,13 +139,20 @@ def get_app():
         except IOError as e:
             flash(e, 'error')
 
+    @app.route('/copy_job')
+    def copy_job():
+        fl.copy_job()
+        flash('Copy Job completed.', 'warning')
+        title='New Set of Pictures'
+        list = fl.getListOfFiles(cfg._destinationFolder, add_path=False)
+        return load_pics(list, title=title) 
 
     @app.route('/config', methods = ['GET', 'POST'])
     def config():
         if request.method == 'GET':
             return render_template('config.html', \
                 config_file=read_file('data/config.ini'), \
-                title='Active Config')
+                title='Active Configuration')
         else:
             write_file('data/config.ini', request.form.get('config'))
             flash('RESTART THE APPLICATION IF SETTINGS FAIL TO BE APPLIED', 'critical')

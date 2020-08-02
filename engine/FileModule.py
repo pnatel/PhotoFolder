@@ -133,10 +133,13 @@ def fileRotate(path, _file, side='left'):
         if side=='left':
             new_path = path + filename + '_L' + file_extension
             picture.rotate(90, expand=True).save(new_path)
-        else:
+        elif side=='right':
             # new_path = '_'.join(path + filename) + '_R' + file_extension
             new_path = path + filename + '_R' + file_extension
             picture.rotate(270, expand=True).save(new_path)
+        else:
+            new_path = path + filename + '_UP' + file_extension
+            picture.rotate(180, expand=True).save(new_path)
         picture.close()
         filePrunning(path, _file)
         # print (new_path)
