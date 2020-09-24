@@ -165,9 +165,14 @@
   font-weight: bold;
 }
 
-.fas {
-  color: rgb(184, 134, 11);
+.fab , .fas {  color: rgb(184, 134, 11); }
+
+.slide { 
+  display: none;
+  width: 100%;
 }
+
+/* end of classes */
 
 header {
   display: inline-block;

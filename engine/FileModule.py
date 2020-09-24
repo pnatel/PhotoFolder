@@ -45,7 +45,7 @@ initialize_logger(cfg._logPath)
 # Main function copy photos based on the parameters selected
 # --------------------------------
 def copy_job():
-    logging.info('--------START--------')
+    logging.info('--------COPY JOB START--------')
     start = datetime.now()
     print('Job Start time:',start)
     logging.info('Loading list of available photos from: ' + cfg._sourceFolder)
@@ -66,11 +66,11 @@ def copy_job():
         copyFiles(sample)
 
     logging.info('New folder Size ' + str(getSizeMB(cfg._destinationFolder)) + 'Mb')
-    logging.info('---------------------')
+    logging.info('-' * 30)
     end = datetime.now()
     print('Job finish time:',end)
     logging.info('Time elapsed:' + str(end-start) + 'secs')
-    logging.info('--------END----------')
+    logging.info('--------COPY JOB END----------')
 
 # A legacy function calling function
 def main():
@@ -274,6 +274,24 @@ def remove_common_from_list (file, baselist, keep_path=''):
     logging.info('=============end remove common==================')
     return clean_baselist
 
+
+def remove_common_from_file (file_name, lines_to_remove):
+    with open(file_name, "r") as f:
+        lines = (line.rstrip() for line in f)
+        file_list = list(line for line in lines if line) # Non-blank lines in a list
+        new_list = []
+        toBeRemoved = common (file_list, lines_to_remove)
+        
+        if toBeRemoved:
+            for item in file_list:
+                if item not in toBeRemoved:
+                    new_list.append(item+'\n')
+        else:
+            new_list = file_list
+    with open(file_name, "w") as f:    
+        f.writelines(new_list)
+    return toBeRemoved
+
 # ---------old list_module.py----------
 
 # https://www.codespeedy.com/find-the-common-elements-in-two-lists-in-python/
@@ -366,20 +384,11 @@ def append_multiple_lines(file_name, lines_to_append):
             # Append element at the end of file
             file_object.write(line)
 
-def remove_multiple_lines(file_name, lines_to_remove):
-    with open(file_name, "w+") as f:
-        file_list = f.readlines()
-        toBeRemoved = common (file_list, lines_to_remove)
-        # Walk the list and remove empty lines
-        for item in file_list:
-            if item in toBeRemoved:
-                file_list.pop(item)
-        f.writelines(file_list)
-        return toBeRemoved
-
-def reset_config():
+def reset_config(option=True):
     stp.clean_folders(warning=0)
-    stp.setup()
+    if option:
+        stp.setup()
+        
 
 def common_test():
     a=[2,9,4,5]

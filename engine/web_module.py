@@ -72,8 +72,10 @@ def get_app():
                 delete(payload, list)
                 black = fl.common(payload, list)
                 # Check for common with whitelist
-                fave_removed = fl.remove_multiple_lines('data/whitelist.txt', black)
-                flash(fave_removed, 'debug')
+                fave_removed = fl.remove_common_from_file('data/whitelist.txt', black)
+                # only shows debug if in demo mode
+                if bool(strtobool(cfg._test.capitalize())):
+                    flash('Removed {} Fave pics'.format(len(fave_removed)), 'debug')
                 
                 flash('BLACKLISTED {} pics'.format(len(black)), 'info')
                 fl.append_multiple_lines('data/blacklist.txt', black)
@@ -150,9 +152,11 @@ def get_app():
     @app.route('/config', methods = ['GET', 'POST'])
     def config():
         if request.method == 'GET':
+            mode = 'demo' if bool(strtobool(cfg._test.capitalize())) else 'normal'
             return render_template('config.html', \
                 config_file=read_file('data/config.ini'), \
-                title='Active Configuration')
+                mode=mode, \
+                title='Configuration')
         else:
             write_file('data/config.ini', request.form.get('config'))
             flash('RESTART THE APPLICATION IF SETTINGS FAIL TO BE APPLIED', 'critical')
@@ -192,12 +196,22 @@ def get_app():
 
     @app.route('/reset')
     def reset():
-        fl.reset_config()
+        fl.reset_config(True)
         reload()
         flash('Restore completed', 'info')
         flash('RESTART THE APPLICATION IF SETTINGS FAIL TO BE APPLIED', 'critical')
         return redirect('/config') 
 
+    @app.route('/clear')
+    def clear():
+        fl.reset_config(False)
+        flash('non-essential content removed. Ready for packaging', 'info')
+        return redirect('/config') 
+    
+    @app.route('/slideshow')
+    def slideshow():
+        list = fl.getListOfFiles(cfg._destinationFolder, add_path=False)
+        return load_pics(list, page='slideshow.html', title='Slideshow')
 
     return app
 

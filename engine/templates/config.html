@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h1>{{ mode.upper() }} Mode</h1>
+<h2 class="autoclose">WARNING: SAVING CHANGES HERE MAY RENDER THE APP UNUSABLE</h2>
 <fieldset>
-    <h2>WARNING: SAVING CHANGES HERE MAY RENDER THE APP UNUSABLE</h2>
     <form action="{{ url_for('config') }}" enctype="multipart/form-data" method="POST"> 
         
         <textarea name="config">               

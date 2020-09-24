@@ -38,11 +38,15 @@
             <ul class="menu_items">
                 <li class="button" title="Main Home Page"><a href="/" class="fas fa-home"></a></li>
                 <li class="button" title="Configuration"><a href="config" class="fas fa-cogs"></a> </li>
-                <li class="button" title="Manual Copy Job"><a href="copy_job" class="fas fa-copy"></a> </li>
-                {% if title == "Active Configuration" %}
+                <li class="button" title="Manual Copy Job"><a href="copy_job" class="fas fa-images"></a> </li>
+                <li class="button" title="Slideshow"><a href="slideshow" class="fab fa-slideshare"></a> </li>
+                {% if title == "Configuration" %}
                     <li class="button" title="List of blacklisted files after delete"><a href="blacklist" class="fas fa-ban"></a></li>
                     <li class="button" title="List of Whitelist/Favorite pictures"><a href="whitelist" class="fas fa-crown"></a> </li>
-                    <li class="button reset"><a href="/reset">Restore Defaults DO NOT CLICK!</a></li>
+                    <li class="button reset" title="Restore settings and folder structure to its original condition. Does NOT affect the source folder." ><a href="/reset">Restore Defaults</a></li>
+                    {% if mode == "demo" %}
+                        <li class="button reset" title="Remove folders, pics and logs. Does NOT affect the source folder."><a href="/clear">Essentials Only</a></li>
+                    {% endif %}
                 {% endif %}
 
             </ul>
