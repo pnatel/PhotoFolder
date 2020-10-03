@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <ul id="pic">
+        {% for i in range(len_list) %}
+            <img class="slide" src="{{ path }}{{ images[i-1] }}" alt="{{ images[i-1] }}">
+        {% endfor %}
+    </ul>
+      
+    <script>
+        var myIndex = 0;
+        carousel();
+        
+        function carousel() {
+          var i;
+          var x = document.getElementsByClassName("slide");
+          var w = window.innerWidth;
+          var h = window.innerHeight;
+          //document.getElementById("pic").innerHTML = "Width: " + w + "<br>Height: " + h;
+          for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";  
+          }
+          myIndex++;
+          if (myIndex > x.length) {myIndex = 1}    
+          x[myIndex-1].style.display = "block";  
+          x[myIndex-1].style.height = h
+          setTimeout(carousel, 10000); // Change image every 10 seconds
+        }
+        </script>
+
+{% endblock %}

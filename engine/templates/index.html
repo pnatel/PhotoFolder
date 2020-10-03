@@ -3,55 +3,34 @@
 {% block content %}
 
     <form action="{{ url_for('index') }}" enctype="multipart/form-data" method="POST"> 
-        <nav class="menu"> 
-            <ul class="menu_items">
-                <li><a href="/" class="button">Home</a></li>
-                <li><a href="config" class="button">Configuration</a> </li>
-                <li><input type="submit" class="button" name="delete" value="Delete"></li>
-                <li><input type="submit" class="button" name="favorite" value="Add to Favorite"></li>
-                <li><input type="submit" class="button" name="copy_job" value="Copy Job"></li>
-                <li class="sub-menu-parent">
-                    <a href="#" class="button">Rotate</a>
-                    <ul class="sub-menu">
-                        <li><input type="submit" class="button" name="left" value="Left"></li>
-                        <li><input type="submit" class="button" name="right" value="Right"></li>
-                    </ul>
-                </li>
-            </ul>
-                
-            <!-- <div class="col-msg">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <ul class=pulsate>
-                    {% for category, message in messages %}
-                        {% if category == "message" %}
-                            <li class="message">{{ message }}</li>
-                        {% else %}
-                            <li class="{{ category }} alert autoclose">{{ category }}: {{ message }}</li>
-                        {% endif %}
-                    {% endfor %}
-                    </ul>
-                {% else %}
-                    <h3>Status messages</h3>   
-                {% endif %}
-                {% endwith %}
-            </div> -->
-        </nav>    
+        
+        {% if len_list > 0 %}
+            <nav class="floating">
+                <ul>
+                    <li><input type="submit" class="button" name="delete" value="Delete"></li>
+                    <li><input type="submit" class="button" name="favorite" value="Favorite"></li>
+                    <li><input type="submit" class="button" name="left" value="Rotate Left"></li>
+                    <li><input type="submit" class="button" name="180" value="Upside-Down"></li>
+                    <li><input type="submit" class="button" name="right" value="Rotate Right"></li>
+                </ul>
+            </nav>
+        {% endif %}
         <fieldset>
-        <ul>
-            {% for i in range(len_list) %}
-                <li><input type="checkbox" id="cb{{ i }}" name="cb{{ i }}" value="{{ images[i-1] }}">
-                {% if images[i-1].split('/')[-1] in extra_list %}
-                <label for="cb{{ i }}" class="favorite">
-                {% else %}
-                <label for="cb{{ i }}">
-                {% endif %}
-                <img src="{{ images[i-1][7:] }}" alt="{{ images[i-1].split('/')[-1] }}">
-                    <br> <a href="{{ images[i-1][7:] }}" target=”_blank”><small>{{ images[i-1].split('/')[-1] }}</small></a>
-                </label>
-                </li>
-            {% endfor %}
-        </ul>
+            <ul>
+                {% for i in range(len_list) %}
+                    <li><input type="checkbox" id="cb{{ i }}" name="cb{{ i }}" value="{{ images[i-1] }}">
+                    {% if images[i-1].split('/')[-1] in extra_list %}
+                    <label for="cb{{ i }}" class="favorite">
+                    {% else %}
+                    <label for="cb{{ i }}">
+                    {% endif %}
+                    <!-- WARNING: Changes in thumbnail quality require adjustments in "filePrunning" function -->
+                    <img src="{{ path }}{{ images[i-1]|thumbnail('200x200') }}" alt="{{ images[i-1] }}">
+                        <br> <a href="{{ path }}{{ images[i-1] }}" target=”_blank”><small>{{ images[i-1] }}</small></a>
+                    </label>
+                    </li>
+                {% endfor %}
+            </ul>
         </fieldset>
     </form>   
 
