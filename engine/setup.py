@@ -1,7 +1,7 @@
 # Run this file before run the application 
 # to create/check file/folder integrity
 
-import os
+import os, logging
 import shutil
 
 
@@ -18,7 +18,7 @@ folders = [
 empty_files = [
     'data/blacklist.txt',
     'data/whitelist.txt',
-    'data/source.txt'
+    'data/source.txt',
 ]
 
 config = 'data/config.ini'
@@ -127,6 +127,21 @@ command = ping google.com'''
     except OSError as identifier:
         print(identifier)
 
+def enhance_requirements():
+    """
+    This function change requirements.txt to accept 
+    newer versions of the modules.
+    it replaces == with =>
+    """
+    logging.info("Generating updated requirements") 
+    print(os.system("pipreqs --force"))
+    with open(os.path.join(os.path.dirname(__file__), os.pardir, 'requirements.txt'), 'r') as f:
+        reqs = f.read()
+        reqs = reqs.replace('==', '=>')
+    with open(os.path.join(os.path.dirname(__file__), os.pardir, 'requirements.txt'), 'w') as f:
+        f.write(reqs)
+
+
 def clean_folders(folders=folders, warning=1):
     print('''
     WARNING
@@ -155,5 +170,7 @@ if __name__ == '__main__':
     # setup()
 
     # remove all non-essential files/folders
-    clean_folders()
+    # clean_folders()
+
+    enhance_requirements()
 
