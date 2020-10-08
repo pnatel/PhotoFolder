@@ -387,8 +387,11 @@ def append_multiple_lines(file_name, lines_to_append):
 def reset_config(option=True):
     stp.clean_folders(warning=0)
     if option:
-        stp.setup()
-        
+        stp.setup()    
+    else:
+        # update requirements for packing prior uplod to GitHub
+        stp.enhance_requirements()
+
 
 def common_test():
     a=[2,9,4,5]
