@@ -16,34 +16,43 @@ from distutils.util import strtobool
 # print(__name__)
 if __name__ == '__main__' or __name__ == 'loggerinitializer':
     import app_config as cfg
+    cfg.load_config()
 else: 
     import engine.app_config as cfg
 
-# cfg.load_config()
 
 def initialize_logger(output_dir):
-    logger = logging.getLogger()
-    logger.setLevel(logging.WARNING)
+    logger = logging.getLogger() 
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
     if bool(strtobool(cfg._test.capitalize())): 
-        # create console handler and set level to info
-        handler = logging.StreamHandler()
-        handler.setLevel(logging.DEBUG)
-        # formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
- 
+        logger.setLevel(logging.DEBUG)
+        # create console handler and set level to DEBUG
+        # handler = logging.StreamHandler()
+        # handler.setLevel(logging.DEBUG)
+        # handler.setFormatter(formatter)
+        # logger.addHandler(handler)
+        logging.info(f'Loaded DEMO mode. All logs will be recorded in {output_dir} folder')
+    else:
+        logger.setLevel(logging.WARNING)
+
     # create error file handler and set level to error
     handler = logging.FileHandler(os.path.join(output_dir, "error.log"),"w", encoding=None, delay="true")
     handler.setLevel(logging.ERROR)
-    # formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
+    logging.error(f'Error log file created. All Errors will be recorded in {output_dir} folder')
+
  
     # create debug file handler and set level to debug
     handler = logging.FileHandler(os.path.join(output_dir, "debug.log"),"w")
     handler.setLevel(logging.DEBUG)
-    # formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
+    logging.debug(f'DEBUG log file created. All debug level info will be recorded in {output_dir} folder')
+
+
+
+if __name__ == '__main__':
+    initialize_logger(cfg._logPath)
+    print(cfg._logPath)

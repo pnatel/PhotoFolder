@@ -8,13 +8,13 @@ from timeloop import Timeloop
 from datetime import timedelta
 # Running as standalone or part of the application
 if __name__ == '__main__' or __name__ == 'timeloop_module':
-    from FileModule import main
     import app_config as cfg
     from loggerinitializer import initialize_logger
+    import file_class as fc
 else: 
     import engine.app_config as cfg
     from engine.loggerinitializer import initialize_logger 
-    from engine.FileModule import main
+    import engine.file_class as fc
 
 initialize_logger(cfg._logPath)
 
@@ -25,10 +25,16 @@ tl = Timeloop()
 def copy_job():
     logging.info("Auto job running every {} seconds".format(cfg._jobInterval))
     logging.info("Auto job current time : {}".format(time.ctime()))
-    main()
+    fc.copy_job()
     notification()
     # time.sleep(15)
-    
+
+@tl.job(interval=timedelta(seconds=(cfg._jobInterval/2)))
+def update_csv():
+    logging.info("Update CSV runs every {} seconds".format(cfg._jobInterval/2))
+    logging.info("Auto job current time : {}".format(time.ctime()))
+    fc.update_csv_ListOfFiles(cfg._sourceFolder, cfg._csv_source)
+
 # @tl.job(interval=timedelta(seconds=5))
 # def sample_job_every_5s():
 #     print ("5s job current time : {}".format(time.ctime()))

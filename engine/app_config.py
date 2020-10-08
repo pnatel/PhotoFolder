@@ -27,6 +27,8 @@ _newerPhotos = 0
 _criteria = 0
 _jobInterval = 0
 _command = ''
+_csv_source = ''
+_csv_destination = ''
 
 config = configparser.ConfigParser()
 config.read('../data/config.ini')
@@ -67,6 +69,8 @@ def load_config():
     global _jobInterval
     global _command
     global _test
+    global _csv_source
+    global _csv_destination
 
     # Force testing environment with 'True' in config.ini
     _test = ConfigSectionMap('test')['test_mode']
@@ -97,6 +101,8 @@ def load_config():
     _criteria = int(ConfigSectionMap('sort')['criteria'])
     # _logLevel = ConfigSectionMap('loglevel')['level']
     _port = ConfigSectionMap('parameter')['port']
+    _csv_source = ConfigSectionMap('data')['dbsource']
+    _csv_destination = ConfigSectionMap('data')['dbdestin']
     
 
 def test():

@@ -16,9 +16,8 @@ folders = [
 ]
 
 empty_files = [
-    'data/blacklist.txt',
-    'data/whitelist.txt',
-    'data/source.txt',
+    'data/source.csv',
+    'data/destination.csv'
 ]
 
 config = 'data/config.ini'
@@ -74,6 +73,11 @@ SourceFolder = /source
 # only change destination if you are NOT using the website
 DestinationFolder = engine/static/destination/
 LogPath = logs/production
+
+[data]
+dataSource = data/source.csv
+dataDestin = data/destination.csv
+
 
 [ext]
 FileType1 = jpg
@@ -170,7 +174,8 @@ if __name__ == '__main__':
     # setup()
 
     # remove all non-essential files/folders
-    # clean_folders()
+    clean_folders()
 
-    enhance_requirements()
+    # update requirements.txt
+    # enhance_requirements()
 
