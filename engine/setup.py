@@ -18,7 +18,7 @@ folders = [
 empty_files = [
     'data/blacklist.txt',
     'data/whitelist.txt',
-    'data/source.txt'
+    'data/source.txt',
 ]
 
 config = 'data/config.ini'
