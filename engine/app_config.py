@@ -2,17 +2,10 @@ import configparser
 import logging
 
 # Running as standalone or part of the application
-# if __name__ == '__main__' or __name__ == 'app_config':
-#     from loggerinitializer import initialize_logger
-# else: 
-#     from engine.loggerinitializer import initialize_logger
-
-# try:
-#     from loggerinitializer import initialize_logger
-# except AttributeError as identifier:
-#     print(identifier)
-# else:
-#     from engine.loggerinitializer import initialize_logger
+if __name__ == '__main__' or __name__ == 'app_config':
+    import setup as stp
+else: 
+    import engine.setup as stp
 
 # Global Variables
 
@@ -31,7 +24,6 @@ _csv_source = ''
 _csv_destination = ''
 
 config = configparser.ConfigParser()
-config.read('../data/config.ini')
 
 # Loading Conguration file (config.ini)
 # Code from https://wiki.python.org/moin/ConfigParserExamples
@@ -54,7 +46,16 @@ def print_config():
 
 def load_config():
     logging.info('Loading config')
-    config.read('data/config.ini')
+    # config.read('data/config.ini')
+
+    try:
+        f = open('data/config.ini')
+        f.close()
+        config.read('data/config.ini')
+    except IOError:
+        print("File not accessible")
+        stp.setup()
+        config.read('data/config.ini')
 
     global _sourceFolder
     global _destinationFolder 

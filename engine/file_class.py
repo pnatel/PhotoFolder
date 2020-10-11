@@ -11,6 +11,7 @@
 from pathlib import Path
 import os.path, shutil, random
 import csv, logging, datetime
+from distutils.util import strtobool
 
 # Running as standalone or part of the application
 # print(__name__)
@@ -126,10 +127,10 @@ def remove_record_csv (filename, csv_file):
 
     for item in read:
         if filename in item['filename']:
-            print (filename, item['filename'], filename in item['filename'])
+            print ('remove_record_csv', filename, item['filename'], filename in item['filename'])
             logging.debug('removing: '+ filename + ' from '+ csv_file)
             read.remove(item)
-    # print('\n\n', read)
+    print('\n\n', read)
     with open(csv_file, 'w') as writeFile:
         headers = []
         for key in read[0].keys():
@@ -140,32 +141,39 @@ def remove_record_csv (filename, csv_file):
         return True
     return False
 
-def update_record_csv(filename, csv_file, **kargs):
+def update_record_csv(filepath, csv_file, **kargs):
     """
     docstring
     """
+    filename = os.path.basename(filepath)
     modified = False
-    with open(csv_file, 'r') as file:
-        records = csv.DictReader(file)
-        for record in records:
-            temp = dict(record)
-            if filename in temp['filename']:
-                logging.debug('Found: '+ filename)
+    logging.debug(f'update_record_csv param: {filename}, {csv_file}, {kargs}')
+    records = read_CSV(csv_file)
+    for record in records:
+        temp = dict(record)
+        if filename in temp['filename']:
+            logging.debug('Found: '+ filename)
 
-                for key, value in temp.items():
-                    # print(f'{key:25}: {value}')
-                    if key in kargs and bool(temp[key]) != kargs[key]:
+            for key, value in temp.items():
+                if key in kargs:
+                    print(f'{key:25}: {value}, {key in kargs}, {bool(strtobool(temp[key]))} != {kargs[key]}')
+                    if bool(strtobool(temp[key])) != kargs[key]:
                         modified = True
                         temp[key] = kargs[key]
-                        logging.debug(f'{filename} - {key} changed from {value} to {kargs[key]}')
+                        logging.debug(f'{filename} - {key} changing from {value} to {kargs[key]}')
+                    else:
+                        logging.error()
+                    break
+        else:
+            logging.debug(f"{filename} differ than {temp['filename']}")    
     if modified:
         remove_record_csv(temp['filename'], csv_file)
         new = Photo(**temp)
         new.add_record_csv(csv_file)
         logging.info(f"{temp['filename']} successfully updated")
-        return True
+        return temp
     else:
-        logging.warning(f"{temp['filename']} was NOT changed")
+        logging.error(f"{filename} was NOT changed")
         return False
 
 
@@ -233,7 +241,7 @@ def update_csv_ListOfFiles(dirName, csv_file):
             update_csv_ListOfFiles(fullPath, csv_file)
         else:
             if fileTypeTest(entry, cfg._fileType):
-                record =  Photo.byPath(fullPath)
+                record = Photo.byPath(fullPath)
                 record.add_record_csv(csv_file)
             else:
                 logging.debug(entry + ' INVALID FILE TYPE ' + str(cfg._fileType))
@@ -248,14 +256,15 @@ def clear_sample_source(csv_source, csv_destination):
             rebuild_path_from_csv(csv_destination))
 
 
-def rebuild_path_from_csv(csv_file):
+def rebuild_path_from_csv(csv_file, folder_path=cfg._sourceFolder):
     """
     docstring
     """
     temp = []
     source = read_CSV(csv_file)
     for item in source:
-        temp.append(''.join(str(item['source_folder']) + '/' + item['filename']))
+        temp.append(''.join(folder_path + item['filename']))
+    logging.debug(f'Returning {len(temp)} path in {csv_file} based on {folder_path}')
     return temp
 
 # need to be re-written<<<<<<<<<<<<<<<<<<<<<<<<
@@ -288,7 +297,7 @@ def sorting(filenames, criteria=1, sampleSize=10):
     # print(len(filenames), criteria, sampleSize)
     if len(filenames) < sampleSize:
         logging.warning('The Sample (' + str(sampleSize) + ') is bigger than the source size (' + str(len(filenames)) + ')')
-        sampleSize = int(len(filenames) / 2)
+        sampleSize = int(len(filenames) / 2) + (len(filenames) % 2 > 0)
         logging.info('New Sample Size: ' + str(sampleSize))
 
     # sorting criterias
@@ -327,36 +336,47 @@ def folderPrunning(folder = cfg._destinationFolder,
 
     '''
     folderSize = getSizeMB(folder)
-    logging.info (folder + str(folderSize))
     logging.info('Destination folder Size ' + str(folderSize) + 'Mb')
     if folderSize > cfg._foldersizeUpperLimit:
-        filenames = update_csv_ListOfFiles(folder, csv_file)
+        logging.debug('Prunning folder in '+ csv_file)
+        filenames = rebuild_path_from_csv(csv_file, folder)
         if len(filenames) > (cfg._numberOfPics * multiplier):
             prune = sorting(filenames, 1, cfg._numberOfPics * multiplier)
         else:
             prune = sorting(filenames, 1, cfg._numberOfPics * int(multiplier/2))
+        logging.debug(f'To be Prunned: {prune}')
         for fname in prune:
             logging.info('Removing file ' + fname)
-            os.remove(fname)
-            remove_record_csv(fname, csv_file)
-        logging.info('Folder Size after prunning ' + str(getSizeMB(folder)) + 'Mb')
+            filePrunning(fname, csv_file)
+        if getSizeMB(folder) == folderSize:
+            logging.error('FOLDER PRUNNING FAILED')
+        else:
+            logging.info('Folder Size after prunning ' + str(getSizeMB(folder)) + 'Mb')
     else:
         logging.info(str(folderSize) + ' smaller than ' + str(cfg._foldersizeUpperLimit))
 
-# def filePrunning(path, _file, csv_file):
-#     try:
-#         os.remove(path + _file)
-#         filename, file_extension = os.path.splitext(_file)
-#         update_record_csv(_file, csv_file, deleted = True)
-#         # Thumbnail removal changes in index.html may require adjustments here
-#         os.remove(path + '/thumbnail/' + filename + '_200x200_fit_90' + file_extension)
-#     except OSError as e:
-#         logging.error(e.errno)
-#         logging.error('FILE NOT FOUND ' + path + _file)
-#         return 'File Not Found: ' + path + _file
-#     else:
-#         logging.info('file removed '  + path + _file)
-#         return 'File removed: ' + path + _file
+def filePrunning(_file, csv_file):
+    try:
+        temp_dict = update_record_csv(_file, csv_file, deleted = True)
+        logging.debug(temp_dict)
+        if temp_dict['destination_folder'] != '':
+            os.remove(str(temp_dict['destination_folder']) + _file)
+            filename, file_extension = os.path.splitext(_file)
+            # Thumbnail removal changes in index.html may require adjustments here
+            os.remove(temp_dict['destination_folder'] + '/thumbnail/' + filename + '_200x200_fit_90' + file_extension)
+
+        else:
+            # This code should delete a picture from source
+            logging.critical('ATTENTION: DELETING ORIGINAL FILE')
+            # os.remove(str(temp_dict['SOURCE_folder']) + _file)
+        
+    except OSError as e:
+        logging.error(e.errno)
+        logging.error('FILE NOT FOUND ' + _file)
+        return 'File Not Found: ' + _file
+    else:
+        logging.info('file removed '  + _file)
+        return 'File removed: ' + _file
 
 
 #++++++++++++++++++++++++++++++++++++++
@@ -491,10 +511,10 @@ def copy_job():
         logging.error('Sample size returned FALSE')
     else:
         logging.info('-------PRUNNING--------')
-        folderPrunning(cfg._destinationFolder, 2)
+        folderPrunning(multiplier = 2)
         logging.info('Number of selected files on the sample: ' + str(len(sample)))
         # keeping source address of all files for backtrack
-        append_multiple_lines(cfg._csv_source, sample)
+        # append_multiple_lines(cfg._csv_source, sample)
         copyFiles(sample)
 
     logging.info('New folder Size ' + str(getSizeMB(cfg._destinationFolder)) + 'Mb')
@@ -515,11 +535,11 @@ if __name__ == '__main__':
     # # photo2.add_record_csv('data/test.csv')
 
     # # print(datetime.datetime.fromtimestamp(photo1.datetime))
-    # # print (remove_record_csv('bandwidth-close-up-computer-connection-1148820.jpg', 'data/test.csv'))
+    # print (remove_record_csv('bandwidth-close-up-computer-connection-1148820.jpg', 'data/test.csv'))
     # # update_record_csv('black-crt-tv-showing-gray-screen-704555.jpg','data/test.csv', favorite = True)
     # # print(read_CSV('data/test.csv'))
     # update_csv_ListOfFiles(cfg._sourceFolder, 'data/test2.csv')
-
+    # filePrunning(pat-whelen-BDeSzt-dhxc-unsplash.jpg, csv_file) 
     # print(clear_sample_source('data/test.csv', 'data/test2.csv'))
 
     copy_job()

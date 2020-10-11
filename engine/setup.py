@@ -75,8 +75,8 @@ DestinationFolder = engine/static/destination/
 LogPath = logs/production
 
 [data]
-dataSource = data/source.csv
-dataDestin = data/destination.csv
+dbSource = data/source.csv
+dbDestin = data/destination.csv
 
 
 [ext]

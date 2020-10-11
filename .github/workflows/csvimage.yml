@@ -1,8 +1,8 @@
-name: build multiarch development Image
+name: build multiarch CSV Image
 
 on:
   push:
-    branches: Development
+    branches: CSV
 
 jobs:
   build:
