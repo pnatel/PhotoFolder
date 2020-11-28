@@ -156,14 +156,14 @@ def update_record_csv(filepath, csv_file, **kargs):
 
             for key, value in temp.items():
                 if key in kargs:
-                    print(f'{key:25}: {value}, {key in kargs}, {bool(strtobool(temp[key]))} != {kargs[key]}')
-                    if bool(strtobool(temp[key])) != kargs[key]:
+                    print(f'{key:25}: {value}, {key in kargs}, {temp[key]} != {kargs[key]}')
+                    if temp[key] != str(kargs[key]):
                         modified = True
                         temp[key] = kargs[key]
                         logging.debug(f'{filename} - {key} changing from {value} to {kargs[key]}')
                     else:
-                        logging.error()
-                    break
+                        logging.error(f'param in record ({temp[key]}) is the same as provided: {kargs[key]}')
+                    
         else:
             logging.debug(f"{filename} differ than {temp['filename']}")    
     if modified:
@@ -186,7 +186,7 @@ def add_multiple_csv_records(list_file_paths, csv_file, destination_folder=''):
         record = Photo.byPath(file_path, destination_folder)
         record.add_record_csv(csv_file)
 
-
+# IMPURE
 def fileTypeTest(file, typeList=cfg._fileType):
     '''
         checks if the file extension is in the list of
@@ -203,7 +203,7 @@ def fileTypeTest(file, typeList=cfg._fileType):
         logging.warning('extension invalid ' + file)
         return False
 
-
+# IMPURE
 def copyFiles(fileList):
     '''
         Copy a list of files to the folder
@@ -225,6 +225,7 @@ def getSizeMB(folder = '.'):
     return size/(10**6)
 
 # -----------------
+# IMPURE
 def update_csv_ListOfFiles(dirName, csv_file):
     '''
     For the given path, get the List of all files in the directory tree
@@ -255,7 +256,7 @@ def clear_sample_source(csv_source, csv_destination):
     return uncommon(rebuild_path_from_csv(csv_source),
             rebuild_path_from_csv(csv_destination))
 
-
+# IMPURE
 def rebuild_path_from_csv(csv_file, folder_path=cfg._sourceFolder):
     """
     docstring
@@ -327,7 +328,7 @@ def sorting(filenames, criteria=1, sampleSize=10):
         logging.error('Sorting criteria not met n. of files: ' + str(len(filenames)))
         print ('Sorting criteria not met')
 
-
+# IMPURE
 def folderPrunning(folder = cfg._destinationFolder, 
                    csv_file = cfg._csv_destination, 
                    multiplier = 1):

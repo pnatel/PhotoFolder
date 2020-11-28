@@ -21,6 +21,6 @@ jobs:
       - name: build the image
         run: |
           docker buildx build --push \
-            --tag pnatel/photo_folder_manager:dev \
+            --tag pnatel/photo_folder_manager:csv \
             --file ./docker/dev/Dockerfile \
             --platform linux/amd64,linux/arm/v7,linux/arm64 .
