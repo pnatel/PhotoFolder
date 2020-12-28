@@ -171,6 +171,7 @@ def setup():
     create_config()
 
 if __name__ == '__main__':
+    # Build the barebones for the app to run
     # setup()
 
     # remove all non-essential files/folders

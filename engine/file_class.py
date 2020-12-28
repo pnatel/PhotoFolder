@@ -15,7 +15,7 @@ from distutils.util import strtobool
 
 # Running as standalone or part of the application
 # print(__name__)
-if __name__ == '__main__' or __name__ == 'photo_class':
+if __name__ == '__main__' or __name__ == 'file_class':
     import app_config as cfg
     from loggerinitializer import initialize_logger
     import setup as stp
@@ -35,7 +35,7 @@ class Photo:
     """
 
     def __init__ (self, filename, source_folder, destination_folder,
-                datetime, size, favorite=False, deleted=False):
+                datetime, size, favorite=False, deleted=False, pruned=False):
         self.filename = filename
         self.source_folder = source_folder
         self.destination_folder = destination_folder
@@ -43,6 +43,7 @@ class Photo:
         self.size = size
         self.favorite = favorite
         self.deleted = deleted
+        self.pruned = pruned
         logging.info('Photo object created: '+ filename)
 
     @classmethod
@@ -64,7 +65,8 @@ class Photo:
             'datetime': self.datetime,
             'size': self.size,
             'favorite': self.favorite,
-            'deleted': self.deleted
+            'deleted': self.deleted,
+            'pruned': self.pruned
         }
 
     def print_photo (self):
@@ -78,6 +80,8 @@ class Photo:
         print(self.size)
         print(self.favorite)
         print(self.deleted)
+        print(self.pruned)
+        
 
     def add_record_csv (self, csv_file):
         """
@@ -163,18 +167,21 @@ def update_record_csv(filepath, csv_file, **kargs):
                         logging.debug(f'{filename} - {key} changing from {value} to {kargs[key]}')
                     else:
                         logging.error(f'param in record ({temp[key]}) is the same as provided: {kargs[key]}')
+            break
                     
         else:
             logging.debug(f"{filename} differ than {temp['filename']}")    
     if modified:
-        remove_record_csv(temp['filename'], csv_file)
+        if remove_record_csv(temp['filename'], csv_file):
+            logging.info('SUCCESS: ' + temp['filename'] + ' removed from ' + csv_file)
+        else:
+            logging.info('FAILED: ' + temp['filename'] + 'NOT removed from ' + csv_file)
         new = Photo(**temp)
         new.add_record_csv(csv_file)
         logging.info(f"{temp['filename']} successfully updated")
-        return temp
     else:
         logging.error(f"{filename} was NOT changed")
-        return False
+    return temp
 
 
 
@@ -203,17 +210,21 @@ def fileTypeTest(file, typeList=cfg._fileType):
         logging.warning('extension invalid ' + file)
         return False
 
-# IMPURE
-def copyFiles(fileList):
+def copyFiles(fileList,
+              ftype = cfg._fileType,
+              destin = cfg._destinationFolder, 
+              csv = cfg._csv_destination):
     '''
         Copy a list of files to the folder
     '''
     logging.info('Copying ' + str(len(fileList))+ ' files')
+#    logging.debug(fileList)
+
     for fname in fileList:
-        if fileTypeTest(fname, cfg._fileType):
+        if fileTypeTest(fname, ftype):
             logging.debug('Copying file ' + fname)
-            shutil.copy(fname, cfg._destinationFolder)
-            Photo.byPath(fname, cfg._destinationFolder).add_record_csv(cfg._csv_destination)
+            shutil.copy(fname, destin)
+            Photo.byPath(fname, destin).add_record_csv(csv)
 
 
 def getSizeMB(folder = '.'):
@@ -246,50 +257,35 @@ def update_csv_ListOfFiles(dirName, csv_file):
                 record.add_record_csv(csv_file)
             else:
                 logging.debug(entry + ' INVALID FILE TYPE ' + str(cfg._fileType))
-    return rebuild_path_from_csv(csv_file)
+    if cfg._sourceFolder in dirName:
+        return rebuild_path_from_csv(csv_file, 'source_folder')
+    else:
+        return rebuild_path_from_csv(csv_file, 'destination_folder')
+
 
 
 def clear_sample_source(csv_source, csv_destination):
     """
     docstring
     """
-    return uncommon(rebuild_path_from_csv(csv_source),
-            rebuild_path_from_csv(csv_destination))
+    return uncommon(rebuild_path_from_csv(csv_source, 'source_folder'),
+            rebuild_path_from_csv(csv_destination, 'source_folder'))
 
 # IMPURE
-def rebuild_path_from_csv(csv_file, folder_path=cfg._sourceFolder):
+def rebuild_path_from_csv(csv_file, folder):
     """
     docstring
     """
     temp = []
     source = read_CSV(csv_file)
     for item in source:
-        temp.append(''.join(folder_path + item['filename']))
-    logging.debug(f'Returning {len(temp)} path in {csv_file} based on {folder_path}')
+        if item[folder][-1] == '/':
+            temp.append(''.join(item[folder] + item['filename']))
+        else:
+            temp.append(''.join(item[folder] + '/' + item['filename']))
+    logging.debug(f'Returning {len(temp)} path from {csv_file}')
+    # logging.debug(temp)
     return temp
-
-# need to be re-written<<<<<<<<<<<<<<<<<<<<<<<<
-
-# def remove_common_from_list (file, baselist, keep_path=''):
-#     with open(file, "r") as f:
-#         file_list = f.readlines()
-#         # clear unwanted EOL from original file
-#         file_list = [item.replace('\n', '') for item in file_list]
-#     logging.debug(file + str(file_list) + str(baselist))
-#     clean_baselist = []
-
-#     logging.info('========Remove common items from list==========')
-#     for item in baselist:
-#         logging.debug('item in baselist: ' + item)
-#         # print(ls.common(str(item), file_list))
-#         if common(str(item), file_list):
-#             logging.info('common btw lists: '+ item)
-#         else:
-#             clean_baselist.append(item)
-
-#     logging.info('=============end remove common==================')
-#     return clean_baselist
-
 
 def sorting(filenames, criteria=1, sampleSize=10):
     '''
@@ -305,7 +301,10 @@ def sorting(filenames, criteria=1, sampleSize=10):
     if criteria == 1: # Random pics from source
         logging.info('Getting a random set of ' + str(sampleSize) + ' Photos')
         try:
-            return random.sample(filenames, sampleSize)
+            sample = random.sample(filenames, sampleSize)
+            # logging.debug('SAMPLE: ' + str(sample))
+            return sample
+
         except ValueError as error:
             logging.error(error)
             return False
@@ -331,40 +330,44 @@ def sorting(filenames, criteria=1, sampleSize=10):
 # IMPURE
 def folderPrunning(folder = cfg._destinationFolder, 
                    csv_file = cfg._csv_destination, 
-                   multiplier = 1):
+                   multiplier = 1,
+                   upper_limit = cfg._foldersizeUpperLimit,
+                   size = cfg._numberOfPics):
     '''
         checking size of the destination folder to trigger a cleanup
 
     '''
     folderSize = getSizeMB(folder)
     logging.info('Destination folder Size ' + str(folderSize) + 'Mb')
-    if folderSize > cfg._foldersizeUpperLimit:
+    if folderSize > upper_limit:
         logging.debug('Prunning folder in '+ csv_file)
-        filenames = rebuild_path_from_csv(csv_file, folder)
+        filenames = rebuild_path_from_csv(csv_file, 'destination_folder')
         if len(filenames) > (cfg._numberOfPics * multiplier):
-            prune = sorting(filenames, 1, cfg._numberOfPics * multiplier)
+            prune = sorting(filenames, 1, size * multiplier)
         else:
-            prune = sorting(filenames, 1, cfg._numberOfPics * int(multiplier/2))
-        logging.debug(f'To be Prunned: {prune}')
+            prune = sorting(filenames, 1, size * int(multiplier/2))
+        logging.debug(f'To be pruned: {prune}')
         for fname in prune:
             logging.info('Removing file ' + fname)
             filePrunning(fname, csv_file)
         if getSizeMB(folder) == folderSize:
             logging.error('FOLDER PRUNNING FAILED')
+            return False
         else:
             logging.info('Folder Size after prunning ' + str(getSizeMB(folder)) + 'Mb')
     else:
-        logging.info(str(folderSize) + ' smaller than ' + str(cfg._foldersizeUpperLimit))
+        logging.info(str(folderSize) + ' smaller than ' + str(upper_limit))
+    return True
 
 def filePrunning(_file, csv_file):
     try:
-        temp_dict = update_record_csv(_file, csv_file, deleted = True)
-        logging.debug(temp_dict)
+        temp_dict = update_record_csv(_file, csv_file, pruned = True)
+#        logging.debug(temp_dict)
         if temp_dict['destination_folder'] != '':
-            os.remove(str(temp_dict['destination_folder']) + _file)
-            filename, file_extension = os.path.splitext(_file)
+            os.remove(_file)
+            # filename, file_extension = os.path.splitext(_file)
             # Thumbnail removal changes in index.html may require adjustments here
-            os.remove(temp_dict['destination_folder'] + '/thumbnail/' + filename + '_200x200_fit_90' + file_extension)
+            # os.remove(temp_dict['destination_folder'] + '/thumbnail/' + filename + '_200x200_fit_90' + file_extension)
 
         else:
             # This code should delete a picture from source
@@ -418,34 +421,6 @@ def common_string_in_list(string, list):
             new_list.append(item)
     return new_list
 
-# def clear_duplicates(file):
-#     with open(file, "r") as f:
-#         file_list = f.readlines()
-
-#         # Walk the list and remove empty lines
-#         for item in file_list:
-#             if item == '':
-#                 file_list.pop(item)
-
-#     # remove duplicates before record
-#         file_list.sort()
-#         new_list = set(file_list)
-#     with open(file, "w") as f:
-#         f.writelines(new_list)
-
-# "borrowed" from https://thispointer.com/how-to-append-text-or-lines-to-a-file-in-python/
-# def append_new_line(file_name, text_to_append):
-#     """Append given text as a new line at the end of file"""
-#     # Open the file in append & read mode ('a+')
-#     with open(file_name, "a+") as file_object:
-#         # Move read cursor to the start of file.
-#         file_object.seek(0)
-#         # If file is not empty then append '\n'
-#         data = file_object.read(100)
-#         if len(data) > 0:
-#             file_object.write("\n")
-#         # Append text at the end of file
-#         file_object.write(text_to_append)
 
 def append_multiple_lines(file_name, lines_to_append):
     # Open the file in append & read mode ('a+')
@@ -512,11 +487,13 @@ def copy_job():
         logging.error('Sample size returned FALSE')
     else:
         logging.info('-------PRUNNING--------')
-        folderPrunning(multiplier = 2)
-        logging.info('Number of selected files on the sample: ' + str(len(sample)))
-        # keeping source address of all files for backtrack
-        # append_multiple_lines(cfg._csv_source, sample)
-        copyFiles(sample)
+        if (folderPrunning(multiplier = 2)):
+            logging.info('Number of selected files on the sample: ' + str(len(sample)))
+            # keeping source address of all files for backtrack
+            # append_multiple_lines(cfg._csv_source, sample)
+            copyFiles(sample)
+        else:
+            logging.error('Error! Failed to prune destination folder\n NO FILES COPIED.')
 
     logging.info('New folder Size ' + str(getSizeMB(cfg._destinationFolder)) + 'Mb')
     logging.info('-' * 30)
