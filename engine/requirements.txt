@@ -1,0 +1,6 @@
+Werkzeug==1.0.0
+timeloop==1.0.2
+Flask_thumbnails==1.0.6
+Flask==1.1.1
+Pillow==8.0.1
+python_dateutil==2.8.1

@@ -141,7 +141,7 @@ def enhance_requirements():
     print(os.system("pipreqs --force"))
     with open(os.path.join(os.path.dirname(__file__), os.pardir, 'requirements.txt'), 'r') as f:
         reqs = f.read()
-        reqs = reqs.replace('==', '=>')
+        reqs = reqs.replace('==', '>=')
     with open(os.path.join(os.path.dirname(__file__), os.pardir, 'requirements.txt'), 'w') as f:
         f.write(reqs)
 
