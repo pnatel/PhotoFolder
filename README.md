@@ -1,6 +1,4 @@
-# PHOTO FOLDER CSV 
-
-## ATTENTION: THIS VERSION IS NOT FULLY OPERATIONAL AVOID IT!
+# PHOTO FOLDER
 
 The application aim to create a sample from a pool of photos (folder) and copy a random sample to a destination folder. You can then use that destination folder as source for your Photo-Frames in your home network.
 
