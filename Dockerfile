@@ -1,10 +1,10 @@
-# Build from Dockerfile for ARM
-# For x86/64 you can use the prebuilt image on hub.docker.com:
-# $ docker pull pnatel/photo_folder_manager
+# dockerfile for the REPO
+# Or you can use the prebuilt image on hub.docker.com:
+# $ docker push pnatel/photo_folder_manager
 FROM python:slim
 
 LABEL maintainer=pnatel@gmail.com \
-      focus=MAIN 
+      focus=local-builder
 
 ENV hostname=photomanager \
     name=photomanager
@@ -13,22 +13,19 @@ ENV hostname=photomanager \
 RUN apt-get update && apt-get install -y \
     curl \
     git \
-# Pillow Pre-requirements (required for ARM systems)
+# Pillow Pre-requirements
     gcc \
     libjpeg-dev \
     zlib1g-dev
-
-RUN git clone https://github.com/pnatel/PhotoFolder.git --branch master --single-branch && \
-    mv /PhotoFolder /app
 
 VOLUME [ "/data", "/source", "/destination" ]
 
 WORKDIR /app
 
+COPY . .
+
 RUN pip install --no-cache-dir -r requirements.txt && \
-#	rm -r /app/engine/static/destination && \
     ln -s /destination /app/engine/static && \
-#    mv /app/data /data && \
     ln -s /data /app
 
 EXPOSE 23276

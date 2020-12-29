@@ -16,8 +16,9 @@ folders = [
 ]
 
 empty_files = [
-    'data/source.csv',
-    'data/destination.csv'
+    'data/blacklist.txt',
+    'data/whitelist.txt',
+    'data/source.txt'
 ]
 
 config = 'data/config.ini'
