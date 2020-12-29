@@ -1,6 +1,8 @@
 name: Engine Testing
 
-on: [push]
+on:
+  push:
+    branches: [master]
 
 jobs:
   build:
@@ -23,11 +25,11 @@ jobs:
    
     - name: Test if the application handle the copy management
       run: |
-        python ./engine/file_class.py 
-        python ./engine/file_class.py 
-        python ./engine/file_class.py 
-        python ./engine/file_class.py 
-        python ./engine/file_class.py 
+        python ./engine/FileModule.py
+        python ./engine/FileModule.py
+        python ./engine/FileModule.py
+        python ./engine/FileModule.py
+        python ./engine/FileModule.py
     
     # - name: Test if the application handle the auto copy management
     #   run: |
