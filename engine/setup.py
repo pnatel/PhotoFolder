@@ -75,6 +75,11 @@ SourceFolder = /source
 DestinationFolder = engine/static/destination/
 LogPath = logs/production
 
+[data]
+dbSource = data/source.csv
+dbDestin = data/destination.csv
+
+
 [ext]
 FileType1 = jpg
 FileType2 = jpeg
@@ -137,7 +142,7 @@ def enhance_requirements():
     print(os.system("pipreqs --force"))
     with open(os.path.join(os.path.dirname(__file__), os.pardir, 'requirements.txt'), 'r') as f:
         reqs = f.read()
-        reqs = reqs.replace('==', '=>')
+        reqs = reqs.replace('==', '>=')
     with open(os.path.join(os.path.dirname(__file__), os.pardir, 'requirements.txt'), 'w') as f:
         f.write(reqs)
 
@@ -167,10 +172,12 @@ def setup():
     create_config()
 
 if __name__ == '__main__':
+    # Build the barebones for the app to run
     # setup()
 
     # remove all non-essential files/folders
-    # clean_folders()
+    clean_folders()
 
-    enhance_requirements()
+    # update requirements.txt
+    # enhance_requirements()
 

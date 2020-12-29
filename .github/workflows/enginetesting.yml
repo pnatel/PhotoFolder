@@ -23,11 +23,11 @@ jobs:
    
     - name: Test if the application handle the copy management
       run: |
-        python ./engine/FileModule.py 
-        python ./engine/FileModule.py 
-        python ./engine/FileModule.py 
-        python ./engine/FileModule.py 
-        python ./engine/FileModule.py 
+        python ./engine/file_class.py 
+        python ./engine/file_class.py 
+        python ./engine/file_class.py 
+        python ./engine/file_class.py 
+        python ./engine/file_class.py 
     
     # - name: Test if the application handle the auto copy management
     #   run: |
