@@ -12,16 +12,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-  run-job: 
     - name: Load Webserver
       run: |
         python photofolder.py &
@@ -35,6 +36,8 @@ jobs:
         curl -ILfSs http://localhost:23276/whitelist > /dev/null || exit 1
 
   log-job:
+    runs-on: ubuntu-latest
+    steps:
     - name: Show logs
       run: | 
         cat logs/demo/debug.log
