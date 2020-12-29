@@ -32,3 +32,8 @@ jobs:
         curl -ILfkSs http://localhost:23276/config > /dev/null || \
         curl -ILfSs http://localhost:23276/blacklist > /dev/null || \
         curl -ILfSs http://localhost:23276/whitelist > /dev/null || exit 1
+
+    - name: Show logs
+      run: | 
+        cat logs/demo/debug.log
+        cat logs/demo/error.log
