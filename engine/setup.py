@@ -1,10 +1,9 @@
-# Run this file before run the application 
+# Run this file before run the application
 # to create/check file/folder integrity
 
-import os, logging
+import os
+import logging
 import shutil
-
-
 
 folders = [
     'data',
@@ -16,12 +15,12 @@ folders = [
 ]
 
 empty_files = [
-    'data/blacklist.txt',
-    'data/whitelist.txt',
-    'data/source.txt'
+    'data/source.csv',
+    'data/destination.csv'
 ]
 
 config = 'data/config.ini'
+
 
 def empty_structure(folders=folders, files=empty_files):
     '''
@@ -37,15 +36,17 @@ def empty_structure(folders=folders, files=empty_files):
     except OSError as identifier:
         print(identifier)
 
+
 def folder_check(folder):
     '''
     Check if folder exists otherwise create it
     '''
     if os.path.exists(folder) and os.path.isdir(folder):
         print(folder, 'already exists')
-    else: 
+    else:
         os.mkdir(folder)
         print(folder, 'Created')
+
 
 def file_check(file):
     '''
@@ -53,9 +54,10 @@ def file_check(file):
     '''
     if os.path.exists(file) and os.path.isfile(file):
         print(file, 'already exists')
-    else: 
+    else:
         with open(file, "x"):
             print(file, 'Created')
+
 
 # ----------Create config template-----------
 def create_config(cfg=config):
@@ -102,17 +104,17 @@ JobInterval = 86400
 
 [notification]
 # Run this command after the auto copy job is completed
-# The command can do whatever you want. I use it to send 
+# The command can do whatever you want. I use it to send
 # notifications to https://healthchecks.io/
 # e.g: "curl -fsS --retry 3 https://hc-ping.com/your-uuid-here"
-command = 
+command =
 
 # ONLY RANDOM IS IMPLEMENTED
 [sort]
-# 1 = Random, 
-# 2 = Shuffle recently, 
+# 1 = Random,
+# 2 = Shuffle recently,
 # 3 = Shuffle oldest,
-# 4 = Descendent by Date taken, 
+# 4 = Descendent by Date taken,
 # 5 = By Location (Need to read it from pic or Google)
 Criteria = 1
 
@@ -126,24 +128,26 @@ LogPath = logs/demo
 NumberOfPics = 3
 FoldersizeUpperLimit = 10
 JobInterval = 10
-command = ping google.com'''
-            )
+command = ping google.com''')
             print(config, 'Created')
     except OSError as identifier:
         print(identifier)
 
+
 def enhance_requirements():
     """
-    This function change requirements.txt to accept 
+    This function change requirements.txt to accept
     newer versions of the modules.
     it replaces == with =>
     """
-    logging.info("Generating updated requirements") 
+    logging.info("Generating updated requirements")
     print(os.system("pipreqs --force"))
-    with open(os.path.join(os.path.dirname(__file__), os.pardir, 'requirements.txt'), 'r') as f:
+    with open(os.path.join(os.path.dirname(__file__),
+              os.pardir, 'requirements.txt'), 'r') as f:
         reqs = f.read()
         reqs = reqs.replace('==', '>=')
-    with open(os.path.join(os.path.dirname(__file__), os.pardir, 'requirements.txt'), 'w') as f:
+    with open(os.path.join(os.path.dirname(__file__),
+              os.pardir, 'requirements.txt'), 'w') as f:
         f.write(reqs)
 
 
@@ -151,7 +155,7 @@ def clean_folders(folders=folders, warning=1):
     print('''
     WARNING
     This function will reset the app to its defaults.
-    All configuration, logs and other content will be 
+    All configuration, logs and other content will be
     removed with NO warnings
     ''')
     if warning:
@@ -167,17 +171,33 @@ def clean_folders(folders=folders, warning=1):
     except OSError as identifier:
         print(identifier)
 
+
 def setup():
     empty_structure()
     create_config()
 
+
 if __name__ == '__main__':
-    # Build the barebones for the app to run
-    # setup()
+    print('''
+    Choose one of the below options:
+    1 - Setup (Build the barebones for the app to run)
+    2 - Clean-up (remove all non-essential files/folders)
+    3 - Update requirements.txt
+    0 - EXIT
+    ''')
+    while True:
+        option = input('your Choice [1, 2, 3 or 0]: ')
 
-    # remove all non-essential files/folders
-    clean_folders()
-
-    # update requirements.txt
-    # enhance_requirements()
-
+        if option == '1':
+            # Build the barebones for the app to run
+            setup()
+        elif option == '2':
+            # remove all non-essential files/folders
+            clean_folders()
+        elif option == '3':
+            # update requirements.txt
+            enhance_requirements()
+        elif option == '0':
+            break
+        else:
+            print(option, 'Not valid!')
