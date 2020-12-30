@@ -8,11 +8,11 @@ from flask_thumbnails import Thumbnail
 # Running as standalone or part of the application
 if __name__ == '__main__' or __name__ == 'web_module':
     import app_config as cfg
-    import file_class as fl
+    import FileModule as fl
 #    import setup as stp
 else: 
     import engine.app_config as cfg
-    import engine.file_class as fl
+    import engine.FileModule as fl
 #    import engine.setup as stp
 
 # Check configuration files and create any missing file 
