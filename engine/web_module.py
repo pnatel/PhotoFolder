@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
 
 from flask import Flask, flash, render_template, request, redirect
-import os, time
+import os
+# import time
 from werkzeug.serving import run_simple
 from distutils.util import strtobool
 from flask_thumbnails import Thumbnail
 # Running as standalone or part of the application
 if __name__ == '__main__' or __name__ == 'web_module':
     import app_config as cfg
-    import file_class as fl
+    import FileModule as fl
 #    import setup as stp
 else: 
     import engine.app_config as cfg
-    import engine.file_class as fl
+    import engine.FileModule as fl
 #    import engine.setup as stp
 
-# Check configuration files and create any missing file 
+# Check configuration files and create any missing file
 # stp.setup()
 
 # set to True to inform that the app needs to be re-created
@@ -206,8 +207,8 @@ def get_app():
     def clear():
         fl.reset_config(False)
         flash('non-essential content removed. Ready for packaging', 'info')
-        return redirect('/config') 
-    
+        return redirect('/config')
+
     @app.route('/slideshow')
     def slideshow():
         list = fl.getListOfFiles(cfg._destinationFolder, add_path=False)
@@ -233,12 +234,16 @@ class AppReloader(object):
         app = self.get_application()
         return app(environ, start_response)
 
+
 def website():
     # change reloader and debugger to false in production
-    test = bool(strtobool(cfg._test.capitalize()))
-    print('Loading DEMO mode? ', test)
+    # test = bool(strtobool(cfg._test.capitalize()))
+    print('Loading DEMO mode? ', cfg._test)
     run_simple('0.0.0.0', int(cfg._port), application,
-               use_reloader=test, use_debugger=test, use_evalex=True)
+               use_reloader=cfg._test,
+               use_debugger=cfg._test,
+               use_evalex=True)
+
 
 # This application object can be used in any WSGI server
 # for example in gunicorn, you can run "gunicorn app"

@@ -242,7 +242,7 @@ def fileTypeTest(file, typeList=cfg._fileType):
 
 def copyFiles(fileList,
               ftype=cfg._fileType,
-              destin=cfg._destinationFolder,
+              destination=cfg._destinationFolder,
               csv=cfg._csv_destination):
     '''
         Copy a list of files to the folder
@@ -253,8 +253,8 @@ def copyFiles(fileList,
     for fname in fileList:
         if fileTypeTest(fname, ftype):
             logging.debug('Copying file ' + fname)
-            shutil.copy(fname, destin)
-            Photo.byPath(fname, destin).add_record_csv(csv)
+            shutil.copy(fname, destination)
+            Photo.byPath(fname, destination).add_record_csv(csv)
 
 
 def getSizeMB(folder='.'):

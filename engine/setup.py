@@ -15,6 +15,9 @@ folders = [
 ]
 
 empty_files = [
+    'data/blacklist.txt',
+    'data/whitelist.txt',
+    'data/source.txt',
     'data/source.csv',
     'data/destination.csv'
 ]
@@ -79,8 +82,7 @@ LogPath = logs/production
 
 [data]
 dbSource = data/source.csv
-dbDestin = data/destination.csv
-
+dbDestination = data/destination.csv
 
 [ext]
 FileType1 = jpg
@@ -101,6 +103,21 @@ FoldersizeUpperLimit = 1000
 NewerPhotos = datetime.now() - relativedelta(years=3)
 # Waiting time between auto copy job (in seconds)
 JobInterval = 86400
+# Log Level usage: (Default = 3)
+# 1 = debug    - Detailed information, typically of interest only
+#                when diagnosing problems.
+# 2 = info     - Confirmation that things are working as expected.
+# 3 = warning  - An indication that something unexpected happened,
+#                or indicative of some problem in the near future
+#                (e.g. ‘disk space low’).
+#                The software is still working as expected.
+# 4 = error    - Due to a more serious problem, the software has not
+#                been able to perform some function.
+# 5 = critical - A serious error, indicating that the program itself
+#                may be unable to continue running.
+logLevel = 3
+# How the data is manipulated? (txt, csv, mongo)
+DataMode = txt
 
 [notification]
 # Run this command after the auto copy job is completed

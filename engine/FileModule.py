@@ -13,12 +13,14 @@
 
 # Importing required libraries
 from pathlib import Path
-import base64, shutil, random
+# import base64
+import shutil
+import random
 import os
 from PIL import Image
-from sys import argv
+# from sys import argv
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
+# from dateutil.relativedelta import relativedelta
 import logging
 # Running as standalone or part of the application
 # print(__name__)
@@ -26,8 +28,7 @@ if __name__ == '__main__' or __name__ == 'FileModule':
     import app_config as cfg
     from loggerinitializer import initialize_logger
     import setup as stp
-    
-else: 
+else:
     import engine.setup as stp
     import engine.app_config as cfg
     from engine.loggerinitializer import initialize_logger
@@ -36,10 +37,6 @@ stp.setup()
 cfg.load_config()
 initialize_logger(cfg._logPath)
 
-# def open_log():
-#     logging.basicConfig(filename= cfg._logPath,
-#                         format='%(asctime)s - %(levelname)s - %(message)s',
-#                         level=logging.INFO) # TODO: change config.ini loglevel here
 
 # --------------------------------
 # Main function copy photos based on the parameters selected
@@ -47,7 +44,7 @@ initialize_logger(cfg._logPath)
 def copy_job():
     logging.info('--------COPY JOB START--------')
     start = datetime.now()
-    print('Job Start time:',start)
+    print('Job Start time:', start)
     logging.info('Loading list of available photos from: ' + cfg._sourceFolder)
     filenames = getListOfFiles(cfg._sourceFolder)
     logging.info('Found: ' + str(len(filenames)) + ' available files')
@@ -60,21 +57,25 @@ def copy_job():
     else:
         logging.info('-------PRUNNING--------')
         folderPrunning(cfg._destinationFolder, 2)
-        logging.info('Number of selected files on the sample: ' + str(len(sample)))
-        # keeping source address of all files for backtrack 
+        logging.info('Number of selected files on the sample: ' +
+                     str(len(sample)))
+        # keeping source address of all files for backtrack
         append_multiple_lines('data/source.txt', sample)
         copyFiles(sample)
 
-    logging.info('New folder Size ' + str(getSizeMB(cfg._destinationFolder)) + 'Mb')
+    logging.info('New folder Size ' +
+                 str(getSizeMB(cfg._destinationFolder)) + 'Mb')
     logging.info('-' * 30)
     end = datetime.now()
-    print('Job finish time:',end)
+    print('Job finish time:', end)
     logging.info('Time elapsed:' + str(end-start) + 'secs')
     logging.info('--------COPY JOB END----------')
+
 
 # A legacy function calling function
 def main():
     copy_job()
+
 
 def fileTypeTest(file, typeList=cfg._fileType):
     if file.endswith(typeList):
@@ -84,6 +85,7 @@ def fileTypeTest(file, typeList=cfg._fileType):
         logging.warning('extension invalid ' + file)
         return False
 
+
 # Copy a list of files to the folder
 def copyFiles(fileList):
     for fname in fileList:
@@ -91,8 +93,9 @@ def copyFiles(fileList):
             logging.info('Copying file ' + fname)
             shutil.copy(fname, cfg._destinationFolder)
 
+
 # checking size of the destination folder to trigger a cleanup
-def folderPrunning(folder = cfg._destinationFolder, multiplier = 1):
+def folderPrunning(folder=cfg._destinationFolder, multiplier=1):
     folderSize = getSizeMB(folder)
     # logging.info (folder, folderSize)
     logging.info('Destination folder Size ' + str(folderSize) + 'Mb')
@@ -101,39 +104,44 @@ def folderPrunning(folder = cfg._destinationFolder, multiplier = 1):
         if len(filenames) > (cfg._numberOfPics * multiplier):
             prune = sorting(filenames, 1, cfg._numberOfPics * multiplier)
         else:
-            prune = sorting(filenames, 1, cfg._numberOfPics * int(multiplier/2))
+            prune = sorting(filenames, 1,
+                            cfg._numberOfPics * int(multiplier/2))
         for fname in prune:
             logging.info('Removing file ' + fname)
             os.remove(fname)
-        logging.info('Folder Size after prunning ' + str(getSizeMB(folder)) + 'Mb')
+        logging.info('Folder Size after prunning ' +
+                     str(getSizeMB(folder)) + 'Mb')
     else:
-        logging.info(str(folderSize) + ' smaller than ' + str(cfg._foldersizeUpperLimit))
+        logging.info(str(folderSize) + ' smaller than ' +
+                     str(cfg._foldersizeUpperLimit))
+
 
 def filePrunning(path, _file):
     try:
         os.remove(path + _file)
         filename, file_extension = os.path.splitext(_file)
         # Thumbnail removal changes in index.html may require adjustments here
-        os.remove(path + '/thumbnail/' + filename + '_200x200_fit_90' + file_extension)
+        os.remove(path + '/thumbnail/' + filename + '_200x200_fit_90' +
+                  file_extension)
     except OSError as e:
         logging.error(e.errno)
         logging.error('FILE NOT FOUND ' + path + _file)
         return 'File Not Found: ' + path + _file
     else:
-        logging.info('file removed '  + path + _file)
+        logging.info('file removed ' + path + _file)
         return 'File removed: ' + path + _file
 
 
 def fileRotate(path, _file, side='left'):
     try:
-        picture= Image.open(path + _file)
+        picture = Image.open(path + _file)
         filename, file_extension = os.path.splitext(_file)
         # path = path + _file.split('.')
         # ext = path.pop()
-        if side=='left':
+        if side == 'left':
             new_path = path + filename + '_L' + file_extension
             picture.rotate(90, expand=True).save(new_path)
-        elif side=='right':
+        elif side == 'right':
             # new_path = '_'.join(path + filename) + '_R' + file_extension
             new_path = path + filename + '_R' + file_extension
             picture.rotate(270, expand=True).save(new_path)
@@ -148,7 +156,7 @@ def fileRotate(path, _file, side='left'):
         logging.error('Failed to rotate ' + path + _file)
         return 'Failed to rotate: ' + path + _file
     else:
-        logging.info('file rotated '+ side + ': ' + new_path)
+        logging.info('file rotated ' + side + ': ' + new_path)
         return 'file rotated ' + side + ': ' + new_path
 
 
@@ -164,9 +172,9 @@ def getListOfFiles(dirName, add_path=True):
     # Iterate over all the entries
     for entry in listOfFile:
         # Create full path
-        if add_path: 
+        if add_path:
             fullPath = os.path.join(dirName, entry)
-        else: 
+        else:
             fullPath = fullPath = entry
         # If entry is a directory then get the list of files in this directory
         if os.path.isdir(fullPath):
@@ -175,8 +183,10 @@ def getListOfFiles(dirName, add_path=True):
             if fileTypeTest(entry, cfg._fileType):
                 allFiles.append(fullPath)
             else:
-                logging.debug(entry + ' INVALID FILE TYPE ' + str(cfg._fileType))
+                logging.debug(entry + ' INVALID FILE TYPE ' +
+                              str(cfg._fileType))
     return allFiles
+
 
 # This alternative code could be useful on a different moment
 # Get the list of all files in directory tree at given path
@@ -191,11 +201,15 @@ def getListOfFilesWalk(dirName, returnList=True):
     else:
         return walk
 
+
 # returns the size of the folder in bytes
-def getSizeMB(folder = '.'):
+def getSizeMB(folder='.'):
     root_directory = Path(folder)
-    size = sum(f.stat().st_size for f in root_directory.glob('**/*') if f.is_file())
+    size = sum(f.stat().st_size
+               for f in root_directory.glob('**/*')
+               if f.is_file())
     return size/(10**6)
+
 
 # Print the list of files
 def printList(listOfFiles):
@@ -203,32 +217,40 @@ def printList(listOfFiles):
     for elem in listOfFiles:
         print(elem)
 
+
 # print a folder content (no subdirectories)
 def printIter(path='.'):
     for path in Path(path).iterdir():
         print(path)
 
+
 # different way to perform the read of the contents (no subfolders)
-def readFolderContent(path= '.'):
-    # Path.iterdir() returns an iterator, which can be easily turned into a list:
+def readFolderContent(path='.'):
+    # Path.iterdir() returns an iterator,
+    # which can be easily turned into a list:
     contents = list(Path(path).iterdir())
     return contents
+
 
 # choosing and Sorting the sample
 def sorting(filenames, criteria=1, sampleSize=10):
     # print(len(filenames), criteria, sampleSize)
     if len(filenames) < sampleSize:
-        logging.warning('The Sample (' + str(sampleSize) + ') is bigger than the source size (' + str(len(filenames)) + ')')
+        logging.warning('The Sample (' + str(sampleSize) +
+                        ') is bigger than the source size (' +
+                        str(len(filenames)) + ')')
         sampleSize = int(len(filenames) / 2)
         logging.info('New Sample Size: ' + str(sampleSize))
 
     # sorting criterias
-    if criteria == 1: # Random pics from source
+    if criteria == 1:  # Random pics from source
         logging.info('Getting a random set of ' + str(sampleSize) + ' Photos')
         try:
             list_sample = random.sample(filenames, sampleSize)
-            non_black = remove_common_from_list ('data/blacklist.txt', list_sample, 'data/source.txt')
-            non_white = remove_common_from_list ('data/whitelist.txt', list_sample)
+            non_black = remove_common_from_list('data/blacklist.txt',
+                                                list_sample, 'data/source.txt')
+            non_white = remove_common_from_list('data/whitelist.txt',
+                                                list_sample)
             logging.debug('non_black' + str(non_black))
             logging.debug('non_white' + str(non_white))
             return common(non_black, non_white)
@@ -238,7 +260,9 @@ def sorting(filenames, criteria=1, sampleSize=10):
 
     # NO OTHER SORTING METHOD IS WORKING  :-[
     # elif criteria == 2:
-    #     print('Getting a random set of ' + str(cfg._numberOfPics)) # + ' Photos with no less than ' + str(cfg._newerPhotos/365) + ' years')
+    #     print('Getting a random set of ' + str(cfg._numberOfPics)) # +
+    #           ' Photos with no less than ' +
+    #           str(cfg._newerPhotos/365) + ' years')
     #     files = sorted(os.listdir(cfg._sourceFolder), key=os.path.getctime)
     #     # while files[i]. os.path.getctime > cfg._newerPhotos:
     #     for i in range(cfg._numberOfPics):
@@ -251,44 +275,46 @@ def sorting(filenames, criteria=1, sampleSize=10):
     # # elif:
     # #     oldest = files[0]
     else:
-        logging.error('Sorting criteria not met n. of files: ' + str(len(filenames)))
-        print ('Sorting criteria not met')
+        logging.error('Sorting criteria not met n. of files: ' +
+                      str(len(filenames)))
+        print('Sorting criteria not met')
 
-def remove_common_from_list (file, baselist, keep_path=''):
+
+def remove_common_from_list(file, baselist, keep_path=''):
     with open(file, "r") as f:
         file_list = f.readlines()
         # clear unwanted EOL from original file
         file_list = [item.replace('\n', '') for item in file_list]
     logging.debug(file + str(file_list) + str(baselist))
     clean_baselist = []
- 
-    logging.info('========Remove common items from list==========')               
+
+    logging.info('========Remove common items from list==========')
     for item in baselist:
         logging.debug('item in baselist: ' + item)
         # print(ls.common(str(item), file_list))
         if common(str(item), file_list):
-            logging.info('common btw lists: '+ item)
-        else: 
-            clean_baselist.append(item) 
-    
+            logging.info('common btw lists: ' + item)
+        else:
+            clean_baselist.append(item)
     logging.info('=============end remove common==================')
     return clean_baselist
 
 
-def remove_common_from_file (file_name, lines_to_remove):
+def remove_common_from_file(file_name, lines_to_remove):
     with open(file_name, "r") as f:
         lines = (line.rstrip() for line in f)
-        file_list = list(line for line in lines if line) # Non-blank lines in a list
+        # Non-blank lines in a list
+        file_list = list(line for line in lines if line)
         new_list = []
-        toBeRemoved = common (file_list, lines_to_remove)
-        
+        toBeRemoved = common(file_list, lines_to_remove)
+
         if toBeRemoved:
             for item in file_list:
                 if item not in toBeRemoved:
                     new_list.append(item+'\n')
         else:
             new_list = file_list
-    with open(file_name, "w") as f:    
+    with open(file_name, "w") as f:
         f.writelines(new_list)
     return toBeRemoved
 
@@ -298,14 +324,16 @@ def remove_common_from_file (file_name, lines_to_remove):
 # payload = request.get_data().decode("utf-8")
 # list = getListOfFiles(cfg._destinationFolder)
 
+
 def common(lst1, lst2):
     if type(lst1) is str:
-        return common_string_in_list (lst1, lst2)
+        return common_string_in_list(lst1, lst2)
     elif type(lst2) is str:
-        return common_string_in_list (lst2, lst1)
+        return common_string_in_list(lst2, lst1)
     else:
         return list(set(lst1).intersection(lst2))
         # return list(set(lst1) & set(lst2))
+
 
 def uncommon(base_list, special_list):
     # remove EOL special string
@@ -318,6 +346,7 @@ def uncommon(base_list, special_list):
     print(list(a - b))
     return list(a - b)
 
+
 def common_string_in_list(string, list):
     new_list = []
     for item in list:
@@ -327,6 +356,7 @@ def common_string_in_list(string, list):
         elif str(item) in string:
             new_list.append(item)
     return new_list
+
 
 def clear_duplicates(file):
     with open(file, "r") as f:
@@ -343,7 +373,9 @@ def clear_duplicates(file):
     with open(file, "w") as f:
         f.writelines(new_list)
 
-# "borrowed" from https://thispointer.com/how-to-append-text-or-lines-to-a-file-in-python/
+
+# "borrowed" from:
+# https://thispointer.com/how-to-append-text-or-lines-to-a-file-in-python/
 def append_new_line(file_name, text_to_append):
     """Append given text as a new line at the end of file"""
     # Open the file in append & read mode ('a+')
@@ -356,6 +388,7 @@ def append_new_line(file_name, text_to_append):
             file_object.write("\n")
         # Append text at the end of file
         file_object.write(text_to_append)
+
 
 def append_multiple_lines(file_name, lines_to_append):
     # Open the file in append & read mode ('a+')
@@ -377,32 +410,32 @@ def append_multiple_lines(file_name, lines_to_append):
         for line in lines_to_append:
             # If file is not empty then append '\n' before first line for
             # other lines always append '\n' before appending line
-            if appendEOL == True:
+            if appendEOL is True:
                 file_object.write("\n")
             else:
                 appendEOL = True
             # Append element at the end of file
             file_object.write(line)
 
+
 def reset_config(option=True):
     stp.clean_folders(warning=0)
     if option:
-        stp.setup()    
+        stp.setup()
     else:
         # update requirements for packing prior uplod to GitHub
         stp.enhance_requirements()
 
 
 def common_test():
-    a=[2,9,4,5]
-    b=[3,5,7,9]
-    c='2,9,4,5'
-    print('[9, 5] ==', common(a,b))
-    print('[5, 9] ==', common(b,c))
+    a = [2, 9, 4, 5]
+    b = [3, 5, 7, 9]
+    c = '2,9,4,5'
+    print('[9, 5] ==', common(a, b))
+    print('[5, 9] ==', common(b, c))
     print('[2, 4] ==', uncommon(a, b))
-    print(uncommon(b,c))
+    print(uncommon(b, c))
 
 
 if __name__ == '__main__':
     main()
-   
