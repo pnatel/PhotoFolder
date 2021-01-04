@@ -9,11 +9,21 @@ from flask_thumbnails import Thumbnail
 # Running as standalone or part of the application
 if __name__ == '__main__' or __name__ == 'web_module':
     import app_config as cfg
-    import FileModule as fl
+    cfg.load_config()
+    if cfg._DataMode == 'txt':
+        import FileModule as db
+    elif cfg._DataMode == 'csv':
+        pass
+    elif cfg._DataMode == 'mongo':
+        pass
+    else:
+        pass
 #    import setup as stp
-else: 
+else:
     import engine.app_config as cfg
-    import engine.FileModule as fl
+    cfg.load_config()
+    if cfg._DataMode == 'txt':
+        import engine.FileModule as db
 #    import engine.setup as stp
 
 # Check configuration files and create any missing file
@@ -23,7 +33,7 @@ else:
 to_reload = False
 
 # os.environ.get("ENV_VAR_NAME")
-cfg.load_config()
+
 
 def get_app():
     print("create app now")
@@ -32,16 +42,17 @@ def get_app():
     app.secret_key = "Zcg,ddh}k^Q(uh/~qM*PT!cJ5?/Q$3QQ"
     app.config['THUMBNAIL_MEDIA_ROOT'] = os.getcwd()+'/'+cfg._destinationFolder
     app.config['THUMBNAIL_MEDIA_URL'] = cfg._destinationFolder
-    app.config['THUMBNAIL_MEDIA_THUMBNAIL_ROOT'] = os.getcwd()+'/'+cfg._destinationFolder+'/thumbnail/'
+    app.config['THUMBNAIL_MEDIA_THUMBNAIL_ROOT'] = (os.getcwd() + '/' +
+                                                    cfg._destinationFolder +
+                                                    '/thumbnail/')
     app.config['THUMBNAIL_MEDIA_THUMBNAIL_URL'] = '/thumbnail/'
 
     print('path to pics', os.getcwd()+'/'+cfg._destinationFolder)
 
- 
     @app.route('/')
-    @app.route('/', methods = ['GET', 'POST'])
+    @app.route('/', methods=['GET', 'POST'])
     def index():
-        list = fl.getListOfFiles(cfg._destinationFolder, add_path=False)
+        list = db.getListOfFiles(cfg._destinationFolder, add_path=False)
         if request.method == 'GET':
             return load_pics(list, title='List of Pictures')
 
@@ -50,77 +61,78 @@ def get_app():
             # only shows debug if in demo mode
             if bool(strtobool(cfg._test.capitalize())):
                 flash(payload, 'debug')
-            
+
             if request.form.get('left'):
                 rotate(payload, list, 'left')
-                title='ROTATED Pictures'
+                title = 'ROTATED Pictures'
 
             elif request.form.get('right'):
                 rotate(payload, list, 'right')
-                title='ROTATED Pictures'
+                title = 'ROTATED Pictures'
 
             elif request.form.get('180'):
                 rotate(payload, list, '180')
-                title='UPSIDE-DOWN Pictures'
-                
+                title = 'UPSIDE-DOWN Pictures'
+
             elif request.form.get('favorite'):
-                faves = fl.common(payload, list)
+                faves = db.common(payload, list)
                 flash('FAVORITED {} pics'.format(len(faves)), 'warning')
-                fl.append_multiple_lines('data/whitelist.txt', faves)
-                title='FAVORITE Pictures'
+                db.append_multiple_lines('data/whitelist.txt', faves)
+                title = 'FAVORITE Pictures'
 
             elif request.form.get('delete'):
                 delete(payload, list)
-                black = fl.common(payload, list)
+                black = db.common(payload, list)
                 # Check for common with whitelist
-                fave_removed = fl.remove_common_from_file('data/whitelist.txt', black)
+                fave_removed = db.remove_common_from_file('data/whitelist.txt',
+                                                          black)
                 # only shows debug if in demo mode
                 if bool(strtobool(cfg._test.capitalize())):
-                    flash('Removed {} Fave pics'.format(len(fave_removed)), 'debug')
-                
+                    flash('Removed {} Fave pics'.format(len(fave_removed)),
+                          'debug')
+
                 flash('BLACKLISTED {} pics'.format(len(black)), 'info')
-                fl.append_multiple_lines('data/blacklist.txt', black)
-                title='Remaining Pictures'
+                db.append_multiple_lines('data/blacklist.txt', black)
+                title = 'Remaining Pictures'
 
             elif request.form.get('copy_job'):
-                fl.copy_job()
+                db.copy_job()
                 flash('Copy Job completed.', 'warning')
-                title='New Set of Pictures'
+                title = 'New Set of Pictures'
 
             else:
                 # This should never be triggered
                 flash('No option selected, try again.', 'error')
-                title='List of Pictures'
+                title = 'List of Pictures'
 
-            list = fl.getListOfFiles(cfg._destinationFolder, add_path=False)    
+            list = db.getListOfFiles(cfg._destinationFolder, add_path=False)
             return load_pics(list, title=title)
 
     def load_pics(list, page='index.html', title=''):
         flash('Files loaded: ' + str(len(list)), 'message')
-        return render_template(page, title=title, \
-                images=list, len_list=len(list), \
-                path=cfg._destinationFolder[7:], \
-                extra_list=(read_file('data/whitelist.txt')))
+        return render_template(page, title=title,
+                               images=list, len_list=len(list),
+                               path=cfg._destinationFolder[7:],
+                               extra_list=(read_file('data/whitelist.txt')))
 
     def rotate(payload, list, side):
         pic = 0
-        for i  in range(len(list)):
+        for i in range(len(list)):
             if list[i] in payload:
                 pic += 1
                 # flash(list[i], 'warning')
-                fl.fileRotate(cfg._destinationFolder, list[i], side)
+                db.fileRotate(cfg._destinationFolder, list[i], side)
         flash('Rotating {} pics to {}'.format(pic, side), 'warning')
 
     def delete(payload, list):
         # flash(request.get_data(), 'message')
         pic = 0
-        for i  in range(len(list)):
+        for i in range(len(list)):
             if list[i] in payload:
                 pic += 1
                 # flash(list[i], 'warning')
-                fl.filePrunning(cfg._destinationFolder, list[i])
+                db.filePrunning(cfg._destinationFolder, list[i])
         flash('Deleting {} pics'.format(pic), 'warning')
-
 
     def read_file(file):
         try:
@@ -128,14 +140,15 @@ def get_app():
                 return f.read()
         except IOError as e:
             flash('Operation failed: {}'.format(e.strerror), 'error')
-    
+
     def write_file(file, content):
         try:
             if os.path.exists(file+'_old'):
                 os.remove(file+'_old')
                 flash('removing backup file', 'info')
             os.rename(file, file+'_old')
-            flash('Backup original configuration to {}_old'.format(file), 'info')
+            flash('Backup original configuration to {}_old'.format(file),
+                  'info')
             with open(file, 'w') as f:
                 f.write(content)
                 flash('File saved on {}'.format(file), 'info')
@@ -144,74 +157,74 @@ def get_app():
 
     @app.route('/copy_job')
     def copy_job():
-        fl.copy_job()
+        db.copy_job()
         flash('Copy Job completed.', 'warning')
-        title='New Set of Pictures'
-        list = fl.getListOfFiles(cfg._destinationFolder, add_path=False)
-        return load_pics(list, title=title) 
+        title = 'New Set of Pictures'
+        list = db.getListOfFiles(cfg._destinationFolder, add_path=False)
+        return load_pics(list, title=title)
 
-    @app.route('/config', methods = ['GET', 'POST'])
+    @app.route('/config', methods=['GET', 'POST'])
     def config():
         if request.method == 'GET':
-            mode = 'demo' if bool(strtobool(cfg._test.capitalize())) else 'normal'
-            return render_template('config.html', \
-                config_file=read_file('data/config.ini'), \
-                mode=mode, \
-                title='Configuration')
+            mode = ('demo' if cfg._test
+                    else 'normal')
+            return render_template('config.html',
+                                   config_file=read_file('data/config.ini'),
+                                   mode=mode, title='Configuration')
         else:
             write_file('data/config.ini', request.form.get('config'))
-            flash('RESTART THE APPLICATION IF SETTINGS FAIL TO BE APPLIED', 'critical')
+            flash('RESTART THE APPLICATION IF SETTINGS FAIL TO BE APPLIED',
+                  'critical')
             reload()
-            return redirect('/config') 
+            return redirect('/config')
 
-
-    @app.route('/blacklist', methods = ['GET', 'POST'])
+    @app.route('/blacklist', methods=['GET', 'POST'])
     def blacklist():
         if request.method == 'GET':
-            return render_template('blacklist.html', \
-                blacklist=read_file('data/blacklist.txt'), \
-                title='Blacklisted files')
+            return render_template('blacklist.html',
+                                   blacklist=read_file('data/blacklist.txt'),
+                                   title='Blacklisted files')
         else:
             write_file('data/blacklist.txt', request.form.get('blacklist'))
-            return redirect('/blacklist') 
+            return redirect('/blacklist')
 
-
-    @app.route('/whitelist', methods = ['GET', 'POST'])
+    @app.route('/whitelist', methods=['GET', 'POST'])
     def whitelist():
         if request.method == 'GET':
-            return render_template('whitelist.html', \
-                whitelist=read_file('data/whitelist.txt'), \
-                title='whitelisted files')
+            return render_template('whitelist.html',
+                                   whitelist=read_file('data/whitelist.txt'),
+                                   title='whitelisted files')
         else:
             write_file('data/whitelist.txt', request.form.get('whitelist'))
             flash('New whitelist file saved', 'info')
-            return redirect('/whitelist') 
-
+            return redirect('/whitelist')
 
     @app.route('/reload')
     def reload():
         global to_reload
         to_reload = True
+        cfg.load_config()
         flash('Reloading completed', 'info')
         return 'reloaded'
 
     @app.route('/reset')
     def reset():
-        fl.reset_config(True)
+        db.reset_config(True)
         reload()
         flash('Restore completed', 'info')
-        flash('RESTART THE APPLICATION IF SETTINGS FAIL TO BE APPLIED', 'critical')
-        return redirect('/config') 
+        flash('RESTART THE APPLICATION IF SETTINGS FAIL TO BE APPLIED',
+              'critical')
+        return redirect('/config')
 
     @app.route('/clear')
     def clear():
-        fl.reset_config(False)
+        db.reset_config(False)
         flash('non-essential content removed. Ready for packaging', 'info')
         return redirect('/config')
 
     @app.route('/slideshow')
     def slideshow():
-        list = fl.getListOfFiles(cfg._destinationFolder, add_path=False)
+        list = db.getListOfFiles(cfg._destinationFolder, add_path=False)
         return load_pics(list, page='slideshow.html', title='Slideshow')
 
     return app

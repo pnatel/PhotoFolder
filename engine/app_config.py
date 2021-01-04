@@ -78,6 +78,11 @@ def load_config():
     global _csv_source
     global _csv_destination
     global _logLevel
+    global _DataMode
+    global _MongoURL
+    global _dbUser
+    global _dbPass
+    global _dbName
 
     # Force testing environment with 'True' in config.ini
     _test = config.getboolean('test', 'test_mode')
@@ -109,8 +114,13 @@ def load_config():
     _criteria = config.getint('sort', 'criteria')
     _logLevel = config.getint('parameter', 'loglevel')
     _port = ConfigSectionMap('parameter')['port']
+    _DataMode = ConfigSectionMap('parameter')['datamode']
     _csv_source = ConfigSectionMap('data')['dbsource']
     _csv_destination = ConfigSectionMap('data')['dbdestination']
+    _MongoURL = ConfigSectionMap('data')['mongourl']
+    _dbUser = ConfigSectionMap('data')['dbuser']
+    _dbPass = ConfigSectionMap('data')['dbpass']
+    _dbName = ConfigSectionMap('data')['dbname']
 
 
 def test():

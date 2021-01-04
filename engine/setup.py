@@ -83,6 +83,10 @@ LogPath = logs/production
 [data]
 dbSource = data/source.csv
 dbDestination = data/destination.csv
+MongoURL = 
+dbUser = 
+dbPass = 
+dbName = 
 
 [ext]
 FileType1 = jpg

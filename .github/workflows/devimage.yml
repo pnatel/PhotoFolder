@@ -2,7 +2,7 @@ name: build multiarch CSV Image
 
 on:
   push:
-    branches: CSV
+    branches: dev
 
 jobs:
   build:
@@ -21,6 +21,6 @@ jobs:
       - name: build the image
         run: |
           docker buildx build --push \
-            --tag pnatel/photo_folder_manager:csv \
+            --tag pnatel/photo_folder_manager:dev \
             --file ./docker/dev/Dockerfile \
             --platform linux/amd64,linux/arm/v7,linux/arm64 .
