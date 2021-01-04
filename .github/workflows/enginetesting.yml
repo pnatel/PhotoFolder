@@ -23,22 +23,22 @@ jobs:
    
     - name: Test if the FileModule handles the copy management
       run: |
-        cd engine
-        python FileModule.py 
-        python FileModule.py 
-        python FileModule.py 
-        python FileModule.py 
-        python FileModule.py 
+        python ./engine/FileModule.py 
+        python ./engine/FileModule.py 
+        python ./engine/FileModule.py 
+        python ./engine/FileModule.py 
+        python ./engine/FileModule.py 
 
     - name: Test if the csv_module handles the copy management
       run: |
         cd engine
         python -c 'import setup; setup.clean_folders()'
-        python csv_module.py 
-        python csv_module.py 
-        python csv_module.py 
-        python csv_module.py 
-        python csv_module.py 
+        cd ..
+        python ./engine/csv_module.py 
+        python ./engine/csv_module.py 
+        python ./engine/csv_module.py 
+        python ./engine/csv_module.py 
+        python ./engine/csv_module.py 
 
     # - name: Test if the application handle the auto copy management
     #   run: |
