@@ -23,14 +23,26 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
    
-    - name: Test if the application handle the copy management
+    - name: Test if the FileModule handles the copy management
       run: |
-        python ./engine/FileModule.py
-        python ./engine/FileModule.py
-        python ./engine/FileModule.py
-        python ./engine/FileModule.py
-        python ./engine/FileModule.py
-    
+        python ./engine/FileModule.py 
+        python ./engine/FileModule.py 
+        python ./engine/FileModule.py 
+        python ./engine/FileModule.py 
+        python ./engine/FileModule.py 
+
+    - name: Test if the csv_module handles the copy management
+      run: |
+        cd engine
+        python -c 'import setup; setup.clean_folders(warning=0)'
+        cd ..
+        python ./engine/csv_module.py 
+        python ./engine/csv_module.py 
+        python ./engine/csv_module.py 
+        python ./engine/csv_module.py 
+        python ./engine/csv_module.py 
+
+
     # - name: Test if the application handle the auto copy management
     #   run: |
     #       python ./engine/timeloop_Module.py &
