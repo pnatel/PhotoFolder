@@ -32,7 +32,7 @@ jobs:
     - name: Test if the csv_module handles the copy management
       run: |
         cd engine
-        python -c 'import setup; setup.clean_folders()'
+        python -c 'import setup; setup.clean_folders(warning=0)'
         cd ..
         python ./engine/csv_module.py 
         python ./engine/csv_module.py 

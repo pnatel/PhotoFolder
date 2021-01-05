@@ -31,4 +31,4 @@ jobs:
         curl -ILfSs http://localhost:23276/ > /dev/null || \
         curl -ILfkSs http://localhost:23276/config > /dev/null || \
         curl -ILfSs http://localhost:23276/blacklist > /dev/null || \
-        curl -ILfSs http://localhost:23276/whitelist > /dev/null || exit 1
+        # curl -ILfSs http://localhost:23276/whitelist > /dev/null || exit 1
