@@ -59,7 +59,7 @@ def get_app():
         else:
             payload = request.get_data().decode("utf-8")
             # only shows debug if in demo mode
-            if bool(strtobool(cfg._test.capitalize())):
+            if cfg._test:
                 flash(payload, 'debug')
 
             if request.form.get('left'):

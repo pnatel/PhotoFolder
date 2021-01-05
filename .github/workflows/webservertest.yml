@@ -27,13 +27,11 @@ jobs:
     
     - name: Test Webserver
       run: |
-        curl -ILfkSs http://localhost:23276/ 
-        # || exit 1
-        curl -ILfSs http://127.0.0.1:23276/ 
-        # > /dev/null || \
-        # curl -ILfkSs http://localhost:23276/config > /dev/null || \
-        # curl -ILfSs http://localhost:23276/blacklist > /dev/null || \
-        # curl -ILfSs http://localhost:23276/whitelist > /dev/null || exit 1
+        # curl -ILfkSs http://localhost:23276/ || exit 1
+        curl -ILfSs http://127.0.0.1:23276/ > /dev/null || \
+        curl -ILfkSs http://localhost:23276/config > /dev/null || \
+        curl -ILfSs http://localhost:23276/blacklist > /dev/null || \
+        curl -ILfSs http://localhost:23276/whitelist > /dev/null || exit 1
         cat logs/demo/debug.log
         echo "---------------------"
         cat logs/demo/error.log
