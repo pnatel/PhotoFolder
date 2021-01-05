@@ -1,6 +1,8 @@
 name: Engine Testing
 
-on: [push]
+on:
+  push:
+    branches: [master]
 
 jobs:
   build:
@@ -39,6 +41,7 @@ jobs:
         python ./engine/csv_module.py 
         python ./engine/csv_module.py 
         python ./engine/csv_module.py 
+
 
     # - name: Test if the application handle the auto copy management
     #   run: |

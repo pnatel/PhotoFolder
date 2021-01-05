@@ -10,11 +10,11 @@ from datetime import timedelta
 if __name__ == '__main__' or __name__ == 'timeloop_module':
     import app_config as cfg
     from loggerinitializer import initialize_logger
-    import file_class as fc
+    import FileModule as fc
 else: 
     import engine.app_config as cfg
     from engine.loggerinitializer import initialize_logger 
-    import engine.file_class as fc
+    import engine.FileModule as fc
 
 initialize_logger(cfg._logPath)
 

@@ -24,6 +24,12 @@ else:
     cfg.load_config()
     if cfg._DataMode == 'txt':
         import engine.FileModule as db
+    elif cfg._DataMode == 'csv':
+        pass
+    elif cfg._DataMode == 'mongo':
+        pass
+    else:
+        pass
 #    import engine.setup as stp
 
 # Check configuration files and create any missing file
