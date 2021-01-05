@@ -92,7 +92,7 @@ LogPath = logs/production
 [data]
 dbSource = data/source.csv
 dbDestination = data/destination.csv
-MongoURL = 
+MongoURL = mongodb+srv://" + cfg._dbUser + ":" + cfg._dbPass + "@cluster0.6nphj.mongodb.net/" + cfg._dbName + "?retryWrites=true&w=majority
 dbUser = 
 dbPass = 
 dbName = 
@@ -157,8 +157,8 @@ DestinationFolder = engine/static/demo/destination/
 LogPath = logs/demo
 NumberOfPics = 3
 FoldersizeUpperLimit = 10
-JobInterval = 10
-command = ping google.com''')
+JobInterval = 60
+command = cat logs/demo/debug.log''')
             logging.info(config + ' Created')
     except OSError as identifier:
         logging.critical(identifier)

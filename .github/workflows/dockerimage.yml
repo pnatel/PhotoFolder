@@ -1,8 +1,7 @@
-name: build multiarch master Image
+name: build multiarch DOCKER Image
 
 on:
   push:
-    branches: master
 
 jobs:
   build:
@@ -21,6 +20,6 @@ jobs:
       - name: build the image
         run: |
           docker buildx build --push \
-            --tag pnatel/photo_folder_manager:latest \
+            --tag pnatel/photo_folder_manager:${{  GITHUB_REF  }} \
             --file ./docker/Dockerfile \
             --platform linux/amd64,linux/arm/v7,linux/arm64 .
