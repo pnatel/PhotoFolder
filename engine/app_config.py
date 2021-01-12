@@ -75,8 +75,7 @@ def load_config():
     global _jobInterval
     global _command
     global _test
-    global _csv_source
-    global _csv_destination
+    global _csvDB
     global _logLevel
     global _DataMode
     global _MongoURL
@@ -115,8 +114,7 @@ def load_config():
     _logLevel = config.getint('parameter', 'loglevel')
     _port = ConfigSectionMap('parameter')['port']
     _DataMode = ConfigSectionMap('parameter')['datamode']
-    _csv_source = ConfigSectionMap('data')['dbsource']
-    _csv_destination = ConfigSectionMap('data')['dbdestination']
+    _csvDB = ConfigSectionMap('data')['csvdb']
     _MongoURL = ConfigSectionMap('data')['mongourl']
     _dbUser = ConfigSectionMap('data')['dbuser']
     _dbPass = ConfigSectionMap('data')['dbpass']

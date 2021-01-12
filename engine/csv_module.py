@@ -37,7 +37,8 @@ def add_record_csv(recordDict, csv_file):
     """
     docstring
     """
-    recordDict["counter"] = int(recordDict["counter"]) + 1
+    if recordDict['destination_folder'] != '':
+        recordDict["counter"] = int(recordDict["counter"]) + 1
     with open(csv_file, 'a+') as file:
         headers = []
         for key in recordDict.keys():
@@ -57,9 +58,8 @@ def add_record_csv(recordDict, csv_file):
             writer.writerow(recordDict)
             logging.info('adding row for: ' + recordDict["filename"])
         else:
-
             update_record_csv(recordDict["filename"], csv_file,
-                              counter=recordDict["counter"], pruned=False)
+                              counter=recordDict["counter"])
             logging.debug('File already in CSV: ' + recordDict["filename"])
 
 
@@ -133,16 +133,12 @@ def update_record_csv(filepath, csv_file, **kargs):
     if modified:
         removed_record = remove_record_csv(temp['filename'], csv_file)
         if removed_record:
-            if temp['pruned']:
-                # adjustment of counter due artificial remove/add
-                temp['counter'] = int(removed_record['counter']) - 1
+            temp['counter'] = int(removed_record['counter'])
             logging.info('SUCCESS: ' + temp['filename'] +
                          ' removed from ' + csv_file)
-            # print('\n\n', temp)
-            # new = Photo(**temp)
-            # new.print_photo()
             add_record_csv(temp, csv_file)
-            logging.info(f"{temp['filename']} successfully updated")
+            logging.info(f"{temp['filename']} successfully updated, \
+                         FINAL counter: {temp['counter']}")
         else:
             logging.info('FAILED: ' + temp['filename']
                          + ' NOT removed from ' + csv_file)
@@ -181,7 +177,7 @@ def fileTypeTest(file, typeList=cfg._fileType):
 def copyFiles(fileList,
               ftype=cfg._fileType,
               destination=cfg._destinationFolder,
-              csv=cfg._csv_destination):
+              csv=cfg._csvDB):
     '''
         Copy a list of files to the folder
     '''
@@ -190,9 +186,9 @@ def copyFiles(fileList,
 
     for fname in fileList:
         if fileTypeTest(fname, ftype):
-            logging.debug('Copying file ' + fname)
+            logging.debug(f'Copying file {fname} to {destination}')
             shutil.copy(fname, destination)
-            add_record_csv(Photo.byPath(fname, destination).asdict(), csv)
+            update_record_csv(fname, csv, destination_folder=destination)
 
 
 def getSizeMB(folder='.'):
@@ -208,7 +204,7 @@ def getSizeMB(folder='.'):
 
 # -----------------
 # IMPURE
-def update_csv_ListOfFiles(dirName, csv_file):
+def update_csv_ListOfFiles(dirName, csv_file, clean=False):
     '''
     For the given path, get the List of all files in the directory tree
     '''
@@ -230,31 +226,49 @@ def update_csv_ListOfFiles(dirName, csv_file):
                 logging.debug(entry + ' INVALID FILE TYPE ' +
                               str(cfg._fileType))
     if cfg._sourceFolder in dirName:
-        return rebuild_path_from_csv(csv_file, 'source_folder')
+        return rebuild_path_from_csv(csv_file, 'source_folder', clean)
     else:
-        return rebuild_path_from_csv(csv_file, 'destination_folder')
+        return rebuild_path_from_csv(csv_file, 'destination_folder', clean)
 
 
-def clear_sample_source(csv_source, csv_destination):
+def am_I_unique(dictRecord, target='source_folder'):
     """
     docstring
     """
-    return uncommon(rebuild_path_from_csv(csv_source, 'source_folder'),
-                    rebuild_path_from_csv(csv_destination, 'source_folder'))
+    if target == 'source_folder':
+        if dictRecord['destination_folder'] == '':
+            return True
+        else:
+            return False
+    else:
+        if dictRecord['destination_folder'] == '':
+            return False
+        else:
+            return True
 
 
 # IMPURE
-def rebuild_path_from_csv(csv_file, folder):
+def rebuild_path_from_csv(csv_file, folder, clean=False):
     """
     docstring
     """
     temp = []
     source = read_CSV(csv_file)
     for item in source:
-        if item[folder][-1] == '/':
-            temp.append(''.join(item[folder] + item['filename']))
+        if clean:
+            if am_I_unique(item, folder):
+                if item[folder][-1] == '/':
+                    temp.append(''.join(item[folder] + item['filename']))
+                else:
+                    temp.append(''.join(item[folder] + '/' + item['filename']))
         else:
-            temp.append(''.join(item[folder] + '/' + item['filename']))
+            if item[folder] == '':
+                pass
+            else:
+                if item[folder][-1] == '/':
+                    temp.append(''.join(item[folder] + item['filename']))
+                else:
+                    temp.append(''.join(item[folder] + '/' + item['filename']))
     logging.debug(f'Returning {len(temp)} path from {csv_file}')
     # logging.debug(temp)
     return temp
@@ -308,7 +322,7 @@ def sorting(filenames, criteria=1, sampleSize=10):
 
 # IMPURE
 def folderPrunning(folder=cfg._destinationFolder,
-                   csv_file=cfg._csv_destination,
+                   csv_file=cfg._csvDB,
                    multiplier=1,
                    upper_limit=cfg._foldersizeUpperLimit,
                    size=cfg._numberOfPics):
@@ -320,7 +334,9 @@ def folderPrunning(folder=cfg._destinationFolder,
     logging.info('Destination folder Size ' + str(folderSize) + 'Mb')
     if folderSize > upper_limit:
         logging.debug('Prunning folder in ' + csv_file)
-        filenames = rebuild_path_from_csv(csv_file, 'destination_folder')
+        filenames = rebuild_path_from_csv(csv_file, 'destination_folder',
+                                          clean=True)
+        # print(filenames)
         if len(filenames) > (cfg._numberOfPics * multiplier):
             prune = sorting(filenames, 1, size * multiplier)
         else:
@@ -342,9 +358,9 @@ def folderPrunning(folder=cfg._destinationFolder,
 
 def filePrunning(_file, csv_file):
     try:
-        temp_dict = update_record_csv(_file, csv_file, pruned=True)
+        temp_dict = update_record_csv(_file, csv_file, destination_folder='')
 #        logging.debug(temp_dict)
-        if temp_dict['destination_folder'] != '':
+        if temp_dict['source_folder'] not in _file:
             os.remove(_file)
             # filename, file_extension = os.path.splitext(_file)
             # Thumbnail removal changes in index.html
@@ -462,9 +478,8 @@ def copy_job():
     start = datetime.datetime.now()
     print('Job Start time:', start)
     logging.info('Loading list of available photos from: ' + cfg._sourceFolder)
-    filenames = clear_sample_source(cfg._csv_source, cfg._csv_destination)
-    if filenames == []:
-        filenames = update_csv_ListOfFiles(cfg._sourceFolder, cfg._csv_source)
+    filenames = update_csv_ListOfFiles(cfg._sourceFolder,
+                                       cfg._csvDB, clean=True)
     logging.info('Found: ' + str(len(filenames)) + ' available files')
     logging.info('choosing and Sorting the sample')
     sample = sorting(filenames, cfg._criteria, cfg._numberOfPics)
@@ -491,20 +506,4 @@ def copy_job():
 
 
 if __name__ == '__main__':
-    #  photo1 = Photo.byPath('engine/static/demo/source/black-crt-tv-showing-gray-screen-704555.jpg')
-    #  photo2 = Photo.byPath('engine/static/demo/source/bandwidth-close-up-computer-connection-1148820.jpg')
-
-    #  photo1.print_photo()
-    #  print(photo1.asdict())
-    #  photo1.add_record_csv('data/test.csv')
-    #  photo2.add_record_csv('data/test.csv')
-
-    #  print(datetime.datetime.fromtimestamp(photo1.datetime))
-    # print (remove_record_csv('bandwidth-close-up-computer-connection-1148820.jpg', 'data/test.csv'))
-    #  update_record_csv('black-crt-tv-showing-gray-screen-704555.jpg','data/test.csv', favorite = True)
-    #  print(read_CSV('data/test.csv'))
-    # update_csv_ListOfFiles(cfg._sourceFolder, 'data/test2.csv')
-    # filePrunning(pat-whelen-BDeSzt-dhxc-unsplash.jpg, csv_file)
-    # print(clear_sample_source('data/test.csv', 'data/test2.csv'))
-
     copy_job()

@@ -33,8 +33,7 @@ class Photo:
     """
 
     def __init__(self, filename, source_folder, destination_folder,
-                 datetime, size, favorite=False, deleted=False,
-                 pruned=False, counter=0):
+                 datetime, size, favorite=False, deleted=False, counter=0):
         self.filename = filename
         self.source_folder = source_folder
         self.destination_folder = destination_folder
@@ -42,7 +41,6 @@ class Photo:
         self.size = size
         self.favorite = favorite
         self.deleted = deleted
-        self.pruned = pruned
         self.counter = counter
         logging.info('Photo object created: ' + filename)
 
@@ -66,7 +64,6 @@ class Photo:
             'size': self.size,
             'favorite': self.favorite,
             'deleted': self.deleted,
-            'pruned': self.pruned,
             'counter': self.counter
         }
 
@@ -81,5 +78,4 @@ class Photo:
         print(self.size)
         print(self.favorite)
         print(self.deleted)
-        print(self.pruned)
         print(self.counter)

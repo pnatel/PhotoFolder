@@ -27,8 +27,7 @@ empty_files = [
     'data/blacklist.txt',
     'data/whitelist.txt',
     'data/source.txt',
-    'data/source.csv',
-    'data/destination.csv'
+    'data/photofolderDB.csv'
 ]
 
 config = 'data/config.ini'
@@ -90,8 +89,7 @@ DestinationFolder = engine/static/destination/
 LogPath = logs/production
 
 [data]
-dbSource = data/source.csv
-dbDestination = data/destination.csv
+csvDB = data/photofolderDB.csv
 MongoURL = mongodb+srv://" + cfg._dbUser + ":" + cfg._dbPass + "@cluster0.6nphj.mongodb.net/" + cfg._dbName + "?retryWrites=true&w=majority
 dbUser = 
 dbPass = 
@@ -222,7 +220,7 @@ if __name__ == '__main__':
             setup()
         elif option == '2':
             # remove all non-essential files/folders
-            clean_folders()
+            clean_folders(warning=0)
         elif option == '3':
             # update requirements.txt
             enhance_requirements()

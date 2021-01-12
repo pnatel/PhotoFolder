@@ -13,23 +13,37 @@ if __name__ == '__main__' or __name__ == 'web_module':
     if cfg._DataMode == 'txt':
         import FileModule as db
     elif cfg._DataMode == 'csv':
-        pass
+        import csv_module as db
     elif cfg._DataMode == 'mongo':
-        pass
+        import mongodb_module as db
     else:
-        pass
+        print('''
+>>>>>>>>>Failed to load the database<<<<<<<<
+
+This is usually due a typo in the config.ini
+Check data/config.ini > parameters.
+Reloading basic txt mode to keep you running.
+'''
+        import FileModule as db
 #    import setup as stp
 else:
     import engine.app_config as cfg
     cfg.load_config()
     if cfg._DataMode == 'txt':
         import engine.FileModule as db
-    elif cfg._DataMode == 'csv':
-        pass
-    elif cfg._DataMode == 'mongo':
-        pass
+    elif engine.cfg._DataMode == 'csv':
+        import csv_module as db
+    elif engine.cfg._DataMode == 'mongo':
+        import mongodb_module as db
     else:
-        pass
+        print('''
+>>>>>>>>>Failed to load the database<<<<<<<<
+
+This is usually due a typo in the config.ini
+Check data/config.ini > parameters.
+Reloading basic txt mode to keep you running.
+'''
+        import engine.FileModule as db
 #    import engine.setup as stp
 
 # Check configuration files and create any missing file
@@ -155,9 +169,13 @@ def get_app():
             os.rename(file, file+'_old')
             flash('Backup original configuration to {}_old'.format(file),
                   'info')
-            with open(file, 'w') as f:
-                f.write(content)
-                flash('File saved on {}'.format(file), 'info')
+            if len(content) > 0:
+                with open(file, 'w') as f:
+                    f.write(content)
+                    flash('File saved on {}'.format(file), 'info')
+            else:
+                flash('File writing failed, restoring original', 'error')
+                os.copy(file+'_old', file)
         except IOError as e:
             flash(e, 'error')
 

@@ -7,19 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: echo-default-env-variables
-        run: |
-            echo "Home: ${HOME}"
-            echo "GITHUB_WORKFLOW: ${GITHUB_WORKFLOW}"
-            echo "GITHUB_ACTIONS: ${GITHUB_ACTIONS}"
-            echo "GITHUB_ACTOR: ${GITHUB_ACTOR}"
-            echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
-            echo "GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}"
-            echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
-            echo "GITHUB_SHA: ${GITHUB_SHA}"
-            echo "GITHUB_REF: ${GITHUB_REF}"
-            echo "GITHUB_HEAD_REF: ${GITHUB_HEAD_REF}"
-            echo ${GITHUB_HEAD_REF}
       - name: checkout code
         uses: actions/checkout@v2
       - name: install buildx
@@ -30,9 +17,16 @@ jobs:
           qemu-version: latest
       - name: login to docker hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin    
-      - name: build the image
+      - name: build the image based on branch
         run: |
           docker buildx build --push \
-            --tag pnatel/photo_folder_manager:${GITHUB_HEAD_REF} \
+            --tag pnatel/photo_folder_manager:${GITHUB_REF##*/} \
             --file ./docker/Dockerfile \
-            --platform linux/amd64,linux/arm/v7,linux/arm64 .
+            --platform linux/amd64,linux/arm/v7,linux/arm64 .      
+      - name: build a latest image
+        if: endsWith(github.ref, '/master')
+          run: |
+            docker buildx build --push \
+              --tag pnatel/photo_folder_manager:latest \
+              --file ./docker/Dockerfile \
+              --platform linux/amd64,linux/arm/v7,linux/arm64 .
