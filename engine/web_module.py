@@ -23,7 +23,7 @@ if __name__ == '__main__' or __name__ == 'web_module':
 This is usually due a typo in the config.ini
 Check data/config.ini > parameters.
 Reloading basic txt mode to keep you running.
-'''
+''')
         import FileModule as db
 #    import setup as stp
 else:
@@ -42,7 +42,7 @@ else:
 This is usually due a typo in the config.ini
 Check data/config.ini > parameters.
 Reloading basic txt mode to keep you running.
-'''
+''')
         import engine.FileModule as db
 #    import engine.setup as stp
 

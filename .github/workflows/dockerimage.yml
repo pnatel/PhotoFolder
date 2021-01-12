@@ -25,8 +25,8 @@ jobs:
             --platform linux/amd64,linux/arm/v7,linux/arm64 .      
       - name: build a latest image
         if: endsWith(github.ref, '/master')
-          run: |
-            docker buildx build --push \
-              --tag pnatel/photo_folder_manager:latest \
-              --file ./docker/Dockerfile \
-              --platform linux/amd64,linux/arm/v7,linux/arm64 .
+        run: |
+          docker buildx build --push \
+            --tag pnatel/photo_folder_manager:latest \
+            --file ./docker/Dockerfile \
+            --platform linux/amd64,linux/arm/v7,linux/arm64 .
