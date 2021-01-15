@@ -14,6 +14,7 @@ import random
 import logging
 import datetime
 import csv
+from PIL import Image
 
 # Running as standalone or part of the application
 if __name__ == '__main__' or __name__ == 'csv_module':
@@ -39,6 +40,9 @@ def add_record_csv(recordDict, csv_file):
     """
     if recordDict['destination_folder'] != '':
         recordDict["counter"] = int(recordDict["counter"]) + 1
+        if int(recordDict['rotate']) != 0:
+            fileRotate(recordDict['destination_folder'], recordDict['filename'],
+                       side=int(recordDict['rotate']))
     with open(csv_file, 'a+') as file:
         headers = []
         for key in recordDict.keys():
@@ -147,6 +151,29 @@ def update_record_csv(filepath, csv_file, **kargs):
     return temp
 
 
+def filter_record_csv(csv_file=cfg._csvDB, **kargs):
+    """[summary]
+
+    Args:
+        csv_file ([type], optional): [description]. Defaults to cfg._csvDB.
+
+    Returns:
+        [type]: [description]
+    """
+    logging.debug(f'filter_record_csv param: {csv_file}, {kargs}')
+    records = read_CSV(csv_file)
+    temp = []
+    for record in records:
+        for key in kargs:
+            # logging.debug(f'key in kargs: {key}, {(kargs.get(key))} == {(record[key])}')
+            # logging.debug(
+            #     f'key in record: {key in record}, and kargs.get(key) == record[key] {str(kargs.get(key)) == str(record[key])}')
+            if key in record and str(kargs.get(key)) == str(record[key]):
+                temp.append(record)
+    logging.debug(f'filter_record_csv result: {temp}')
+    return temp
+
+
 def add_multiple_csv_records(list_file_paths, csv_file, destination_folder=''):
     """
         docstring
@@ -202,9 +229,18 @@ def getSizeMB(folder='.'):
     return size/(10**6)
 
 
+# ------Legacy Function-----------
+def getListOfFiles(dirName, add_path=True):
+    '''
+    For the given path, get the List of all files in the directory tree
+    '''
+    return update_csv_ListOfFiles(dirName, cfg._csvDB, clean=False,
+                                  add_path=add_path)
+
+
 # -----------------
 # IMPURE
-def update_csv_ListOfFiles(dirName, csv_file, clean=False):
+def update_csv_ListOfFiles(dirName, csv_file, clean=False, add_path=True):
     '''
     For the given path, get the List of all files in the directory tree
     '''
@@ -217,7 +253,10 @@ def update_csv_ListOfFiles(dirName, csv_file, clean=False):
         fullPath = os.path.join(dirName, entry)
         # If entry is a directory then get the list of files in this directory
         if os.path.isdir(fullPath):
-            update_csv_ListOfFiles(fullPath, csv_file)
+            if 'thumbnail' in fullPath:
+                pass
+            else:
+                update_csv_ListOfFiles(fullPath, csv_file)
         else:
             if fileTypeTest(entry, cfg._fileType):
                 record = Photo.byPath(fullPath)
@@ -226,9 +265,11 @@ def update_csv_ListOfFiles(dirName, csv_file, clean=False):
                 logging.debug(entry + ' INVALID FILE TYPE ' +
                               str(cfg._fileType))
     if cfg._sourceFolder in dirName:
-        return rebuild_path_from_csv(csv_file, 'source_folder', clean)
+        return rebuild_path_from_csv(csv_file, 'source_folder',
+                                     clean, add_path)
     else:
-        return rebuild_path_from_csv(csv_file, 'destination_folder', clean)
+        return rebuild_path_from_csv(csv_file, 'destination_folder',
+                                     clean, add_path)
 
 
 def am_I_unique(dictRecord, target='source_folder'):
@@ -248,27 +289,56 @@ def am_I_unique(dictRecord, target='source_folder'):
 
 
 # IMPURE
-def rebuild_path_from_csv(csv_file, folder, clean=False):
+def rebuild_path_from_csv(csv_file, folder, clean=False, add_path=True):
     """
     docstring
     """
+    # logging.debug(folder)
+    # logging.debug(csv_file)
+    # logging.debug(str(clean))
+    # logging.debug(str(add_path))
+    # logging.debug(type(clean))
+    # logging.debug(type(add_path))
     temp = []
     source = read_CSV(csv_file)
     for item in source:
+        # logging.debug(item)
         if clean:
+            # no duplicates
+            # logging.debug('Clean True')
+            # logging.debug(str(clean))
             if am_I_unique(item, folder):
-                if item[folder][-1] == '/':
-                    temp.append(''.join(item[folder] + item['filename']))
+                logging.debug('Unique True')
+                if add_path:
+                    # logging.debug('adding path')
+                    # logging.debug(str(add_path))
+                    if item[folder][-1] == '/':
+                        temp.append(''.join(item[folder] +
+                                    item['filename']))
+                    else:
+                        temp.append(''.join(item[folder] +
+                                    '/' + item['filename']))
                 else:
-                    temp.append(''.join(item[folder] + '/' + item['filename']))
+                    # logging.debug('NO path')
+                    # logging.debug(str(add_path))
+                    temp.append(item['filename'])
         else:
             if item[folder] == '':
                 pass
             else:
-                if item[folder][-1] == '/':
-                    temp.append(''.join(item[folder] + item['filename']))
+                if add_path:
+                    # logging.debug('adding path')
+                    # logging.debug(str(add_path))
+                    if item[folder][-1] == '/':
+                        temp.append(''.join(item[folder] +
+                                            item['filename']))
+                    else:
+                        temp.append(''.join(item[folder] +
+                                            '/' + item['filename']))
                 else:
-                    temp.append(''.join(item[folder] + '/' + item['filename']))
+                    # logging.debug('NO path')
+                    # logging.debug(str(add_path))
+                    temp.append(item['filename'])
     logging.debug(f'Returning {len(temp)} path from {csv_file}')
     # logging.debug(temp)
     return temp
@@ -356,17 +426,26 @@ def folderPrunning(folder=cfg._destinationFolder,
     return True
 
 
-def filePrunning(_file, csv_file):
+def filePrunning(_file, csv_file=cfg._csvDB, folder=cfg._destinationFolder):
     try:
-        temp_dict = update_record_csv(_file, csv_file, destination_folder='')
-#        logging.debug(temp_dict)
-        if temp_dict['source_folder'] not in _file:
+        temp_dict = update_record_csv(_file, csv_file,
+                                      destination_folder='',
+                                      favorite=False,
+                                      deleted=True)
+        logging.debug(temp_dict)
+        logging.debug(_file)
+        if temp_dict['source_folder'] not in _file and folder in _file:
             os.remove(_file)
-            # filename, file_extension = os.path.splitext(_file)
-            # Thumbnail removal changes in index.html
-            # may require adjustments here:
-            # os.remove(temp_dict['destination_folder'] + '/thumbnail/' +
-            #           filename + '_200x200_fit_90' + file_extension)
+            head, tail = os.path.split(_file)
+            thumbnail_removal(head, tail)
+
+        elif folder not in _file:
+            if folder[-1] == '/':
+                os.remove(''.join(folder + _file))
+            else:
+                os.remove(''.join(folder + '/' + _file))
+            # os.remove(folder + _file)
+            thumbnail_removal(folder, _file)
 
         else:
             # This code should delete a picture from source
@@ -380,6 +459,56 @@ def filePrunning(_file, csv_file):
     else:
         logging.info('file removed ' + _file)
         return 'File removed: ' + _file
+
+
+def thumbnail_removal(_folder, _file):
+    """
+    docstring
+    """
+    try:
+        filename, file_extension = os.path.splitext(_file)
+        # Thumbnail removal changes in index.html
+        # may require adjustments here:
+        logging.info('Removing Thumbnail: ' + _folder + '/thumbnail/' +
+                     filename + '_200x200_fit_90' + file_extension)
+        os.remove(_folder + '/thumbnail/' +
+                  filename + '_200x200_fit_90' + file_extension)
+
+    except OSError as e:
+        logging.error(e.errno)
+        logging.error('THUMBNAIL NOT FOUND ' + _file)
+        return 'THUMBNAIL Not Found: ' + _file
+    else:
+        logging.info('THUMBNAIL removed ' + _file)
+        return 'THUMBNAIL removed: ' + _file
+
+
+def fileRotate(path, _file, side='left', csv=cfg._csvDB):
+    try:
+        picture = Image.open(path + _file)
+        # filename, file_extension = os.path.splitext(_file)
+        if side == 'left' or side == 90:
+            update_record_csv(_file, csv, rotate=90)
+            # new_path = path + filename + '_L' + file_extension
+            picture.rotate(90, expand=True).save(path + _file)
+        elif side == 'right' or side == 270:
+            update_record_csv(_file, csv, rotate=270)
+            # new_path = path + filename + '_R' + file_extension
+            picture.rotate(270, expand=True).save(path + _file)
+        else:
+            update_record_csv(_file, csv, rotate=180)
+            # new_path = path + filename + '_UP' + file_extension
+            picture.rotate(180, expand=True).save(path + _file)
+        picture.close()
+        # filePrunning(_file, path)
+    except OSError as e:
+        logging.error(e.errno + e)
+        logging.error('Failed to rotate ' + path + _file)
+        return 'Failed to rotate: ' + path + _file
+    else:
+        logging.info(f'file rotated {side}: {_file}')
+        return f'file rotated {side}: {_file}'
+
 
 
 # ++++++++++++++++++++++++++++++++++++++
@@ -423,32 +552,32 @@ def common_string_in_list(string, list):
     return new_list
 
 
-def append_multiple_lines(file_name, lines_to_append):
-    # Open the file in append & read mode ('a+')
-    with open(file_name, "a+") as file_object:
-        appendEOL = False
-        # Move read cursor to the start of file.
-        file_object.seek(0)
-        # Check if file is not empty
-        data = file_object.read(100)
-        if len(data) > 0:
-            appendEOL = True
-            file_object.seek(0)
-            source = file_object.readlines()
-            # clear unwanted EOL from original file
-            source = [item.replace('\n', '') for item in source]
-            # remove possible duplicates
-            lines_to_append = uncommon(lines_to_append, source)
-        # Iterate over each string in the list
-        for line in lines_to_append:
-            # If file is not empty then append '\n' before first line for
-            # other lines always append '\n' before appending line
-            if appendEOL:
-                file_object.write("\n")
-            else:
-                appendEOL = True
-            # Append element at the end of file
-            file_object.write(line)
+# def append_multiple_lines(file_name, lines_to_append):
+#     # Open the file in append & read mode ('a+')
+#     with open(file_name, "a+") as file_object:
+#         appendEOL = False
+#         # Move read cursor to the start of file.
+#         file_object.seek(0)
+#         # Check if file is not empty
+#         data = file_object.read(100)
+#         if len(data) > 0:
+#             appendEOL = True
+#             file_object.seek(0)
+#             source = file_object.readlines()
+#             # clear unwanted EOL from original file
+#             source = [item.replace('\n', '') for item in source]
+#             # remove possible duplicates
+#             lines_to_append = uncommon(lines_to_append, source)
+#         # Iterate over each string in the list
+#         for line in lines_to_append:
+#             # If file is not empty then append '\n' before first line for
+#             # other lines always append '\n' before appending line
+#             if appendEOL:
+#                 file_object.write("\n")
+#             else:
+#                 appendEOL = True
+#             # Append element at the end of file
+#             file_object.write(line)
 
 
 def reset_config(option=True):

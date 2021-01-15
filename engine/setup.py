@@ -205,14 +205,15 @@ def setup():
 
 
 if __name__ == '__main__':
-    print('''
+
+    while True:
+        print('''
     Choose one of the below options:
     1 - Setup (Build the barebones for the app to run)
     2 - Clean-up (remove all non-essential files/folders)
     3 - Update requirements.txt
     0 - EXIT
     ''')
-    while True:
         option = input('your Choice [1, 2, 3 or 0]: ')
 
         if option == '1':
