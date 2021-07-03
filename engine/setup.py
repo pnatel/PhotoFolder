@@ -157,8 +157,8 @@ DestinationFolder = engine/static/demo/destination/
 LogPath = logs/demo
 NumberOfPics = 3
 FoldersizeUpperLimit = 10
-JobInterval = 10
-command = ping google.com''')
+JobInterval = 30
+command = ping -c 4 google.com''')
             logging.info(config + ' Created')
     except OSError as identifier:
         logging.critical(identifier)

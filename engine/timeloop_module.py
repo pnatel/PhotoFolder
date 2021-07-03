@@ -10,15 +10,15 @@ from datetime import timedelta
 if __name__ == '__main__' or __name__ == 'timeloop_module':
     import app_config as cfg
     from loggerinitializer import initialize_logger
-    import FileModule as fc
+    import csv_module as fc
+    cfg.load_config()
 else: 
     import engine.app_config as cfg
     from engine.loggerinitializer import initialize_logger 
-    import engine.FileModule as fc
+    import engine.csv_module as fc
 
 initialize_logger(cfg._logPath)
 
-cfg.load_config()
 tl = Timeloop()
 
 @tl.job(interval=timedelta(seconds=cfg._jobInterval))
