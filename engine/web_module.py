@@ -4,7 +4,7 @@ from flask import Flask, flash, render_template, request, redirect
 import os
 # import time
 from werkzeug.serving import run_simple
-from distutils.util import strtobool
+# from distutils.util import strtobool
 from flask_thumbnails import Thumbnail
 # Running as standalone or part of the application
 if __name__ == '__main__' or __name__ == 'web_module':

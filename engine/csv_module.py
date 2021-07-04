@@ -492,16 +492,25 @@ def fileRotate(path, _file, side='left', csv=cfg._csvDB):
         filename, file_extension = os.path.splitext(_file)
         if side == 'left' or side == 90:
             new_path = path + filename + '_L' + file_extension
-            update_record_csv(_file, csv, filename=new_path, rotate=90)
+            # update_record_csv(_file, csv, filename=new_path, rotate=90)
             picture.rotate(90, expand=True).save(new_path)
+            record = Photo.byPath(new_path)
+            add_record_csv(record.asdict(), csv)
+            remove_record_csv(_file, csv)
         elif side == 'right' or side == 270:
             new_path = path + filename + '_R' + file_extension
-            update_record_csv(_file, csv, filename=new_path, rotate=270)
+            # update_record_csv(_file, csv, filename=new_path, rotate=270)
             picture.rotate(270, expand=True).save(new_path)
+            record = Photo.byPath(new_path)
+            add_record_csv(record.asdict(), csv)
+            remove_record_csv(_file, csv)
         else:
             new_path = path + filename + '_UP' + file_extension
-            update_record_csv(_file, csv, filename=new_path, rotate=180)
+            # update_record_csv(_file, csv, filename=new_path, rotate=180)
             picture.rotate(180, expand=True).save(new_path)
+            record = Photo.byPath(new_path)
+            add_record_csv(record.asdict(), csv)
+            remove_record_csv(_file, csv)
         picture.close()
         filePrunning(_file, path)
     except OSError as e:
