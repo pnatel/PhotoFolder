@@ -93,7 +93,7 @@ def get_app():
                 fave_removed = db.remove_common_from_file('data/whitelist.txt',
                                                           black)
                 # only shows debug if in demo mode
-                if bool(strtobool(cfg._test.capitalize())):
+                if cfg._test:
                     flash('Removed {} Fave pics'.format(len(fave_removed)),
                           'debug')
 
