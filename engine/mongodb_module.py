@@ -93,6 +93,18 @@ def add_multiple_records(list_file_paths, table, destination_folder=''):
         addDocument(record.asdict(), table)
     return len(list_file_paths)
 
+# MongoDB Retrieve Documents in Collection
+# ----------------------------------------
+
+
+
+# MongoDB Update Documents in Collection
+# --------------------------------------
+
+
+
+# MongoDB Delete Documents in Collection
+# --------------------------------------
 
 if __name__ == "__main__":
 

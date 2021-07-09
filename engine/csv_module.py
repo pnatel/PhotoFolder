@@ -144,7 +144,7 @@ def update_record_csv(filepath, csv_file, **kargs):
             logging.info(f"{temp['filename']} successfully updated, \
                          FINAL counter: {temp['counter']}")
         else:
-            logging.info('FAILED: ' + temp['filename']
+            logging.warning('FAILED: ' + temp['filename']
                          + ' NOT removed from ' + csv_file)
     else:
         logging.error(f"{filename} was NOT changed")
@@ -486,21 +486,24 @@ def thumbnail_removal(_folder, _file):
 def fileRotate(path, _file, side='left', csv=cfg._csvDB):
     try:
         picture = Image.open(path + _file)
-        # filename, file_extension = os.path.splitext(_file)
+        print(path + _file)
+        print(picture)
+
+        filename, file_extension = os.path.splitext(_file)
         if side == 'left' or side == 90:
-            update_record_csv(_file, csv, rotate=90)
-            # new_path = path + filename + '_L' + file_extension
-            picture.rotate(90, expand=True).save(path + _file)
+            new_path = path + filename + '_L' + file_extension
+            update_record_csv(_file, csv, filename=new_path, rotate=90)
+            picture.rotate(90, expand=True).save(new_path)
         elif side == 'right' or side == 270:
-            update_record_csv(_file, csv, rotate=270)
-            # new_path = path + filename + '_R' + file_extension
-            picture.rotate(270, expand=True).save(path + _file)
+            new_path = path + filename + '_R' + file_extension
+            update_record_csv(_file, csv, filename=new_path, rotate=270)
+            picture.rotate(270, expand=True).save(new_path)
         else:
-            update_record_csv(_file, csv, rotate=180)
-            # new_path = path + filename + '_UP' + file_extension
-            picture.rotate(180, expand=True).save(path + _file)
+            new_path = path + filename + '_UP' + file_extension
+            update_record_csv(_file, csv, filename=new_path, rotate=180)
+            picture.rotate(180, expand=True).save(new_path)
         picture.close()
-        # filePrunning(_file, path)
+        filePrunning(_file, path)
     except OSError as e:
         logging.error(e.errno + e)
         logging.error('Failed to rotate ' + path + _file)

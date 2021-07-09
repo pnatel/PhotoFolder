@@ -20,8 +20,8 @@ _newerPhotos = 0
 _criteria = 0
 _jobInterval = 0
 _command = ''
-_csv_source = ''
-_csv_destination = ''
+_csvDB = ''
+# _csv_destination = ''
 _logLevel = 0
 
 config = configparser.ConfigParser()

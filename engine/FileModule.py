@@ -22,7 +22,7 @@ from PIL import Image
 from datetime import datetime
 # from dateutil.relativedelta import relativedelta
 import logging
-# Running as standalone or part of the application
+# Are you running this module as standalone or as part of the application?
 # print(__name__)
 if __name__ == '__main__' or __name__ == 'FileModule':
     import app_config as cfg
@@ -48,11 +48,12 @@ def copy_job():
     logging.info('Loading list of available photos from: ' + cfg._sourceFolder)
     filenames = getListOfFiles(cfg._sourceFolder)
     logging.info('Found: ' + str(len(filenames)) + ' available files')
-    logging.info('choosing and Sorting the sample')
-    sample = sorting(filenames, cfg._criteria, cfg._numberOfPics)
     try:
-        sample != False
-    except:
+        logging.info('choosing and Sorting the sample')
+        sample = sorting(filenames, cfg._criteria, cfg._numberOfPics)
+        if sample is not False:
+            logging.debug('Sample size: ' + str(len(sample)))
+    except sample is False:
         logging.error('Sample size returned FALSE')
     else:
         logging.info('-------PRUNNING--------')
