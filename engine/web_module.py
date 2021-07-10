@@ -206,7 +206,8 @@ def get_app():
                     else 'normal')
             return render_template('config.html',
                                    config_file=read_file('data/config.ini'),
-                                   mode=mode, title='Configuration')
+                                   mode=mode, datamode=cfg._DataMode,
+                                   title='Configuration')
         else:
             write_file('data/config.ini', request.form.get('config'))
             flash('RESTART THE APPLICATION IF SETTINGS FAIL TO BE APPLIED',

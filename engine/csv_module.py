@@ -40,9 +40,9 @@ def add_record_csv(recordDict, csv_file):
     """
     if recordDict['destination_folder'] != '':
         recordDict["counter"] = int(recordDict["counter"]) + 1
-        if int(recordDict['rotate']) != 0:
-            fileRotate(recordDict['destination_folder'], recordDict['filename'],
-                       side=int(recordDict['rotate']))
+        # if int(recordDict['rotate']) != 0:
+        #     fileRotate(recordDict['destination_folder'], recordDict['filename'],
+        #                side=int(recordDict['rotate']))
     with open(csv_file, 'a+') as file:
         headers = []
         for key in recordDict.keys():
@@ -148,6 +148,7 @@ def update_record_csv(filepath, csv_file, **kargs):
                          + ' NOT removed from ' + csv_file)
     else:
         logging.error(f"{filename} was NOT changed")
+    logging.debug(f'update_record_csv output: {temp}')
     return temp
 
 
@@ -427,6 +428,7 @@ def folderPrunning(folder=cfg._destinationFolder,
 
 
 def filePrunning(_file, csv_file=cfg._csvDB, folder=cfg._destinationFolder):
+    logging.debug("Running filePrunning()")
     try:
         temp_dict = update_record_csv(_file, csv_file,
                                       destination_folder='',
@@ -484,6 +486,7 @@ def thumbnail_removal(_folder, _file):
 
 
 def fileRotate(path, _file, side='left', csv=cfg._csvDB):
+    logging.debug("Running fileRotate()")
     try:
         picture = Image.open(path + _file)
         print(path + _file)
@@ -491,28 +494,21 @@ def fileRotate(path, _file, side='left', csv=cfg._csvDB):
 
         filename, file_extension = os.path.splitext(_file)
         if side == 'left' or side == 90:
-            new_path = path + filename + '_L' + file_extension
-            # update_record_csv(_file, csv, filename=new_path, rotate=90)
-            picture.rotate(90, expand=True).save(new_path)
-            record = Photo.byPath(new_path)
-            add_record_csv(record.asdict(), csv)
-            remove_record_csv(_file, csv)
+            rotateBy = 90
         elif side == 'right' or side == 270:
-            new_path = path + filename + '_R' + file_extension
-            # update_record_csv(_file, csv, filename=new_path, rotate=270)
-            picture.rotate(270, expand=True).save(new_path)
-            record = Photo.byPath(new_path)
-            add_record_csv(record.asdict(), csv)
-            remove_record_csv(_file, csv)
+            rotateBy = 270
         else:
-            new_path = path + filename + '_UP' + file_extension
-            # update_record_csv(_file, csv, filename=new_path, rotate=180)
-            picture.rotate(180, expand=True).save(new_path)
-            record = Photo.byPath(new_path)
-            add_record_csv(record.asdict(), csv)
-            remove_record_csv(_file, csv)
+            rotateBy = 180
+        
+        new_path = path + filename + '_' + side + file_extension
+        picture.rotate(rotateBy, expand=True).save(new_path)
+        record = Photo.byPath(new_path)
+        recordDict = record.asdict()
+        recordDict.update({'destination_folder': cfg._destinationFolder,
+                          'rotate': rotateBy})
         picture.close()
-        filePrunning(_file, path)
+        add_record_csv(recordDict, csv)
+        filePrunning(_file)
     except OSError as e:
         logging.error(e.errno + e)
         logging.error('Failed to rotate ' + path + _file)
