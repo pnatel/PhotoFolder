@@ -170,6 +170,7 @@ def enhance_requirements():
     newer versions of the modules.
     it replaces == with =>
     """
+    os.system("pip install pipreqs")
     logging.info("Generating updated requirements")
     logging.debug('pipreqs result: ' + str(os.system("pipreqs --force")))
     with open(os.path.join(os.path.dirname(__file__),

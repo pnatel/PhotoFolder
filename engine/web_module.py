@@ -2,7 +2,7 @@
 
 from flask import Flask, flash, render_template, request, redirect
 import os
-# import time
+import pandas as pd
 from werkzeug.serving import run_simple
 # from distutils.util import strtobool
 from flask_thumbnails import Thumbnail
@@ -168,7 +168,9 @@ def get_app():
 
     def read_file(file):
         try:
+            # print(file)
             with open(file, 'r') as f:
+                # print(f.read())
                 return f.read()
         except IOError as e:
             flash('Operation failed: {}'.format(e.strerror), 'error')
@@ -263,6 +265,17 @@ def get_app():
     def slideshow():
         list = db.getListOfFiles(cfg._destinationFolder, add_path=False)
         return load_pics(list, page='slideshow.html', title='Slideshow')
+
+    @app.route('/csv_table')
+    def csv_table():
+        table = pd.read_csv('data/photofolderDB.csv', 
+                            parse_dates=['datetime'],
+                            dayfirst=True)
+        table['datetime'] = pd.to_datetime(table['datetime'], unit='s')
+        # print(table['datetime'].astype('datetime64[s]'))
+        table.info()
+        return render_template('csv_table.html', data=table.to_html(),
+                               title='CSV Table')
 
     return app
 

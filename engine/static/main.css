@@ -172,6 +172,19 @@
   width: 100%;
 }
 
+.table {       
+  display: inline-block; 
+  position: relative;
+  /*font-size: 100%;
+  width: 480px;
+  height: 200px; 
+  z-index: 15; 
+  top: 20%; 
+  left: 20%; 
+  margin: 10px 0 0 -150px; */
+  background: rgb(236, 240, 204);
+  }
+
 /* end of classes */
 
 header {
