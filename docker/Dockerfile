@@ -4,7 +4,7 @@
 FROM python:slim
 
 LABEL maintainer=pnatel@gmail.com \
-      focus=${GITHUB_REF##*/} 
+      focus=development 
 
 ENV hostname=photomanager \
     name=photomanager
@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     zlib1g-dev
 
-RUN git clone https://github.com/pnatel/PhotoFolder.git --branch ${GITHUB_REF##*/} --single-branch && \
+RUN git clone https://github.com/pnatel/PhotoFolder.git --branch dev --single-branch && \
     mv /PhotoFolder /app
 
 VOLUME [ "/data", "/source", "/destination" ]
