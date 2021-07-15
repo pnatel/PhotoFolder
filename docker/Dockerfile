@@ -3,8 +3,10 @@
 # $ docker push pnatel/photo_folder_manager
 FROM python:slim
 
+ARG BUILD_TAG
+
 LABEL maintainer=pnatel@gmail.com \
-      focus=development 
+      focus=$BUILD_TAG 
 
 ENV hostname=photomanager \
     name=photomanager
@@ -18,7 +20,7 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     zlib1g-dev
 
-RUN git clone https://github.com/pnatel/PhotoFolder.git --branch dev --single-branch && \
+RUN git clone https://github.com/pnatel/PhotoFolder.git --branch $BUILD_TAG --single-branch && \
     mv /PhotoFolder /app
 
 VOLUME [ "/data", "/source", "/destination" ]
