@@ -24,9 +24,7 @@ jobs:
           images: |
             pnatel/photo_folder_manager
           tags: |
-            # branch event
             type=ref,event=branch
-            # tag event
             type=ref,event=tag
             type=raw,value={{branch}}-{{sha}}
           flavor: |
@@ -39,7 +37,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       -
         name: Tags in this release
-        run: echo ${{ steps.meta.outputs.tags }} && echo BUILD_TAG=${GITHUB_REF##*/}
+        run: echo ${{ steps.meta.outputs.tags }}
+      -
+        name: Argument to pass to Dockerfile
+        run: echo BUILD_TAG = ${GITHUB_REF##*/}
       -
         name: Build and push
         uses: docker/build-push-action@v2
