@@ -24,6 +24,10 @@ jobs:
           images: |
             pnatel/photo_folder_manager
           tags: |
+            # branch event
+            type=ref,event=branch
+            # tag event
+            type=ref,event=tag
             type=raw,value=mytag-{{branch}}-{{sha}}
           flavor: |
             latest=auto
@@ -40,6 +44,6 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          build-args: BUILD_TAG=${GITHUB_REF##*/}
+          build-args: BUILD_TAG=${{ GITHUB_REF##*/ }}
           tags: ${{ steps.meta.outputs.tags }}
           file: ./docker/Dockerfile
