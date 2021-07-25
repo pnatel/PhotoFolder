@@ -37,10 +37,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       -
         name: Tags in this release
-        run: echo ${{ steps.meta.outputs.tags }}
+        run: echo " ${{ steps.meta.outputs.tags }} "
       -
         name: Argument to pass to Dockerfile
-        run: echo BUILD_TAG = ${GITHUB_REF##*/}
+        run: echo " BUILD_TAG = ${GITHUB_REF##*/} "
       -
         name: Build and push
         uses: docker/build-push-action@v2
