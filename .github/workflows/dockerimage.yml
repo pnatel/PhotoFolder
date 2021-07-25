@@ -2,8 +2,6 @@ name: build multiarch DOCKER Image
 
 on:
   push:
-    tags:
-      - '**'
 
 jobs:
   docker:
