@@ -50,7 +50,7 @@ jobs:
           platforms: linux/amd64
           push: true
           build-args: |
-            BUILD_TAG=$running_branch
+            BUILD_TAG=${running_branch}
           tags: ${{ steps.meta.outputs.tags }}
           file: ./docker/Dockerfile
 
