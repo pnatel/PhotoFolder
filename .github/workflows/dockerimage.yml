@@ -28,7 +28,7 @@ jobs:
             type=ref,event=branch
             # tag event
             type=ref,event=tag
-            type=raw,value={{branch}}-{{date 'YYYYMMDD'}}
+            type=raw,value={{branch}}-{{sha}}
           flavor: |
             latest=auto
       -
