@@ -3,8 +3,7 @@
 # $ docker push pnatel/photo_folder_manager
 FROM python:slim
 
-LABEL maintainer=pnatel@gmail.com \
-      focus=local-builder
+LABEL maintainer=pnatel@gmail.com
 
 ENV hostname=photomanager \
     name=photomanager
