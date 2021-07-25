@@ -49,6 +49,6 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           build-args: |
-            BUILD_TAG=${GITHUB_REF##*/}
+            BUILD_TAG=dev
           tags: ${{ steps.meta.outputs.tags }}
           file: ./docker/Dockerfile
