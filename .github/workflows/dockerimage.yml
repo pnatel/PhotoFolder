@@ -40,15 +40,18 @@ jobs:
         run: echo " ${{ steps.meta.outputs.tags }} "
       -
         name: Argument to pass to Dockerfile
-        run: echo " BUILD_TAG = ${GITHUB_REF##*/} "
+        run: running_branch=${GITHUB_REF##*/} && echo $running_branch
+
       -
         name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64
           push: true
           build-args: |
-            BUILD_TAG=dev
+            BUILD_TAG=$running_branch
           tags: ${{ steps.meta.outputs.tags }}
           file: ./docker/Dockerfile
+
+#           platforms: linux/amd64,linux/arm64,linux/arm/v7
