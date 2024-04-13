@@ -13,8 +13,7 @@ if __name__ == '__main__' or __name__ == 'timeloop_module':
     import app_config as cfg
     from loggerinitializer import initialize_logger
     import csv_module as fc
-    cfg.load_config()
-else:
+else: 
     import engine.app_config as cfg
     from engine.loggerinitializer import initialize_logger
     import engine.csv_module as fc
@@ -37,7 +36,7 @@ def copy_job():
 def update_csv():
     logging.info("Update CSV runs every {} seconds".format(cfg._jobInterval/2))
     logging.info("Auto job current time : {}".format(time.ctime()))
-    fc.update_csv_ListOfFiles(cfg._sourceFolder, cfg._csv_source)
+    fc.update_csv_ListOfFiles(cfg._sourceFolder, cfg._csvDB)
 
 # @tl.job(interval=timedelta(seconds=5))
 # def sample_job_every_5s():
@@ -60,3 +59,5 @@ def notification():
 
 if __name__ == "__main__":
     tl.start(block=True)
+    # fc.copy_job()
+    # fc.update_csv_ListOfFiles(cfg._sourceFolder, cfg._csvDB)

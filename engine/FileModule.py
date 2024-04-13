@@ -22,7 +22,7 @@ from PIL import Image
 from datetime import datetime
 # from dateutil.relativedelta import relativedelta
 import logging
-# Running as standalone or part of the application
+# Are you running this module as standalone or as part of the application?
 # print(__name__)
 if __name__ == '__main__' or __name__ == 'FileModule':
     import app_config as cfg
@@ -48,11 +48,12 @@ def copy_job():
     logging.info('Loading list of available photos from: ' + cfg._sourceFolder)
     filenames = getListOfFiles(cfg._sourceFolder)
     logging.info('Found: ' + str(len(filenames)) + ' available files')
-    logging.info('choosing and Sorting the sample')
-    sample = sorting(filenames, cfg._criteria, cfg._numberOfPics)
     try:
-        sample != False
-    except:
+        logging.info('choosing and Sorting the sample')
+        sample = sorting(filenames, cfg._criteria, cfg._numberOfPics)
+        if sample is not False:
+            logging.debug('Sample size: ' + str(len(sample)))
+    except sample is False:
         logging.error('Sample size returned FALSE')
     else:
         logging.info('-------PRUNNING--------')
@@ -116,7 +117,7 @@ def folderPrunning(folder=cfg._destinationFolder, multiplier=1):
                      str(cfg._foldersizeUpperLimit))
 
 
-def filePrunning(path, _file):
+def filePrunning(_file, path=cfg._destinationFolder):
     try:
         os.remove(path + _file)
         filename, file_extension = os.path.splitext(_file)
@@ -149,7 +150,7 @@ def fileRotate(path, _file, side='left'):
             new_path = path + filename + '_UP' + file_extension
             picture.rotate(180, expand=True).save(new_path)
         picture.close()
-        filePrunning(path, _file)
+        filePrunning(_file, path)
         # print (new_path)
     except OSError as e:
         logging.error(e.errno + e)
@@ -175,7 +176,7 @@ def getListOfFiles(dirName, add_path=True):
         if add_path:
             fullPath = os.path.join(dirName, entry)
         else:
-            fullPath = fullPath = entry
+            fullPath = entry
         # If entry is a directory then get the list of files in this directory
         if os.path.isdir(fullPath):
             allFiles = allFiles + getListOfFiles(fullPath)

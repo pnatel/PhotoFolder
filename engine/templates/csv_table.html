@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<fieldset>
+    <div class="table">
+        {% block body %}
+        {{ data|safe }}
+        {% endblock %}  
+    </div>
+</fieldset>
+{% endblock %}

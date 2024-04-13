@@ -2,9 +2,9 @@
 
 from flask import Flask, flash, render_template, request, redirect
 import os
-# import time
+import pandas as pd
 from werkzeug.serving import run_simple
-from distutils.util import strtobool
+# from distutils.util import strtobool
 from flask_thumbnails import Thumbnail
 # Running as standalone or part of the application
 if __name__ == '__main__' or __name__ == 'web_module':
@@ -13,11 +13,18 @@ if __name__ == '__main__' or __name__ == 'web_module':
     if cfg._DataMode == 'txt':
         import FileModule as db
     elif cfg._DataMode == 'csv':
-        pass
+        import csv_module as db
     elif cfg._DataMode == 'mongo':
-        pass
+        import mongodb_module as db
     else:
-        pass
+        print('''
+>>>>>>>>>Failed to load the database<<<<<<<<
+
+This is usually due a typo in the config.ini
+Check data/config.ini > parameters.
+Reloading basic txt mode to keep you running.
+''')
+#        import FileModule as db
 #    import setup as stp
 else:
     import engine.app_config as cfg
@@ -25,11 +32,18 @@ else:
     if cfg._DataMode == 'txt':
         import engine.FileModule as db
     elif cfg._DataMode == 'csv':
-        pass
+        import engine.csv_module as db
     elif cfg._DataMode == 'mongo':
-        pass
+        import engine.mongodb_module as db
     else:
-        pass
+        print('''
+>>>>>>>>>Failed to load the database<<<<<<<<
+
+This is usually due a typo in the config.ini
+Check data/config.ini > parameters.
+Reloading basic txt mode to keep you running.
+''')
+#        import engine.FileModule as db
 #    import engine.setup as stp
 
 # Check configuration files and create any missing file
@@ -59,6 +73,7 @@ def get_app():
     @app.route('/', methods=['GET', 'POST'])
     def index():
         list = db.getListOfFiles(cfg._destinationFolder, add_path=False)
+        # flash(list, 'debug')
         if request.method == 'GET':
             return load_pics(list, title='List of Pictures')
 
@@ -83,22 +98,26 @@ def get_app():
             elif request.form.get('favorite'):
                 faves = db.common(payload, list)
                 flash('FAVORITED {} pics'.format(len(faves)), 'warning')
-                db.append_multiple_lines('data/whitelist.txt', faves)
+                if cfg._DataMode == 'txt':
+                    db.append_multiple_lines('data/whitelist.txt', faves)
+                elif cfg._DataMode == 'csv':
+                    for fave in faves:
+                        db.update_record_csv(fave, cfg._csvDB, favorite=True)
                 title = 'FAVORITE Pictures'
 
             elif request.form.get('delete'):
                 delete(payload, list)
                 black = db.common(payload, list)
-                # Check for common with whitelist
-                fave_removed = db.remove_common_from_file('data/whitelist.txt',
-                                                          black)
-                # only shows debug if in demo mode
-                if cfg._test:
-                    flash('Removed {} Fave pics'.format(len(fave_removed)),
-                          'debug')
-
+                if cfg._DataMode == 'txt':
+                    # Check for common with whitelist
+                    fave_removed = db.remove_common_from_file(
+                        'data/whitelist.txt', black)
+                    # only shows debug if in demo mode
+                    if cfg._test:
+                        flash(f'Removed {len(fave_removed)} Fave pics',
+                              'debug')
+                    db.append_multiple_lines('data/blacklist.txt', black)
                 flash('BLACKLISTED {} pics'.format(len(black)), 'info')
-                db.append_multiple_lines('data/blacklist.txt', black)
                 title = 'Remaining Pictures'
 
             elif request.form.get('copy_job'):
@@ -114,12 +133,19 @@ def get_app():
             list = db.getListOfFiles(cfg._destinationFolder, add_path=False)
             return load_pics(list, title=title)
 
-    def load_pics(list, page='index.html', title=''):
+    def load_pics(list, page='index.html', title='', extra_list=[]):
         flash('Files loaded: ' + str(len(list)), 'message')
+        if cfg._DataMode == 'txt':
+            extra_list = read_file('data/whitelist.txt')
+        elif cfg._DataMode == 'csv':
+            faves = db.filter_record_csv(favorite=True)
+            extra_list = []
+            for fave in faves:
+                extra_list.append(fave['filename'])
         return render_template(page, title=title,
                                images=list, len_list=len(list),
                                path=cfg._destinationFolder[7:],
-                               extra_list=(read_file('data/whitelist.txt')))
+                               extra_list=extra_list)
 
     def rotate(payload, list, side):
         pic = 0
@@ -137,12 +163,14 @@ def get_app():
             if list[i] in payload:
                 pic += 1
                 # flash(list[i], 'warning')
-                db.filePrunning(cfg._destinationFolder, list[i])
+                db.filePrunning(list[i])
         flash('Deleting {} pics'.format(pic), 'warning')
 
     def read_file(file):
         try:
+            # print(file)
             with open(file, 'r') as f:
+                # print(f.read())
                 return f.read()
         except IOError as e:
             flash('Operation failed: {}'.format(e.strerror), 'error')
@@ -155,9 +183,13 @@ def get_app():
             os.rename(file, file+'_old')
             flash('Backup original configuration to {}_old'.format(file),
                   'info')
-            with open(file, 'w') as f:
-                f.write(content)
-                flash('File saved on {}'.format(file), 'info')
+            if len(content) > 0:
+                with open(file, 'w') as f:
+                    f.write(content)
+                    flash('File saved on {}'.format(file), 'info')
+            else:
+                flash('File writing failed, restoring original', 'error')
+                os.copy(file+'_old', file)
         except IOError as e:
             flash(e, 'error')
 
@@ -176,7 +208,8 @@ def get_app():
                     else 'normal')
             return render_template('config.html',
                                    config_file=read_file('data/config.ini'),
-                                   mode=mode, title='Configuration')
+                                   mode=mode, datamode=cfg._DataMode,
+                                   title='Configuration')
         else:
             write_file('data/config.ini', request.form.get('config'))
             flash('RESTART THE APPLICATION IF SETTINGS FAIL TO BE APPLIED',
@@ -232,6 +265,17 @@ def get_app():
     def slideshow():
         list = db.getListOfFiles(cfg._destinationFolder, add_path=False)
         return load_pics(list, page='slideshow.html', title='Slideshow')
+
+    @app.route('/csv_table')
+    def csv_table():
+        table = pd.read_csv('data/photofolderDB.csv', 
+                            parse_dates=['datetime'],
+                            dayfirst=True)
+        table['datetime'] = pd.to_datetime(table['datetime'], unit='s')
+        # print(table['datetime'].astype('datetime64[s]'))
+        table.info()
+        return render_template('csv_table.html', data=table.to_html(),
+                               title='CSV Table')
 
     return app
 

@@ -4,6 +4,8 @@
 import os
 import logging
 import shutil
+import subprocess
+import sys
 
 # create console handler and set level to DEBUG
 logger = logging.getLogger()
@@ -27,8 +29,7 @@ empty_files = [
     'data/blacklist.txt',
     'data/whitelist.txt',
     'data/source.txt',
-    'data/source.csv',
-    'data/destination.csv'
+    'data/photofolderDB.csv'
 ]
 
 config = 'data/config.ini'
@@ -90,9 +91,8 @@ DestinationFolder = engine/static/destination/
 LogPath = logs/production
 
 [data]
-dbSource = data/source.csv
-dbDestination = data/destination.csv
-MongoURL = 
+csvDB = data/photofolderDB.csv
+MongoURL = mongodb+srv://" + cfg._dbUser + ":" + cfg._dbPass + "@cluster0.6nphj.mongodb.net/" + cfg._dbName + "?retryWrites=true&w=majority
 dbUser = 
 dbPass = 
 dbName = 
@@ -130,7 +130,7 @@ JobInterval = 86400
 #                may be unable to continue running.
 logLevel = 3
 # How the data is manipulated? (txt, csv, mongo)
-DataMode = txt
+DataMode = csv
 
 [notification]
 # Run this command after the auto copy job is completed
@@ -157,8 +157,8 @@ DestinationFolder = engine/static/demo/destination/
 LogPath = logs/demo
 NumberOfPics = 3
 FoldersizeUpperLimit = 10
-JobInterval = 30
-command = ping -c 4 google.com''')
+JobInterval = 60
+command = tail logs/demo/debug.log''')
             logging.info(config + ' Created')
     except OSError as identifier:
         logging.critical(identifier)
@@ -170,6 +170,7 @@ def enhance_requirements():
     newer versions of the modules.
     it replaces == with =>
     """
+    os.system("pip install pipreqs")
     logging.info("Generating updated requirements")
     logging.debug('pipreqs result: ' + str(os.system("pipreqs --force")))
     with open(os.path.join(os.path.dirname(__file__),
@@ -179,6 +180,19 @@ def enhance_requirements():
     with open(os.path.join(os.path.dirname(__file__),
               os.pardir, 'requirements.txt'), 'w') as f:
         f.write(reqs)
+
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+
+def install_requirements():
+    """
+    This function install if host has all libraries required
+    """
+    logging.info("Updating Application Requirements")
+    subprocess.check_call([sys.executable, "-m", "pip", "install",
+                          "--no-cache-dir", "-r", "requirements.txt"])
 
 
 def clean_folders(folders=folders, warning=1):
@@ -202,19 +216,21 @@ def clean_folders(folders=folders, warning=1):
 
 
 def setup():
+    install_requirements()
     empty_structure()
     create_config()
 
 
 if __name__ == '__main__':
-    print('''
+
+    while True:
+        print('''
     Choose one of the below options:
     1 - Setup (Build the barebones for the app to run)
     2 - Clean-up (remove all non-essential files/folders)
     3 - Update requirements.txt
     0 - EXIT
     ''')
-    while True:
         option = input('your Choice [1, 2, 3 or 0]: ')
 
         if option == '1':
@@ -222,7 +238,7 @@ if __name__ == '__main__':
             setup()
         elif option == '2':
             # remove all non-essential files/folders
-            clean_folders()
+            clean_folders(warning=0)
         elif option == '3':
             # update requirements.txt
             enhance_requirements()
