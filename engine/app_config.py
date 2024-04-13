@@ -50,7 +50,7 @@ def print_config():
 
 
 def load_config():
-    logging.info('Loading config')
+    logging.info('Loading config via ' + __name__)
     # config.read('data/config.ini')
 
     try:
