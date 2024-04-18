@@ -25,7 +25,7 @@ COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt && \
     ln -s /destination /app/engine/static && \
-    mv /app/data /data && \
+    # mv /app/data /data && \
     ln -s /data /app
 
 EXPOSE 23276
