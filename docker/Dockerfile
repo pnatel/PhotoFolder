@@ -21,13 +21,12 @@ RUN apt-get update && apt-get install -y \
 RUN git clone https://github.com/pnatel/PhotoFolder.git --branch master --single-branch && \
     mv /PhotoFolder /app
 
-VOLUME [ "/data", "/source", "/destination" ]
+VOLUME [ "/source", "/destination" ]
 
 WORKDIR /app
 
 RUN pip install --no-cache-dir -r requirements.txt && \
-    ln -s /destination /app/engine/static && \
-    ln -s /data /app
+    ln -s /destination /app/engine/static
 
 EXPOSE 23276
 

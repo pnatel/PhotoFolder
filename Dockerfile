@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     zlib1g-dev
 
-VOLUME [ "/data", "/source", "/destination", "/app" ]
+VOLUME [ "/source", "/destination" ]
 
 WORKDIR /app
 
@@ -25,9 +25,6 @@ COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt && \
     ln -s /destination /app/engine/static
-    # ln -s /destination /app/engine/static && \
-    # mv /app/data /data && \
-    # ln -s /data /app
 
 EXPOSE 23276
 
