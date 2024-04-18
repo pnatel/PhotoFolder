@@ -29,7 +29,11 @@ empty_files = [
     'data/blacklist.txt',
     'data/whitelist.txt',
     'data/source.txt',
-    'data/photofolderDB.csv'
+    'data/photofolderDB.csv',
+    'logs/demo/debug.log',
+    'logs/demo/error.log',
+    'logs/production/debug.log',
+    'logs/production/error.log'
 ]
 
 config = 'data/config.ini'
